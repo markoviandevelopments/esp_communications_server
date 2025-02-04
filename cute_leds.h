@@ -126,6 +126,44 @@ void valentineEffect()
     }
 }
 
+void candleGlowEffect()
+{
+    uint8_t minBrightness = 80;
+    uint8_t maxBrightness = 200;
+    uint8_t r = 255, g = 50, b = 10;
+
+    while (true)
+    {
+        int brightness = random(minBrightness, maxBrightness);
+        uint32_t color = strip.Color((r * brightness) / 255, (g * brightness) / 255, (b * brightness) / 255);
+        setStripColor(color);
+        strip.show();
+        delay(random(100, 400));
+    }
+}
+
+void playfulPinkWaves()
+{
+    uint8_t waveSize = 20;
+    uint16_t speed = 50; 
+
+    for (int offset = 0; offset < NUM_LEDS; offset++)
+    {
+        for (int i = 0; i < NUM_LEDS; i++)
+        {
+            
+            float brightness = (1 + sin((i + offset) * 0.15)) / 2;
+            uint8_t r = (uint8_t)(255 * brightness);
+            uint8_t g = (uint8_t)(20 * brightness);
+            uint8_t b = (uint8_t)(100 + 50 * brightness);
+
+            strip.setPixelColor(i, strip.Color(r, g, b));
+        }
+        strip.show();
+        delay(speed);
+    }
+}
+
 // Function to set the whole strip to a color
 void setStripColor(uint32_t color) {
     for (int i = 0; i < NUM_LEDS; i++) {
