@@ -51,7 +51,11 @@ void loop() {
             } else if (payload.equalsIgnoreCase("SLOW")) {
                 blinkLED(500, 10);  // Slow blink (500ms on/off, 10 times)
             } else if (payload.equalsIgnoreCase("VALENTINE")) { // Will's addition
-                blinkLED(1000, 3)
+                blinkLED(100, 3);
+            } else if (payload.equalsIgnoreCase("CANDLE")) { // Will's addition
+                blinkLED(300, 6);
+            } else if (payload.equalsIgnoreCase("PINKWAVES")) { // Will's addition
+                blinkLED(200, 12)
             } else {
                 Serial.println("Unrecognized response; doing occasional blink.");
                 occasionalBlink();
