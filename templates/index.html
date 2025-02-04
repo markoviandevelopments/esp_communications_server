@@ -3,7 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blink Mode Controller</title>
+    <title>I <3 PSB!</title>
+
+    <!-- Link to manifest.json -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+
+    <!-- Favicons for browsers -->
+    <link rel="icon" type="image/png" sizes="72x72" href="{{ url_for('static', filename='icons/toad-icon-72x72.png') }}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{{ url_for('static', filename='icons/toad-icon-96x96.png') }}">
+    <link rel="icon" type="image/png" sizes="128x128" href="{{ url_for('static', filename='icons/toad-icon-128x128.png') }}">
+    <link rel="icon" type="image/png" sizes="144x144" href="{{ url_for('static', filename='icons/toad-icon-144x144.png') }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='icons/toad-icon-192x192.png') }}">
+    <link rel="icon" type="image/png" sizes="384x384" href="{{ url_for('static', filename='icons/toad-icon-384x384.png') }}">
+    <link rel="icon" type="image/png" sizes="512x512" href="{{ url_for('static', filename='icons/toad-icon-512x512.png') }}">
+
+    <!-- Apple Touch Icons for iOS -->
+    <link rel="apple-touch-icon" sizes="72x72" href="{{ url_for('static', filename='icons/toad-icon-72x72.png') }}">
+    <link rel="apple-touch-icon" sizes="96x96" href="{{ url_for('static', filename='icons/toad-icon-96x96.png') }}">
+    <link rel="apple-touch-icon" sizes="128x128" href="{{ url_for('static', filename='icons/toad-icon-128x128.png') }}">
+    <link rel="apple-touch-icon" sizes="144x144" href="{{ url_for('static', filename='icons/toad-icon-144x144.png') }}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{{ url_for('static', filename='icons/toad-icon-152x152.png') }}">
+    <link rel="apple-touch-icon" sizes="192x192" href="{{ url_for('static', filename='icons/toad-icon-192x192.png') }}">
+    <link rel="apple-touch-icon" sizes="384x384" href="{{ url_for('static', filename='icons/toad-icon-384x384.png') }}">
+    <link rel="apple-touch-icon" sizes="512x512" href="{{ url_for('static', filename='icons/toad-icon-512x512.png') }}">
+
+    <!-- Theme color for mobile browsers -->
+    <meta name="theme-color" content="#00FF41">
+        
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
