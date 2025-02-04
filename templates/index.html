@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blink Mode Controller</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Don't Panic!</h1>
+        <p>Set the Digital LEDs Mode below and always carry a towel.</p>
+
+        <form method="POST">
+            <label for="mode">Enter Blink Mode (0: None, 1: Water flow with colors, 2: Rainbow Flow):</label>
+            <input type="text" id="mode" name="mode" required>
+            <button type="submit">Submit</button>
+        </form>
+        
+        {% if message %}
+            <p class="message">{{ message }}</p>
+        {% endif %}
+        <!-- Hitchhiker's Guide Themed Toad -->
+        <div class="image-container">
+            <img src="{{ url_for('static', filename='hitchhikers_toad.jpg') }}" alt="Hitchhiker's Guide Toad">
+            <p class="caption">A wise intergalactic toad, ready to travel the stars. 🛸</p>
+        </div>
+    </div>
+
+    <span id="answer">42</span>
+    </div>
+</body>
+</html>
