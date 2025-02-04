@@ -6,6 +6,7 @@ app = Flask(__name__)
 #   0: Do not send any command (client may then do occasional short blinks)
 #   1: Send "SLOW" (client should do 10 slow blinks)
 #   2: Send "FAST" (client should do 10 fast blinks)
+#   3: Send "VALENTINE" (client should do 3 slow blinks)
 BLINK_MODE = 1  # Set your initial mode here
 
 @app.route('/', methods=['GET'])
