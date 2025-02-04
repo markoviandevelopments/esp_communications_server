@@ -56,6 +56,10 @@ void loop() {
                 bluePulses();  // Slow blue pulses with red/green bursts
             } else if (payload.equalsIgnoreCase("VALENTINE")) { // Will's addition
                 valentineEffect(); // Heartbeat
+            } else if (payload.equalsIgnoreCase("CANDLE")) { // Will's addition
+                candleGlowEffect(); // Heartbeat
+            } else if (payload.equalsIgnoreCase("PINKWAVES")) { // Will's addition
+                playfulPinkWaves(); // Heartbeat
             } else {
                 Serial.println("Unrecognized response; setting random color.");
                 setRandomColor();
