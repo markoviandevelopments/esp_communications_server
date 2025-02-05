@@ -36,13 +36,24 @@
     <div class="container">
         <h1>Don't Panic!</h1>
         <p>Set the Digital LEDs Mode below and always carry a towel.</p>
-
+        
         <form method="POST">
-            <label for="mode">Enter Blink Mode (0: Color Strobe, 1: Blue Blink with Strobe, 2: Rainbow Flow, 3: Valentine Pink, 4: CandleGlow, 5: Pink Waves, 6 KAMPFENKAPMPFENWAGON!!!):</label>
-            <input type="text" id="mode" name="mode" required>
+            <label for="mode">Please Select a Mode: </label>
+            <select id="mode" name="mode" required>
+                <option value="0">Color Strobe</option>
+                <option value="1">Blue Blink with Strobe</option>
+                <option value="2">Rainbow Flow</option>
+                <option value="3">Valentine Effect</option>
+                <option value="4">Candle Glow</option>
+                <option value="5">Pink Waves</option>
+                <option value="6">KAMPFENKAPMPFENWAGON!!!</option>
+                <option value="7">Heart Waves</option>
+                <option value="8">Love Grows</option>
+                <option value="9">Cupids Arrow</option>
+            </select>
             <button type="submit">Submit</button>
         </form>
-        
+
         {% if message %}
             <p class="message">{{ message }}</p>
         {% endif %}
