@@ -56,6 +56,12 @@ void loop() {
                 blinkLED(300, 6);
             } else if (payload.equalsIgnoreCase("PINKWAVES")) { // Will's addition
                 blinkLED(200, 12)
+            } else if (payload.equalsIgnoreCase("HEARTWAVE")) { // Will's addition
+                blinkLED(200, 12)
+            } else if (payload.equalsIgnoreCase("ROMPULSE")) { // Will's addition
+                blinkLED(200, 12)
+            } else if (payload.equalsIgnoreCase("CUPIDSARROW")) { // Will's addition
+                blinkLED(200, 12)
             } else {
                 Serial.println("Unrecognized response; doing occasional blink.");
                 occasionalBlink();
