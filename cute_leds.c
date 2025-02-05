@@ -72,7 +72,7 @@ void loop() {
             } else if (payload.equalsIgnoreCase("PINKWAVES")) { // Will's addition
                 playfulPinkWaves(); // Heartbeat
             } else if (payload.equalsIgnoreCase("FIGHTKAMPF")) { // Pre's addition
-                fight_kampf(); // Shatzenkampfen ICH HABE EIN COFFEMACHEN!
+                fight_kampfen(); // Shatzenkampfen ICH HABE EIN COFFEMACHEN!
             } else {
                 Serial.println("Unrecognized response; setting random color.");
                 setRandomColor();
