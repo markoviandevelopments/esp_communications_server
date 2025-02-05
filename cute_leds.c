@@ -1,6 +1,7 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <Adafruit_NeoPixel.h>
+#include <Arduino.h>
 
 // WiFi credentials
 const char* ssid     = "Brubaker Wifi";
@@ -12,6 +13,8 @@ const char* serverUrl = "http://50.188.120.138:5000";
 // LED Strip Configuration
 #define LED_PIN 2  // Use GPIO2 for data signal
 #define NUM_LEDS 300
+
+int fight_kampf[NUM_LEDS];
 
 Adafruit_NeoPixel strip(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
@@ -32,6 +35,14 @@ void setup() {
     Serial.println("\nWiFi connected!");
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
+
+    randomSeed(ESP.getCycleCount());
+
+    for (int i=0; i < NUM_LEDS; i++) {
+        fight_kampf[i] = random(0, 2);
+    }
+
+
 }
 
 void loop() {
@@ -60,6 +71,8 @@ void loop() {
                 candleGlowEffect(); // Heartbeat
             } else if (payload.equalsIgnoreCase("PINKWAVES")) { // Will's addition
                 playfulPinkWaves(); // Heartbeat
+            } else if (payload.equalsIgnoreCase("FIGHTKAMPF")) { // Pre's addition
+                fight_kampf(); // Shatzenkampfen ICH HABE EIN COFFEMACHEN!
             } else {
                 Serial.println("Unrecognized response; setting random color.");
                 setRandomColor();
@@ -109,7 +122,7 @@ void bluePulses() {
     }
 }
 
-// <3 Valentine effect why the emojis??
+// <3 Valentine effect why the emojis?? GIRL IDK JUST FELT LIKE IT HAHAHA -ChatGPT
 void valentineEffect()
 {
     uint32_t baseColor = strip.Color(150, 0, 50);
@@ -146,8 +159,7 @@ void candleGlowEffect()
     }
 }
 
-void playfulPinkWaves()
-{
+void playfulPinkWaves() {
     uint8_t waveSize = 20;
     uint16_t speed = 50; 
 
@@ -166,6 +178,36 @@ void playfulPinkWaves()
         strip.show();
         delay(speed);
     }
+}
+
+void fight_kampfen() {
+    uint8_t waveSize = 20;
+    uint16_t speed = 50;
+    int is_r = 0;
+    int is_b = 0;
+    for (int i=0; i < NUM_LEDS; i++) {
+        if (fight_kampf[i] == 0) {
+            is_r = 1;
+            is_b = 0;
+        } else {
+            is_r = 0;
+            is_b = 1;
+        }
+        uint8_t r = (uint8_t)(255 * is_r);
+        uint8_t g = (uint8_t)(0);
+        uint8_t b = (uint8_t)(255 * is_b);
+
+        strip.setPixelColor(i, strip.Color(r, g, b));
+
+        if (random(100) == 0 && i < NUM_LEDS - 1) {
+            fight_kampf[i] = fight_kampf[i + 1];
+        }
+        if (random(100) == 0 && i > 0) {
+            fight_kampf[i] = fight_kampf[i - 1];
+        }
+    }
+    strip.show();
+    delay(speed);
 }
 
 // Function to set the whole strip to a color
