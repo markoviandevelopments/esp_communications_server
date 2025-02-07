@@ -161,24 +161,17 @@ void candleGlowEffect()
     }
 }
 
-void playfulPinkWaves() {
-    uint8_t waveSize = 20;
-    uint16_t speed = 50; 
-
-    for (int offset = 0; offset < NUM_LEDS; offset++)
-    {
-        for (int i = 0; i < NUM_LEDS; i++)
-        {
+void playfulPinkWaves(int wait) {
+    for (int j = 0; j < 256; j++) {  // Animation loop
+        for (int i = 0; i < NUM_LEDS; i++) {
+            // Create a wave effect with a sine function for smooth rolling motion
+            int wave = sin((i + j) * 0.2) * 127 + 128; // Generates values from 0-255 smoothly
+            int hue = map(wave, 0, 255, 48000, 65535); // Focus on pink/magenta hues
             
-            float brightness = (1 + sin((i + offset) * 0.15)) / 2;
-            uint8_t r = (uint8_t)(255 * brightness);
-            uint8_t g = (uint8_t)(20 * brightness);
-            uint8_t b = (uint8_t)(100 + 50 * brightness);
-
-            strip.setPixelColor(i, strip.Color(r, g, b));
+            strip.setPixelColor(i, strip.ColorHSV(hue, 255, 255)); // Keep full saturation and brightness
         }
         strip.show();
-        delay(speed);
+        delay(wait);
     }
 }
 
