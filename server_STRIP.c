@@ -3,6 +3,21 @@
 #include <Adafruit_NeoPixel.h>
 #include <Arduino.h>
 
+// Configuration - SET THIS FOR EACH DEVICE
+#define DEVICE_TYPE 0  
+// 0 = Strip, 1 = Matrix
+#define MATRIX_WIDTH 32
+#define MATRIX_HEIGHT 8
+#if DEVICE_TYPE 
+// matrix
+    #define NUM_LEDS 256
+    strip.setBrightness(128);
+// Matrix has 8x32=256 LEDs
+#else
+    #define NUM_LEDS 300   
+// Original strip length
+#endif
+
 // WiFi credentials
 const char* ssid     = "Brubaker Wifi";
 const char* password = "Pre$ton01";
@@ -16,12 +31,10 @@ const char* serverUrl = "http://50.188.120.138:5000";
 
 int fight_kampf[NUM_LEDS];
 
-Adafruit_NeoPixel strip(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
-
 void setup() {
     Serial.begin(115200);
     strip.begin();
-    strip.show(); // Initialize all LEDs to OFF
+    strip.show();
 
     // Connect to WiFi
     Serial.println("\nConnecting to WiFi...");
@@ -45,56 +58,125 @@ void setup() {
 
 }
 
+#if DEVICE_TYPE
+void renderMatrixEffect(String effect) {
+  if(effect == "FAST") {
+    // Optimized rainbow calculation
+    static int j = 0;
+    for(int y=0; y<MATRIX_HEIGHT; y++) {
+      for(int x=0; x<MATRIX_WIDTH; x++) {
+        int hue = (x + y + j) % 255;
+        strip.setPixelColor(XY(x,y), strip.ColorHSV(hue * 256, 255, 255));
+      }
+    }
+    strip.show();
+    j = (j + 1) % 256;
+    delay(50);
+  }
+
+void showMatrixHeart() {
+  // Implement matrix heart animation
+  const uint8_t heart[8] = {0x18, 0x3C, 0x7E, 0xFF, 0xFF, 0x7E, 0x3C, 0x18};
+  strip.clear();
+  for(int y=0; y<8; y++) {
+    for(int x=0; x<8; x++) {
+      if(heart[y] & (1 << (7-x))) {
+        strip.setPixelColor(XY(x+12,y), strip.Color(255, 0, 0));
+        strip.setPixelColor(XY(23-x,y), strip.Color(255, 0, 0));
+      }
+    }
+  }
+  strip.show();
+}
+
+void showScrollingText() {
+  // Basic text scrolling implementation
+  static int scrollPos = MATRIX_WIDTH;
+  String text = "HELLO";
+  
+  strip.clear();
+  for(int c=0; c<text.length(); c++) {
+    int charPos = scrollPos + c*6;
+    if(charPos >= 0 && charPos < MATRIX_WIDTH) {
+      // Simple font rendering (implement proper font)
+      for(int y=0; y<8; y++) {
+        strip.setPixelColor(XY(charPos,y), strip.Color(0, 255, 0));
+      }
+    }
+  }
+  strip.show();
+  scrollPos--;
+  if(scrollPos < -text.length()*6) scrollPos = MATRIX_WIDTH;
+}
+#endif
+
 void loop() {
     if (WiFi.status() == WL_CONNECTED) {
         WiFiClient client;
         HTTPClient http;
-
-        Serial.println("Attempting to connect to server...");
-        http.begin(client, serverUrl);
+    
+        String url = String(serverUrl) + "?device=" + (DEVICE_TYPE ? "matrix" : "strip");
+        http.begin(client, url);
+    
         int httpCode = http.GET();
-
-        if (httpCode > 0) {  // Successful response
+        if (httpCode > 0) {
             String payload = http.getString();
-            payload.trim(); // Remove whitespace
-
+            payload.trim();
+    
             Serial.print("Server response: ");
             Serial.println(payload);
 
-            if (payload.equalsIgnoreCase("FAST")) {
-                rainbowEffect(50);  // Run a moving rainbow effect
-            } else if (payload.equalsIgnoreCase("SLOW")) {
-                bluePulses();  // Slow blue pulses with red/green bursts
-            } else if (payload.equalsIgnoreCase("VALENTINE")) { // Will's addition
-                valentineEffect(); // Heartbeat
-            } else if (payload.equalsIgnoreCase("CANDLE")) { // Will's addition
-                candleGlowEffect(); // Heartbeat
-            } else if (payload.equalsIgnoreCase("PINKWAVES")) { // Will's addition
-                playfulPinkWaves(); // Heartbeat
-            } else if (payload.equalsIgnoreCase("FIGHTKAMPF")) { // Pre's addition
-                fight_kampfen(); // Shatzenkampfen ICH HABE EIN COFFEMACHEN!
-            } else if (payload.equalsIgnoreCase("HEARTWAVE")) { // Will's addition
-                beatingHeartWave(); // ICH HAB' DICH LEBERWUERST!
-            } else if (payload.equalsIgnoreCase("ROMPULSE")) { // Will's addition
-                romanticPulse(); // ICH HAB' DICH WUERSTCHEN!
-            } else if (payload.equalsIgnoreCase("CUPIDSARROW")) { // Will's addition
-                cupidsArrow(); // ICH HAB' DICH LIEB!
+            #if DEVICE_TYPE
+            // Matrix-specific handling
+            if(payload.startsWith("MATRIX_")) {
+                String matrixCmd = payload.substring(7);
+                if(matrixCmd == "HEART") {
+                    showMatrixHeart();
+                    delay(2000);
+                } else if(matrixCmd == "TEXT") {
+                    showScrollingText();
+                    delay(100);
+                }
             } else {
-                Serial.println("Unrecognized response; setting random color.");
+                renderMatrixEffect(payload);
+            }
+            #else
+            // Strip command handling
+            if (payload.equalsIgnoreCase("FAST")) {
+                rainbowEffect(50);
+            } else if (payload.equalsIgnoreCase("SLOW")) {
+                bluePulses();
+            } else if (payload.equalsIgnoreCase("VALENTINE")) {
+                valentineEffect();
+            } else if (payload.equalsIgnoreCase("CANDLE")) {
+                candleGlowEffect();
+            } else if (payload.equalsIgnoreCase("PINKWAVES")) {
+                playfulPinkWaves(50);
+            } else if (payload.equalsIgnoreCase("FIGHTKAMPF")) {
+                fight_kampfen();
+            } else if (payload.equalsIgnoreCase("HEARTWAVE")) {
+                beatingHeartWave();
+            } else if (payload.equalsIgnoreCase("ROMPULSE")) {
+                romanticPulse();
+            } else if (payload.equalsIgnoreCase("CUPIDSARROW")) {
+                cupidsArrow();
+            } else {
                 setRandomColor();
             }
-        } else {  // Server error or no response
+            #endif
+        } else {
             Serial.print("HTTP error: ");
             Serial.println(httpCode);
+            #if !DEVICE_TYPE
             setRandomColor();
+            #endif
         }
-
-        http.end(); // Close connection
+        http.end();
     } else {
         Serial.println("WiFi not connected.");
     }
 
-    delay(100); // Wait .1 seconds before polling again
+    delay(100);
 }
 
 // 🟠 FAST Mode: Rainbow effect moving down the strip
@@ -111,6 +193,7 @@ void rainbowEffect(int wait) {
 
 // 🔵 SLOW Mode: Blue pulses with occasional red/green bursts
 void bluePulses() {
+    int wait = 50;
     for (int j = 0; j < 256; j++) {  // Warm rainbow cycle
         for (int i = 0; i < NUM_LEDS; i++) {
             // Map hue to a range that avoids blue (0-60° and 300-360° in HSV)
