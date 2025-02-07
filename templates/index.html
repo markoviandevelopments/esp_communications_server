@@ -62,3 +62,28 @@
     </div>
 </body>
 </html>
+
+<script>
+function toggleMatrixMode() {
+    fetch('/control/matrix', {method: 'POST'})
+        .then(() => {
+            const modeElem = document.getElementById('matrixModeStatus');
+            const controls = document.getElementById('matrixControls');
+            if (modeElem.innerText === 'MIRROR') {
+                modeElem.innerText = 'INDEPENDENT';
+                controls.style.display = 'block';
+            } else {
+                modeElem.innerText = 'MIRROR';
+                controls.style.display = 'none';
+            }
+        });
+}
+
+function setMatrixCommand(cmd) {
+    fetch('/set-matrix', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `command=${cmd}`
+    });
+}
+</script>
