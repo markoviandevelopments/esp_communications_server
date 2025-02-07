@@ -2,12 +2,29 @@ from flask import Flask, request, abort
 
 app = Flask(__name__)
 
-# Global variable for blink mode:
-#   0: Do not send any command (client may then do occasional short blinks)
-#   1: Send "SLOW" (client should do 10 slow blinks)
-#   2: Send "FAST" (client should do 10 fast blinks)
-#   3: Send "VALENTINE" (client should do 3 slow blinks)
+MATRIX_MODE = 0  # 0 = mirror strips, 1 = independent
 BLINK_MODE = 1  # Set your initial mode here
+MATRIX_COMMAND = "SLOW"  # Default matrix command
+
+@app.route('/matrix', methods=['GET'])
+def matrix_endpoint():
+    global MATRIX_MODE, BLINK_MODE, MATRIX_COMMAND
+    if MATRIX_MODE == 0:  # Mirror strips
+        return get_strip_command(BLINK_MODE) + "\n", 200
+    else:  # Independent mode
+        return MATRIX_COMMAND + "\n", 200
+
+@app.route('/control/matrix', methods=['POST'])
+def toggle_matrix_mode():
+    global MATRIX_MODE
+    MATRIX_MODE = 1 - MATRIX_MODE  # Toggle between 0 and 1
+    return redirect('/')
+
+@app.route('/set-matrix', methods=['POST'])
+def set_matrix_command():
+    global MATRIX_COMMAND
+    MATRIX_COMMAND = request.form.get('command', 'SLOW')
+    return redirect('/')
 
 @app.route('/', methods=['GET'])
 def serve_blink_mode():
