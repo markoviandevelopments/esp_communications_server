@@ -7,26 +7,7 @@
 
     <!-- Link to manifest.json -->
     <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
-
-    <!-- Favicons for browsers -->
-    <link rel="icon" type="image/png" sizes="72x72" href="{{ url_for('static', filename='icons/toad-icon-72x72.png') }}">
-    <link rel="icon" type="image/png" sizes="96x96" href="{{ url_for('static', filename='icons/toad-icon-96x96.png') }}">
-    <link rel="icon" type="image/png" sizes="128x128" href="{{ url_for('static', filename='icons/toad-icon-128x128.png') }}">
-    <link rel="icon" type="image/png" sizes="144x144" href="{{ url_for('static', filename='icons/toad-icon-144x144.png') }}">
-    <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='icons/toad-icon-192x192.png') }}">
-    <link rel="icon" type="image/png" sizes="384x384" href="{{ url_for('static', filename='icons/toad-icon-384x384.png') }}">
-    <link rel="icon" type="image/png" sizes="512x512" href="{{ url_for('static', filename='icons/toad-icon-512x512.png') }}">
-
-    <!-- Apple Touch Icons for iOS -->
-    <link rel="apple-touch-icon" sizes="72x72" href="{{ url_for('static', filename='icons/toad-icon-72x72.png') }}">
-    <link rel="apple-touch-icon" sizes="96x96" href="{{ url_for('static', filename='icons/toad-icon-96x96.png') }}">
-    <link rel="apple-touch-icon" sizes="128x128" href="{{ url_for('static', filename='icons/toad-icon-128x128.png') }}">
-    <link rel="apple-touch-icon" sizes="144x144" href="{{ url_for('static', filename='icons/toad-icon-144x144.png') }}">
-    <link rel="apple-touch-icon" sizes="152x152" href="{{ url_for('static', filename='icons/toad-icon-152x152.png') }}">
-    <link rel="apple-touch-icon" sizes="192x192" href="{{ url_for('static', filename='icons/toad-icon-192x192.png') }}">
-    <link rel="apple-touch-icon" sizes="384x384" href="{{ url_for('static', filename='icons/toad-icon-384x384.png') }}">
-    <link rel="apple-touch-icon" sizes="512x512" href="{{ url_for('static', filename='icons/toad-icon-512x512.png') }}">
-
+        
     <!-- Theme color for mobile browsers -->
     <meta name="theme-color" content="#00FF41">
         
@@ -62,6 +43,19 @@
             <img src="{{ url_for('static', filename='hitchhikers_toad.jpg') }}" alt="Hitchhiker's Guide Toad">
             <p class="caption">A wise intergalactic toad, ready to travel the stars. 🛸</p>
         </div>
+    </div>
+
+    <div class="control-group">
+    <h3>Matrix Control</h3>
+    <button onclick="toggleMatrixMode()" class="matrix-btn">
+        Matrix Mode: <span id="matrixModeStatus">MIRROR</span>
+    </button>
+    
+    <div id="matrixControls" style="display:none;">
+        <button onclick="setMatrixCommand('HEART')">❤️ Hearts</button>
+        <button onclick="setMatrixCommand('WAVES')">🌊 Waves</button>
+        <button onclick="setMatrixCommand('RAINBOW')">🌈 Rainbow</button>
+    </div>
     </div>
 
     <span id="answer">42</span>
