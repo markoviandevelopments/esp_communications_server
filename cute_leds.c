@@ -111,20 +111,16 @@ void rainbowEffect(int wait) {
 
 // 🔵 SLOW Mode: Blue pulses with occasional red/green bursts
 void bluePulses() {
-    for (int i = 0; i < NUM_LEDS; i += 10) {
-        setStripColor(strip.Color(0, 0, 255)); // Full strip blue
-        strip.show();
-        delay(400);
+    for (int j = 0; j < 256; j++) {  // Warm rainbow cycle
+        for (int i = 0; i < NUM_LEDS; i++) {
+            // Map hue to a range that avoids blue (0-60° and 300-360° in HSV)
+            int hue = (i + j) % 170;  // Cycle through a limited range
+            hue = map(hue, 0, 170, 0, 65535 / 3);  // Map to 0-120° (red-yellow-pink)
 
-        // Occasionally send a red or green burst
-        if (random(0, 10) < 3) {  // 30% chance of burst
-            uint32_t burstColor = (random(0, 2) == 0) ? strip.Color(255, 0, 0) : strip.Color(0, 255, 0);
-            for (int j = 0; j < 20; j++) { // Burst for a short duration
-                strip.setPixelColor((i + j) % NUM_LEDS, burstColor);
-            }
-            strip.show();
-            delay(300);
+            strip.setPixelColor(i, strip.ColorHSV(hue, 255, 255));  // Full saturation and brightness
         }
+        strip.show();
+        delay(wait);
     }
 }
 
