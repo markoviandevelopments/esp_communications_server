@@ -4,19 +4,19 @@
 #include <Arduino.h>
 
 // Configuration - SET THIS FOR EACH DEVICE
-#define DEVICE_TYPE 1  
 // 0 = Strip, 1 = Matrix
-#define MATRIX_WIDTH 32
-#define MATRIX_HEIGHT 8
-#if DEVICE_TYPE 
-// matrix
+#define DEVICE_TYPE 1 
+#if DEVICE_TYPE
+    #define MATRIX_WIDTH 32
+    #define MATRIX_HEIGHT 8
     #define NUM_LEDS 256
-    strip.setBrightness(128);
-// Matrix has 8x32=256 LEDs
 #else
-    #define NUM_LEDS 300   
-// Original strip length
+    #define NUM_LEDS 300
 #endif
+
+// LED Strip Configuration (AFTER NUM_LEDS is defined)
+#define LED_PIN 2  // Use GPIO2 for data signal
+Adafruit_NeoPixel strip(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 // WiFi credentials
 const char* ssid     = "Brubaker Wifi";
@@ -25,15 +25,20 @@ const char* password = "Pre$ton01";
 // Server URL
 const char* serverUrl = "http://50.188.120.138:5000";
 
-// LED Strip Configuration
-#define LED_PIN 2  // Use GPIO2 for data signal
-#define NUM_LEDS 300
-
 int fight_kampf[NUM_LEDS];
+
+#if DEVICE_TYPE
+uint16_t XY(uint8_t x, uint8_t y) {
+    return (y * MATRIX_WIDTH) + ((y % 2) ? (MATRIX_WIDTH - 1 - x) : x);
+}
+#endif
 
 void setup() {
     Serial.begin(115200);
     strip.begin();
+    #if DEVICE_TYPE
+    strip.setBrightness(128);  // Matrix-specific brightness
+    #endif
     strip.show();
 
     // Connect to WiFi
@@ -73,6 +78,7 @@ void renderMatrixEffect(String effect) {
     j = (j + 1) % 256;
     delay(50);
   }
+}
 
 void showMatrixHeart() {
   // Implement matrix heart animation
@@ -116,7 +122,7 @@ void loop() {
         HTTPClient http;
     
         String url = String(serverUrl) + "?device=" + (DEVICE_TYPE ? "matrix" : "strip");
-        http.begin(client, url);
+        http.begin(client, url);  // Use the constructed URL
     
         int httpCode = http.GET();
         if (httpCode > 0) {
