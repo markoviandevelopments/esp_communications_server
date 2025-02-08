@@ -1,109 +1,129 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&display=swap');
 
+/* === VARIABLES === */
+:root {
+    --primary-color: #00FF41;
+    --secondary-color: #FFD700;
+    --highlight-color: #FF4500;
+    --bg-color: black;
+    --container-bg: rgba(0, 0, 0, 0.85);
+    --border-radius: 10px;
+    --shadow-glow: 0 0 20px var(--primary-color);
+    --font-main: 'Orbitron', sans-serif;
+    --font-size-default: 18px;
+    --font-size-large: 40px;
+    --font-size-xlarge: 42px;
+}
+
+/* === BODY === */
+body {
+    background-color: var(--bg-color);
+    background-image: radial-gradient(white 1px, transparent 1px),
+        radial-gradient(white 1px, transparent 1px);
+    background-size: 50px 50px;
+    background-position: 0 0, 25px 25px;
+    animation: stars 10s linear infinite;
+    font-family: var(--font-main);
+    color: var(--primary-color);
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
 /* Starry background animation */
 @keyframes stars {
     from { background-position: 0 0; }
     to { background-position: -1000px 1000px; }
 }
 
-body {
-    background-color: black;
-    background-image: radial-gradient(white 1px, transparent 1px), 
-                      radial-gradient(white 1px, transparent 1px);
-    background-size: 50px 50px;
-    background-position: 0 0, 25px 25px;
-    animation: stars 10s linear infinite;
-    font-family: 'Orbitron', sans-serif;
-    color: #00FF41;
-    text-align: center;
-    margin: 0;
-    padding: 0;
-}
-
+/* === CONTAINER === */
 .container {
     margin-top: 50px;
-    padding: 20px;
-    border: 2px solid #00FF41;
-    border-radius: 10px;
-    background-color: rgba(0, 0, 0, 0.85);
-    box-shadow: 0 0 20px #00FF41;
-    display: inline-block;
     padding: 30px;
+    border: 2px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    background-color: var(--container-bg);
+    box-shadow: var(--shadow-glow);
+    display: inline-block;
 }
 
+
+/* === HEADERS & TEXT === */
 h1 {
-    color: #FFD700;
-    text-shadow: 0 0 10px #FFD700, 0 0 20px #FF4500;
-    font-size: 40px;
+    color: var(--secondary-color);
+    text-shadow: 0 0 10px var(--secondary-color), 0 0 20px var(--highlight-color);
+    font-size: var(--font-size-large);
 }
 
 p {
-    font-size: 18px;
-    color: #00FF41;
-}
-
-form {
-    margin-top: 20px;
-}
-
-input {
-    background-color: black;
-    color: #00FF41;
-    border: 2px solid #00FF41;
-    padding: 10px;
-    font-size: 16px;
-    text-align: center;
-    outline: none;
-    box-shadow: 0 0 10px #00FF41;
-}
-
-button {
-    background-color: #00FF41;
-    color: black;
-    border: none;
-    padding: 12px 24px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    box-shadow: 0 0 20px #00FF41;
-    border-radius: 5px;
-}
-
-button:hover {
-    background-color: #FF4500;
-    color: #FFF;
-    box-shadow: 0 0 20px #FF4500;
+    font-size: var(--font-size-default);
+    color: var(--primary-color);
 }
 
 .message {
     font-size: 20px;
     font-weight: bold;
     margin-top: 20px;
-    color: #FFD700;
-    text-shadow: 0 0 5px #FFD700;
+    color: var(--secondary-color);
+    text-shadow: 0 0 5px var(--secondary-color);
 }
 
-/* Easter egg: The Ultimate Answer */
+/* === FORM ELEMENTS === */
+form {
+    margin-top: 20px;
+}
+
+select, input {
+    background-color: var(--bg-color);
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    padding: 10px;
+    font-size: 16px;
+    text-align: center;
+    outline: none;
+    box-shadow: 0 0 10px var(--primary-color);
+}
+
+button {
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    border: none;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: var(--shadow-glow);
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: var(--highlight-color);
+    color: white;
+    box-shadow: 0 0 20px var(--highlight-color);
+}
+
+/* === EASTER EGG: THE ULTIMATE ANSWER === */
 #answer {
     position: fixed;
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 42px;
-    color: #FFD700;
-    text-shadow: 0 0 10px #FFD700, 0 0 20px #FF4500;
+    font-size: var(--font-size-xlarge);
+    color: var(--secondary-color);
+    text-shadow: 0 0 10px var(--secondary-color), 0 0 20px var(--highlight-color);
     opacity: 0;
     transition: opacity 1s ease-in-out;
-    pointer-events: none; /* Prevent accidental selection */
+    pointer-events: none;
 }
 
 body:hover #answer {
     opacity: 1;
 }
 
+/* === IMAGE DISPLAY === */
 .image-container {
     margin-top: 30px;
     text-align: center;
@@ -112,27 +132,31 @@ body:hover #answer {
 .image-container img {
     width: 50%;
     max-width: 500px;
-    border: 3px solid #00FF41;
-    box-shadow: 0 0 15px #00FF41;
-    border-radius: 10px;
+    border: 3px solid var(--primary-color);
+    box-shadow: 0 0 15px var(--primary-color);
+    border-radius: var(--border-radius);
 }
 
 .caption {
-    font-size: 18px;
-    color: #FFD700;
-    text-shadow: 0 0 5px #FFD700;
+    font-size: var(--font-size-default);
+    color: var(--secondary-color);
+    text-shadow: 0 0 5px var(--secondary-color);
     margin-top: 10px;
 }
 
+/* === TABLE STYLING === */
 table {
     width: 100%;
     border-collapse: collapse;
 }
-th, td {
+
+th,
+td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
 }
+
 th {
     background-color: #a19696;
 }
