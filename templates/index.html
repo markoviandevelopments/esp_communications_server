@@ -9,6 +9,8 @@
         .container { max-width: 800px; margin: 0 auto; }
         table { width: 100%; border-collapse: collapse; margin: 20px 0; }
         th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        .active { color: green; font-weight: bold; }
+        .inactive { color: red; font-weight: bold; }
         form { background: #f4f4f4; padding: 20px; border-radius: 5px; }
         .form-group { margin-bottom: 15px; }
         select, button { padding: 8px; font-size: 16px; }
@@ -53,7 +55,8 @@
                     <th>ESP ID</th>
                     <th>Status</th>
                     <th>Current Mode</th>
-                    <th>Port</th>
+                    <th>Last Seen</th>
+                    <th>IP Address</th>
                     <th>Description</th>
                 </tr>
             </thead>
@@ -61,9 +64,18 @@
                 {% for dev_id, details in devices.items() %}
                 <tr>
                     <td>{{ dev_id }}</td>
-                    <td>{{ details.status }}</td>
+                    <td class="{{ 'active' if details.last_seen | is_active == 'Active' else 'inactive' }}">
+                        {{ details.last_seen | is_active }}
+                    </td>
                     <td>{{ command_map[details.mode] }}</td>
-                    <td>{{ details.port }}</td>
+                    <td>
+                        {% if details.last_seen %}
+                            {{ details.last_seen | int | timestamp_to_time }}
+                        {% else %}
+                            Never
+                        {% endif %}
+                    </td>
+                    <td>{{ details.ip or 'Unknown' }}</td>
                     <td>{{ details.description }}</td>
                 </tr>
                 {% endfor %}

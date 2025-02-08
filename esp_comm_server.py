@@ -1,11 +1,17 @@
 from flask import Flask, request, abort, render_template, redirect, url_for
+import time
 
 app = Flask(__name__)
 
-# Store modes for all ESP devices and their descriptions
+# Store device states with last seen timestamps
 devices = {
-    '001': {'mode': 0, 'description': 'LED Array', 'status': 'inactive', 'port': 5000},
-    '002': {'mode': 0, 'description': 'Matrix Panel', 'status': 'inactive', 'port': 5001},
+    '001': {
+        'mode': 0,
+        'description': 'LED Array',
+        'port': 5000,
+        'last_seen': None,
+        'ip': None
+    },
     # Add more devices as needed
 }
 
@@ -21,6 +27,12 @@ COMMAND_MAP = {
     8: "ROMPULSE",
     9: "CUPIDSARROW"
 }
+
+@app.template_filter('is_active')
+def is_active_filter(last_seen):
+    if last_seen and (time.time() - last_seen) < 60:
+        return 'Active'
+    return 'Inactive'
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -54,14 +66,19 @@ def index():
 def get_device_command(device_id):
     if device_id not in devices:
         abort(404)
+    
+    # Update last seen time and IP address
+    devices[device_id]['last_seen'] = time.time()
+    devices[device_id]['ip'] = request.remote_addr
+    
     return f"{COMMAND_MAP[devices[device_id]['mode']]}\n"
 
-@app.route('/update_status/<device_id>/<status>', methods=['POST'])
-def update_status(device_id, status):
-    if device_id in devices and status in ['active', 'inactive']:
-        devices[device_id]['status'] = status
-        return f"Status updated for {device_id}"
-    abort(400)
+@app.template_filter('timestamp_to_time')
+def timestamp_to_time_filter(timestamp):
+    from datetime import datetime
+    if not timestamp:
+        return 'Never'
+    return datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=4999)
