@@ -6,7 +6,6 @@
 // Configuration - SET THIS FOR EACH DEVICE
 // 0 = Strip, 1 = Matrix
 #define DEVICE_TYPE 1
-#if DEVICE_TYPE
 #define MATRIX_WIDTH 32
 #define MATRIX_HEIGHT 8
 #define NUM_LEDS 300
@@ -24,18 +23,13 @@ const char *serverUrl = "http://50.188.120.138:5000";
 
 int fight_kampf[NUM_LEDS];
 
-#if DEVICE_TYPE
 uint16_t XY(uint8_t x, uint8_t y) {
     return (y * MATRIX_WIDTH) + ((y % 2) ? (MATRIX_WIDTH - 1 - x) : x);
 }
-#endif
 
 void setup() {
     Serial.begin(115200);
     strip.begin();
-#if DEVICE_TYPE
-    strip.setBrightness(128); // Matrix-specific brightness
-#endif
     strip.show();
 
     // Connect to WiFi
@@ -58,7 +52,6 @@ void setup() {
     }
 }
 
-#if DEVICE_TYPE
 void renderMatrixEffect(String effect) {
     if (effect == "FAST") {
         // Optimized rainbow calculation
@@ -112,7 +105,6 @@ void showScrollingText() {
     if (scrollPos < -text.length() * 6)
         scrollPos = MATRIX_WIDTH;
 }
-#endif
 
 void loop() {
     if (WiFi.status() == WL_CONNECTED) {
@@ -132,7 +124,6 @@ void loop() {
             Serial.print("Server response: ");
             Serial.println(payload);
 
-#if DEVICE_TYPE
             // Matrix-specific handling
             if (payload.startsWith("MATRIX_")) {
                 String matrixCmd = payload.substring(7);
@@ -149,7 +140,6 @@ void loop() {
             {
                 renderMatrixEffect(payload);
             }
-#else
             // Strip command handling
             if (payload.equalsIgnoreCase("FAST")) {
                 rainbowEffect(50);
@@ -159,9 +149,6 @@ void loop() {
             }
             else if (payload.equalsIgnoreCase("VALENTINE")) {
                 valentineEffect();
-            }
-            else if (payload.equalsIgnoreCase("CANDLE")) {
-                candleGlowEffect();
             }
             else if (payload.equalsIgnoreCase("PINKWAVES")) {
                 playfulPinkWaves(50);
@@ -181,14 +168,10 @@ void loop() {
             else {
                 setRandomColor();
             }
-#endif
         }
         else {
             Serial.print("HTTP error: ");
             Serial.println(httpCode);
-#if !DEVICE_TYPE
-            setRandomColor();
-#endif
         }
         http.end();
     }
