@@ -212,26 +212,64 @@ void beatingHeartWave()
     }
 }
 
-void romanticPulse() {
-    const int cycleTime = 15; // Lower = faster
-    const float redPhase = 0.0;
-    const float pinkPhase = PI; // 180° out of phase
+void romanticPulse()
+{
+    const int cycleTime = 13;         // Slightly faster tempo
+    const float pulseFrequency = 2.5; // More dynamic movement
+    const int glitterChance = 50;     // 2% chance per LED for glitter
 
-    for (int t = 0; t < 1000; t++) { // Run for ~15 seconds
+    for (int t = 0; t < 1000; t++)
+    {
         float timeFactor = millis() * 0.001;
 
-        // Calculate brightness waves
-        float redBrightness = (sin(timeFactor * 2 + redPhase) + 1) * 0.5;
-        float pinkBrightness = (sin(timeFactor * 2 + pinkPhase) + 1) * 0.5;
+        // Multi-layer waveform with harmonics
+        float baseWave = sin(timeFactor * pulseFrequency);
+        float harmonic = sin(timeFactor * pulseFrequency * 3.7) * 0.3;
+        float pulseWave = (baseWave + harmonic + 1.2) * 0.6;
 
-        // Create color gradients
-        for (int i = 0; i < NUM_LEDS; i++) {
-            float posFactor = (float)i / NUM_LEDS;
-            uint8_t r = 255 * redBrightness * (0.7 + 0.3 * sin(posFactor * 4 * PI));
-            uint8_t g = 20 * pinkBrightness;
-            uint8_t b = 100 * pinkBrightness * (0.5 + 0.5 * cos(posFactor * 2 * PI));
+        // Create crimson core with golden accents
+        for (int i = 0; i < NUM_LEDS; i++)
+        {
+            float posWave = sin((i * 0.3) + timeFactor * 3);
+            float ripple = cos((i * 0.15) - timeFactor * 4);
+
+            // Dynamic red gradients
+            uint8_t r = constrain(220 * pulseWave * (0.8 + posWave * 0.3), 50, 255);
+            uint8_t g = constrain(30 * pulseWave * (0.5 + ripple * 0.2), 0, 40);
+            uint8_t b = constrain(25 * (1.2 - pulseWave), 0, 30);
+
+            // Add random ruby sparkles
+            if (random(1000) < glitterChance)
+            {
+                r = constrain(r + 150, 0, 255);
+                g = constrain(g + 40, 0, 80);
+                b = 0; // Kill blue for pure fire effect
+            }
+
+            // Velvet fade effect on every 3rd LED
+            if (i % 3 == (t % 3))
+            {
+                r *= 0.8;
+                g *= 0.5;
+                b *= 0.5;
+            }
 
             strip.setPixelColor(i, strip.Color(r, g, b));
+        }
+
+        // Add traveling "love surge" wave
+        static float surgePos = 0;
+        surgePos = fmod(surgePos + 0.7, NUM_LEDS);
+        for (int s = -2; s <= 2; s++)
+        {
+            int pos = (int)surgePos + s;
+            if (pos >= 0 && pos < NUM_LEDS)
+            {
+                float intensity = 1.0 - abs(s) / 3.0;
+                uint8_t r = strip.getPixelColor(pos) >> 16;
+                r = constrain(r + 80 * intensity, 0, 255);
+                strip.setPixelColor(pos, strip.Color(r, 0, 0));
+            }
         }
 
         strip.show();
