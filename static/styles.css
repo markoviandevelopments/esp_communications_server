@@ -1,162 +1,144 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&display=swap');
-
-/* === VARIABLES === */
 :root {
-    --primary-color: #00FF41;
-    --secondary-color: #FFD700;
-    --highlight-color: #FF4500;
-    --bg-color: black;
-    --container-bg: rgba(0, 0, 0, 0.85);
-    --border-radius: 10px;
-    --shadow-glow: 0 0 20px var(--primary-color);
+    /* Maintained Your Dark Theme Core */
+    --bg-color: #0a0a0a;
+    --container-bg: rgba(15, 15, 15, 0.95);
     --font-main: 'Orbitron', sans-serif;
-    --font-size-default: 18px;
-    --font-size-large: 40px;
-    --font-size-xlarge: 42px;
+
+    /* Hitchhiker's Accent Colors */
+    --primary-glow: #6CF0FF;
+    /* Guidebook blue */
+    --secondary-accent: #FFB347;
+    /* Orange towel highlight */
+    --alert-color: #FF69B4;
+    /* Zaphod's pink shirt */
+    --vogon-poetry: #4AFF72;
+    /* Sickly green */
 }
 
-/* === BODY === */
 body {
-    background-color: var(--bg-color);
-    background-image: radial-gradient(white 1px, transparent 1px),
-        radial-gradient(white 1px, transparent 1px);
-    background-size: 50px 50px;
-    background-position: 0 0, 25px 25px;
-    animation: stars 10s linear infinite;
+    background:
+        radial-gradient(circle at 50% 50%, #1a1a1a 0%, var(--bg-color) 100%),
+        repeating-linear-gradient(45deg,
+            transparent,
+            transparent 2px,
+            rgba(108, 240, 255, 0.05) 2px,
+            rgba(108, 240, 255, 0.05) 4px);
     font-family: var(--font-main);
-    color: var(--primary-color);
-    text-align: center;
-    margin: 0;
-    padding: 0;
 }
 
-/* Starry background animation */
-@keyframes stars {
-    from { background-position: 0 0; }
-    to { background-position: -1000px 1000px; }
-}
-
-/* === CONTAINER === */
 .container {
-    margin-top: 50px;
-    padding: 30px;
-    border: 2px solid var(--primary-color);
-    border-radius: var(--border-radius);
-    background-color: var(--container-bg);
-    box-shadow: var(--shadow-glow);
-    display: inline-block;
+    background: var(--container-bg);
+    border: 1px solid var(--primary-glow);
+    box-shadow: 0 0 30px rgba(108, 240, 255, 0.2);
+    position: relative;
+    overflow: hidden;
 }
 
-
-/* === HEADERS & TEXT === */
-h1 {
-    color: var(--secondary-color);
-    text-shadow: 0 0 10px var(--secondary-color), 0 0 20px var(--highlight-color);
-    font-size: var(--font-size-large);
-}
-
-p {
-    font-size: var(--font-size-default);
-    color: var(--primary-color);
-}
-
-.message {
-    font-size: 20px;
-    font-weight: bold;
-    margin-top: 20px;
-    color: var(--secondary-color);
-    text-shadow: 0 0 5px var(--secondary-color);
-}
-
-/* === FORM ELEMENTS === */
-form {
-    margin-top: 20px;
-}
-
-select, input {
-    background-color: var(--bg-color);
-    color: var(--primary-color);
-    border: 2px solid var(--primary-color);
-    padding: 10px;
-    font-size: 16px;
-    text-align: center;
-    outline: none;
-    box-shadow: 0 0 10px var(--primary-color);
-}
-
-button {
-    background-color: var(--primary-color);
-    color: var(--bg-color);
-    border: none;
-    padding: 12px 24px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    box-shadow: var(--shadow-glow);
-    border-radius: 5px;
-}
-
-button:hover {
-    background-color: var(--highlight-color);
-    color: white;
-    box-shadow: 0 0 20px var(--highlight-color);
-}
-
-/* === EASTER EGG: THE ULTIMATE ANSWER === */
-#answer {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: var(--font-size-xlarge);
-    color: var(--secondary-color);
-    text-shadow: 0 0 10px var(--secondary-color), 0 0 20px var(--highlight-color);
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
+/* Subtle Guidebook Elements */
+.container::before {
+    content: "✋🌌";
+    /* Hitchhiker hand + galaxy */
+    position: absolute;
+    bottom: -30px;
+    right: -30px;
+    font-size: 4rem;
+    opacity: 0.1;
     pointer-events: none;
 }
 
-body:hover #answer {
-    opacity: 1;
-}
-
-/* === IMAGE DISPLAY === */
-.image-container {
-    margin-top: 30px;
-    text-align: center;
-}
-
-.image-container img {
-    width: 50%;
-    max-width: 500px;
-    border: 3px solid var(--primary-color);
-    box-shadow: 0 0 15px var(--primary-color);
-    border-radius: var(--border-radius);
-}
-
-.caption {
-    font-size: var(--font-size-default);
-    color: var(--secondary-color);
-    text-shadow: 0 0 5px var(--secondary-color);
-    margin-top: 10px;
-}
-
-/* === TABLE STYLING === */
+/* Hybrid Table Design */
 table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th,
-td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
+    background: #111111;
+    border: 1px solid rgba(108, 240, 255, 0.3);
 }
 
 th {
-    background-color: #a19696;
+    background: #1a1a1a !important;
+    border-bottom: 2px solid var(--secondary-accent);
+    color: var(--primary-glow) !important;
+}
+
+td {
+    border-color: rgba(108, 240, 255, 0.1);
+}
+
+/* Status Indicators with Thematic Flair */
+.active {
+    color: var(--vogon-poetry);
+    position: relative;
+    padding-left: 25px !important;
+}
+
+.active::before {
+    content: "✔";
+    position: absolute;
+    left: 5px;
+    color: #00FF00;
+}
+
+.inactive {
+    color: var(--alert-color);
+    padding-left: 25px !important;
+}
+
+.inactive::before {
+    content: "✖";
+    position: absolute;
+    left: 5px;
+}
+
+/* Form Elements - Dark Base with Guide Flair */
+select {
+    background: #000;
+    border: 1px solid var(--primary-glow);
+    color: var(--primary-glow);
+    font-family: 'Courier New', monospace;
+    /* Guidebook feel */
+}
+
+button {
+    background: linear-gradient(to bottom, #2a2a2a, #000);
+    border: 1px solid var(--secondary-accent);
+    color: var(--secondary-accent);
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    box-shadow: 0 0 15px var(--secondary-accent);
+    text-shadow: 0 0 10px var(--secondary-accent);
+}
+
+/* Subtle Animation */
+@keyframes guidePulse {
+    0% {
+        opacity: 0.8;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+
+    100% {
+        opacity: 0.8;
+    }
+}
+
+.container::after {
+    content: "42";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 8rem;
+    color: rgba(108, 240, 255, 0.03);
+    animation: guidePulse 20s infinite;
+    pointer-events: none;
+}
+
+.vogon-warning {
+    margin-top: 1rem;
+    padding: 0.5rem;
+    border: 1px dashed var(--alert-color);
+    color: var(--vogon-poetry);
+    font-size: 0.8rem;
 }
