@@ -5,7 +5,7 @@
 
 // Configuration - SET THIS FOR EACH DEVICE
 // 0 = Strip, 1 = Matrix
-#define DEVICE_TYPE 1 
+#define DEVICE_TYPE 0
 #if DEVICE_TYPE
     #define MATRIX_WIDTH 32
     #define MATRIX_HEIGHT 8
