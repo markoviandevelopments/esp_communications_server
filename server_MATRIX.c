@@ -28,14 +28,12 @@ const char *serverUrl = "http://50.188.120.138:5000";
 int fight_kampf[NUM_LEDS];
 
 #if DEVICE_TYPE
-uint16_t XY(uint8_t x, uint8_t y)
-{
+uint16_t XY(uint8_t x, uint8_t y) {
     return (y * MATRIX_WIDTH) + ((y % 2) ? (MATRIX_WIDTH - 1 - x) : x);
 }
 #endif
 
-void setup()
-{
+void setup() {
     Serial.begin(115200);
     strip.begin();
 #if DEVICE_TYPE
@@ -47,8 +45,7 @@ void setup()
     Serial.println("\nConnecting to WiFi...");
     WiFi.begin(ssid, password);
 
-    while (WiFi.status() != WL_CONNECTED)
-    {
+    while (WiFi.status() != WL_CONNECTED) {
         delay(500);
         Serial.print(".");
     }
