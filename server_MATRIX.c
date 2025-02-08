@@ -14,17 +14,65 @@
 #define LED_PIN 2 // Use GPIO2 for data signal
 Adafruit_NeoPixel strip(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
-// WiFi credentials
+// WiFi credentials & Server URL
 const char *ssid = "Brubaker Wifi";
 const char *password = "Pre$ton01";
-
-// Server URL
 const char *serverUrl = "http://50.188.120.138:5000";
 
 int fight_kampf[NUM_LEDS];
 
+// Matrix MAPPING to 2d plane
 uint16_t XY(uint8_t x, uint8_t y) {
-    return (y * MATRIX_WIDTH) + ((y % 2) ? (MATRIX_WIDTH - 1 - x) : x);
+  return (y * MATRIX_WIDTH) + ((y % 2) ? (MATRIX_WIDTH - 1 - x) : x);
+}
+
+const uint8_t font5x7[][5] = {
+  // Space ' '
+  {0x00, 0x00, 0x00, 0x00, 0x00},
+  // '!'
+  {0x00, 0x00, 0x5F, 0x00, 0x00},
+  // (Fill in other punctuation/numbers as needed ...)
+  // 'A' (ASCII 65, index = 65 - 32 = 33)
+  {0x7C, 0x12, 0x11, 0x12, 0x7C},
+  // 'B' (ASCII 66, index = 34)
+  {0x7F, 0x49, 0x49, 0x49, 0x36},
+  // 'C' (ASCII 67, index = 35)
+  {0x3E, 0x41, 0x41, 0x41, 0x22},
+  // 'D' (ASCII 68, index = 36)
+  {0x7F, 0x41, 0x41, 0x22, 0x1C},
+  // 'E' (ASCII 69, index = 37)
+  {0x7F, 0x49, 0x49, 0x49, 0x41},
+  // 'H' (ASCII 72, index = 40)
+  {0x7F, 0x08, 0x08, 0x08, 0x7F},
+  // 'L' (ASCII 76, index = 44)
+  {0x7F, 0x40, 0x40, 0x40, 0x40},
+  // 'O' (ASCII 79, index = 47)
+  {0x3E, 0x41, 0x41, 0x41, 0x3E},
+  // (Add additional characters as needed)
+};
+
+void drawChar(int x, int y, char c, uint32_t color) {
+  // Only support characters between ' ' (32) and '~' (126)
+  if (c < ' ' || c > '~') return;
+  int charIndex = c - 32; // Compute index into font array
+
+  // In this example, our font array might not have all characters.
+  // Make sure your font array is as large as needed.
+  for (int col = 0; col < 5; col++) {
+    uint8_t line = font5x7[charIndex][col];
+    for (int row = 0; row < 7; row++) {
+      if (line & 0x01) {  // If the bit is set, draw the pixel
+        int drawX = x + col;
+        int drawY = y + row;
+        // Check bounds before drawing
+        if (drawX >= 0 && drawX < MATRIX_WIDTH && drawY >= 0 && drawY < MATRIX_HEIGHT) {
+          strip.setPixelColor(XY(drawX, drawY), color);
+        }
+      }
+      line >>= 1;
+    }
+  }
+  // Optionally add one blank column as spacing between characters
 }
 
 void setup() {
@@ -85,25 +133,26 @@ void showMatrixHeart() {
     strip.show();
 }
 
-void showScrollingText() {
-    // Basic text scrolling implementation
-    static int scrollPos = MATRIX_WIDTH;
-    String text = "HELLO";
-
-    strip.clear();
-    for (int c = 0; c < text.length(); c++) {
-        int charPos = scrollPos + c * 6;
-        if (charPos >= 0 && charPos < MATRIX_WIDTH) {
-            // Simple font rendering (implement proper font)
-            for (int y = 0; y < 8; y++) {
-                strip.setPixelColor(XY(charPos, y), strip.Color(0, 255, 0));
-            }
-        }
-    }
-    strip.show();
-    scrollPos--;
-    if (scrollPos < -text.length() * 6)
-        scrollPos = MATRIX_WIDTH;
+void showScrollingText(String message) {
+  // static scrollPos persists between calls.
+  static int scrollPos = MATRIX_WIDTH;
+  strip.clear();
+  
+  // Draw each character of the message
+  for (int i = 0; i < message.length(); i++) {
+    // Each character is 5 pixels wide + 1 pixel spacing = 6 pixels
+    int charX = scrollPos + i * 6;
+    drawChar(charX, 0, message.charAt(i), strip.Color(0, 255, 0));
+  }
+  
+  strip.show();
+  scrollPos--;  // Move the text left for scrolling
+  
+  // When the entire message has scrolled off, reset the position
+  int totalWidth = message.length() * 6;
+  if (scrollPos < -totalWidth) {
+    scrollPos = MATRIX_WIDTH;
+  }
 }
 
 void loop() {
@@ -136,8 +185,7 @@ void loop() {
                     delay(100);
                 }
             }
-            else
-            {
+            else {
                 renderMatrixEffect(payload);
             }
             // Strip command handling
