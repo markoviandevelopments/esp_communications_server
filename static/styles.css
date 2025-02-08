@@ -123,3 +123,16 @@ body:hover #answer {
     text-shadow: 0 0 5px #FFD700;
     margin-top: 10px;
 }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+th {
+    background-color: #a19696;
+}
