@@ -1,89 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I <3 PSB!</title>
-
-    <!-- Link to manifest.json -->
-    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
-        
-    <!-- Theme color for mobile browsers -->
-    <meta name="theme-color" content="#00FF41">
-        
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body>
-    <div class="container">
-        <h1>Don't Panic!</h1>
-        <p>Set the Digital LEDs Mode below and always carry a towel.</p>
-        
-        <form method="POST">
-            <label for="mode">Please Select a Mode: </label>
-            <select id="mode" name="mode" required>
-                <option value="0">Color Strobe</option>
-                <option value="1">Redbow Flow</option>
-                <option value="2">Rainbow Flow</option>
-                <option value="3">Valentine Effect</option>
-                <option value="4">Candle Glow</option>
-                <option value="5">Pink Flows</option>
-                <option value="6">Preston's Favorite</option>
-                <option value="7">Heart Waves</option>
-                <option value="8">Love Grows</option>
-                <option value="9">Cupids Arrow</option>
-            </select>
-            <button type="submit">Submit</button>
-        </form>
-
-        {% if message %}
-            <p class="message">{{ message }}</p>
-        {% endif %}
-        <!-- Hitchhiker's Guide Themed Toad -->
-        <div class="image-container">
-            <img src="{{ url_for('static', filename='hitchhikers_toad.jpg') }}" alt="Hitchhiker's Guide Toad">
-            <p class="caption">A wise intergalactic toad, ready to travel the stars. 🛸</p>
-        </div>
-    </div>
-
-    <div class="control-group">
-    <h3>Matrix Control</h3>
-    <button onclick="toggleMatrixMode()" class="matrix-btn">
-        Matrix Mode: <span id="matrixModeStatus">MIRROR</span>
-    </button>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>I <3 PSB!</title>
     
-    <div id="matrixControls" style="display:none;">
-        <button onclick="setMatrixCommand('HEART')">❤️ Hearts</button>
-        <button onclick="setMatrixCommand('WAVES')">🌊 Waves</button>
-        <button onclick="setMatrixCommand('RAINBOW')">🌈 Rainbow</button>
-    </div>
-    </div>
+        <!-- Link to manifest.json -->
+        <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+            
+        <!-- Theme color for mobile browsers -->
+        <meta name="theme-color" content="#00FF41">
+            
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    </head>
+    <body>
+        <div class="container">
+            <h1>Don't Panic!</h1>
+            <p>Set the Digital LEDs Mode below and always carry a towel.</p>
+            
+            <form method="POST">
+                <label for="mode">Please Select a Mode: </label>
+                <select id="mode" name="mode" required>
+                    <option value="0">Color Strobe</option>
+                    <option value="1">Redbow Flow</option>
+                    <option value="2">Rainbow Flow</option>
+                    <option value="3">Valentine Effect</option>
+                    <option value="4">Candle Glow</option>
+                    <option value="5">Pink Flows</option>
+                    <option value="6">Preston's Favorite</option>
+                    <option value="7">Heart Waves</option>
+                    <option value="8">Love Grows</option>
+                    <option value="9">Cupids Arrow</option>
+                </select>
+                <button type="submit">Submit</button>
+            </form>
+    
+            {% if message %}
+                <p class="message">{{ message }}</p>
+            {% endif %}
+            <!-- Hitchhiker's Guide Themed Toad -->
+            <div class="image-container">
+                <img src="{{ url_for('static', filename='hitchhikers_toad.jpg') }}" alt="Hitchhiker's Guide Toad">
+                <p class="caption">A wise intergalactic toad, ready to travel the stars. 🛸</p>
+            </div>
+        </div>
 
-    <span id="answer">42</span>
-    </div>
-</body>
+            <h2>Matrix Controls</h2>
+        <form method="post">
+          <input type="submit" name="toggle_matrix" value="Toggle Matrix Mode">
+        </form>
+        <form method="post">
+          <label for="matrix_command">Set Matrix Command:</label>
+          <input type="text" id="matrix_command" name="matrix_command" placeholder="e.g., SLOW">
+          <br>
+          <input type="submit" value="Update Matrix Command">
+        </form>
+        
+        <span id="answer">42</span>
+        </div>
+    </body>
 </html>
-
-<script>
-function toggleMatrixMode() {
-    fetch('/control/matrix', {method: 'POST'})
-        .then(() => {
-            const modeElem = document.getElementById('matrixModeStatus');
-            const controls = document.getElementById('matrixControls');
-            if (modeElem.innerText === 'MIRROR') {
-                modeElem.innerText = 'INDEPENDENT';
-                controls.style.display = 'block';
-            } else {
-                modeElem.innerText = 'MIRROR';
-                controls.style.display = 'none';
-            }
-        });
-}
-
-function setMatrixCommand(cmd) {
-    fetch('/set-matrix', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: `command=${cmd}`
-    });
-}
-</script>
