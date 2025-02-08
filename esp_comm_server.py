@@ -7,12 +7,33 @@ app = Flask(__name__)
 devices = {
     '001': {
         'mode': 0,
-        'description': 'LED Array',
+        'description': '?',
         'port': 5000,
         'last_seen': None,
         'ip': None
     },
-    # Add more devices as needed
+    '002': {
+        'mode': 0,
+        'description': '?',
+        'port': 5001,
+        'last_seen': None,
+        'ip': None
+    },
+    '003': {
+        'mode': 0,
+        'description': '?',
+        'port': 5002,
+        'last_seen': None,
+        'ip': None
+    },
+    '004': {
+        'mode': 0,
+        'description': '?',
+        'port': 5003,
+        'last_seen': None,
+        'ip': None
+    },
+    
 }
 
 COMMAND_MAP = {
