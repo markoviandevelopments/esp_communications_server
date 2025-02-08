@@ -1,81 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>I <3 PSB! </title>
-    
-        <!-- Link to manifest.json -->
-        <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
-            
-        <!-- Theme color for mobile browsers -->
-        <meta name="theme-color" content="#00FF41">
-            
-        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    </head>
-    <body>
-        <div class="container">
-            <h1>Don't Panic!</h1>
-            <p>Set the Digital LEDs Mode below and always carry a towel.</p>
-            
-            <form method="POST">
-                <label for="mode">Please Select a Mode: </label>
-                <select id="mode" name="mode" required>
-                    <option value="0">Color Strobe</option>
-                    <option value="1">Redbow Flow</option>
-                    <option value="2">Rainbow Flow</option>
-                    <option value="3">Valentine Effect</option>
-                    <option value="4">Candle Glow</option>
-                    <option value="5">Pink Flows</option>
-                    <option value="6">Preston's Favorite</option>
-                    <option value="7">Heart Waves</option>
-                    <option value="8">Love Grows</option>
-                    <option value="9">Cupids Arrow</option>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP LED Controller</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        form { background: #f4f4f4; padding: 20px; border-radius: 5px; }
+        .form-group { margin-bottom: 15px; }
+        select, button { padding: 8px; font-size: 16px; }
+        .message { color: green; margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ESP Device Controller</h1>
+        
+        <form method="POST">
+            <div class="form-group">
+                <label>Select Devices:</label><br>
+                <select name="devices" multiple size="4">
+                    <option value="all">All Devices</option>
+                    {% for dev_id, details in devices.items() %}
+                        <option value="{{ dev_id }}">{{ dev_id }} ({{ details.description }})</option>
+                    {% endfor %}
                 </select>
-                <button type="submit">Submit</button>
-            </form>
-    
+            </div>
+            
+            <div class="form-group">
+                <label>Select Mode:</label>
+                <select name="mode" required>
+                    {% for mode, name in command_map.items() %}
+                        <option value="{{ mode }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <button type="submit">Update Selected Devices</button>
+            
             {% if message %}
                 <p class="message">{{ message }}</p>
             {% endif %}
-            <!-- Hitchhiker's Guide Themed Toad -->
-            <div class="image-container">
-                <img src="{{ url_for('static', filename='hitchhikers_toad.jpg') }}" alt="Hitchhiker's Guide Toad">
-                <p class="caption">A wise intergalactic toad, ready to travel the stars. 🛸</p>
-            </div>
-        </div>
+        </form>
 
-        <h2>ESP Table</h2>
-
+        <h2>Device Status</h2>
         <table>
             <thead>
                 <tr>
                     <th>ESP ID</th>
                     <th>Status</th>
-                    <th>Mode</th>
+                    <th>Current Mode</th>
                     <th>Port</th>
                     <th>Description</th>
                 </tr>
             </thead>
             <tbody>
+                {% for dev_id, details in devices.items() %}
                 <tr>
-                    <td>...</td>
-                    <td>...</td>
-                    <td>...</td>
-                    <td>4999</td>
-                    <td>Front End Server</td>
+                    <td>{{ dev_id }}</td>
+                    <td>{{ details.status }}</td>
+                    <td>{{ command_map[details.mode] }}</td>
+                    <td>{{ details.port }}</td>
+                    <td>{{ details.description }}</td>
                 </tr>
-                <tr>
-                    <td>001</td>
-                    <td>Inactive</td>
-                    <td>Maintenance</td>
-                    <td>5000</td>
-                    <td>LED Array</td>
-                </tr>
-                <!-- Add more rows as needed -->
+                {% endfor %}
             </tbody>
         </table>
-
-        <span id="answer">42.1</span>
-    </body>
+    </div>
+</body>
 </html>

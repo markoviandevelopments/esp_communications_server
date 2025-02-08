@@ -1,98 +1,67 @@
-from flask import Flask, request, abort, redirect
+from flask import Flask, request, abort, render_template, redirect, url_for
 
 app = Flask(__name__)
 
-# Global settings for LED control
-BLINK_MODE = 1        # 0 = none, 1 = SLOW, 2 = FAST, 3 = VALENTINE, etc.
-MATRIX_MODE = 0       # 0 = mirror strips, 1 = independent matrix command
-MATRIX_COMMAND = "SLOW"  # Default command for matrix when in independent mode
+# Store modes for all ESP devices and their descriptions
+devices = {
+    '001': {'mode': 0, 'description': 'LED Array', 'status': 'inactive', 'port': 5000},
+    '002': {'mode': 0, 'description': 'Matrix Panel', 'status': 'inactive', 'port': 5001},
+    # Add more devices as needed
+}
 
-def get_strip_command(mode):
-    """
-    Maps the integer blink mode to its corresponding command string.
-    """
-    if mode == 2:
-        return "FAST"
-    elif mode == 1:
-        return "SLOW"
-    elif mode == 3:
-        return "VALENTINE"
-    elif mode == 4:
-        return "CANDLE"
-    elif mode == 5:
-        return "PINKWAVES"
-    elif mode == 6:
-        return "FIGHTKAMPF"
-    elif mode == 7:
-        return "HEARTWAVE"
-    elif mode == 8:
-        return "ROMPULSE"
-    elif mode == 9:
-        return "CUPIDSARROW"
-    else:
-        return ""  # BLINK_MODE == 0 returns an empty command
+COMMAND_MAP = {
+    0: "NONE",
+    1: "SLOW",
+    2: "FAST",
+    3: "VALENTINE",
+    4: "CANDLE",
+    5: "PINKWAVES",
+    6: "FIGHTKAMPF",
+    7: "HEARTWAVE",
+    8: "ROMPULSE",
+    9: "CUPIDSARROW"
+}
 
-@app.route('/', methods=['GET'])
-def serve_command():
-    """
-    Main endpoint that returns a command based on the device type.
-    ESP‑01 devices should poll with a URL parameter:
-      ?device=strip  (for LED strip)
-      ?device=matrix (for matrix panels)
-      
-    Optionally, a query parameter 'mode' (an integer 0–9) can update the BLINK_MODE for strips.
-    """
-    global BLINK_MODE, MATRIX_MODE, MATRIX_COMMAND
-
-    # Determine which device is requesting a command.
-    device = request.args.get('device', 'strip').lower()
-
-    # If a 'mode' parameter is provided and the device is a strip, update BLINK_MODE.
-    mode_param = request.args.get('mode')
-    if mode_param is not None and device == 'strip':
-        try:
-            new_mode = int(mode_param)
-            if new_mode in (0, 1, 2, 3, 4, 5, 6, 7, 8, 9):
-                BLINK_MODE = new_mode
-            else:
-                abort(400, "Invalid mode. Use 0 (none), 1 (slow), 2 (fast), 3 (valentine), 4 (candle glow), 5 (pink waves), 6 (fightkampf), 7 (heart wave), 8 (romantic pulse), or 9 (cupids arrow).")
-        except ValueError:
-            abort(400, "Mode must be an integer.")
-
-    # Select the command based on device type.
-    if device == 'strip':
-        command = get_strip_command(BLINK_MODE)
-    elif device == 'matrix':
-        # In mirror mode, the matrix follows the same command as the LED strips.
-        # In independent mode, use MATRIX_COMMAND.
-        if MATRIX_MODE == 0:
-            command = get_strip_command(BLINK_MODE)
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    message = None
+    if request.method == 'POST':
+        selected_devices = request.form.getlist('devices')
+        mode = request.form.get('mode')
+        
+        if not mode.isdigit() or int(mode) not in COMMAND_MAP:
+            message = "Invalid mode selection"
         else:
-            command = MATRIX_COMMAND
-    else:
-        abort(400, "Invalid device type. Use 'strip' or 'matrix'.")
+            mode = int(mode)
+            if 'all' in selected_devices:
+                for dev in devices:
+                    devices[dev]['mode'] = mode
+                message = f"All devices updated to {COMMAND_MAP[mode]} mode"
+            else:
+                updated_devices = []
+                for dev_id in selected_devices:
+                    if dev_id in devices:
+                        devices[dev_id]['mode'] = mode
+                        updated_devices.append(dev_id)
+                message = f"Updated {', '.join(updated_devices)} to {COMMAND_MAP[mode]} mode"
+    
+    return render_template('index.html', 
+                         devices=devices,
+                         command_map=COMMAND_MAP,
+                         message=message)
 
-    return command + "\n", 200
+@app.route('/device/<device_id>', methods=['GET'])
+def get_device_command(device_id):
+    if device_id not in devices:
+        abort(404)
+    return f"{COMMAND_MAP[devices[device_id]['mode']]}\n"
 
-@app.route('/control/matrix', methods=['POST'])
-def toggle_matrix_mode():
-    """
-    Toggle the matrix mode between mirroring the LED strips (0) or using an independent command (1).
-    """
-    global MATRIX_MODE
-    MATRIX_MODE = 1 - MATRIX_MODE  # Toggle between 0 and 1
-    return redirect('/')
-
-@app.route('/set-matrix', methods=['POST'])
-def set_matrix_command():
-    """
-    Set an independent command for the matrix device. (Only used when MATRIX_MODE is 1.)
-    Expects a form parameter named 'command'.
-    """
-    global MATRIX_COMMAND
-    MATRIX_COMMAND = request.form.get('command', 'SLOW')
-    return redirect('/')
+@app.route('/update_status/<device_id>/<status>', methods=['POST'])
+def update_status(device_id, status):
+    if device_id in devices and status in ['active', 'inactive']:
+        devices[device_id]['status'] = status
+        return f"Status updated for {device_id}"
+    abort(400)
 
 if __name__ == '__main__':
-    # Run the server on all interfaces so that it is accessible externally.
     app.run(host='0.0.0.0', port=4999)
