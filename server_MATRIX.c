@@ -9,10 +9,7 @@
 #if DEVICE_TYPE
 #define MATRIX_WIDTH 32
 #define MATRIX_HEIGHT 8
-#define NUM_LEDS 256
-#else
 #define NUM_LEDS 300
-#endif
 
 // LED Strip Configuration (AFTER NUM_LEDS is defined)
 #define LED_PIN 2 // Use GPIO2 for data signal
