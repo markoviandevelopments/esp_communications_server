@@ -65,8 +65,6 @@ void loop() {
                 bluePulses();
             } else if (payload.equalsIgnoreCase("VALENTINE")) {
                 valentineEffect();
-            } else if (payload.equalsIgnoreCase("CANDLE")) {
-                candleGlowEffect();
             } else if (payload.equalsIgnoreCase("PINKWAVES")) {
                 playfulPinkWaves(50);
             } else if (payload.equalsIgnoreCase("FIGHTKAMPF")) {
@@ -127,20 +125,6 @@ void valentineEffect() {
         setStripColor(strip.Color(r, 0, (uint8_t)(50 * factor)));
         strip.show();
         delay(durations[i % 4]);
-    }
-}
-
-void candleGlowEffect(int cycles = 100) {
-    uint8_t minBrightness = 80;
-    uint8_t maxBrightness = 200;
-    uint8_t r = 255, g = 50, b = 10;
-
-    for(int i=0; i<cycles; i++) {
-        int brightness = random(minBrightness, maxBrightness);
-        uint32_t color = strip.Color((r * brightness)/255, (g * brightness)/255, (b * brightness)/255);
-        setStripColor(color);
-        strip.show();
-        delay(random(100, 400));
     }
 }
 
