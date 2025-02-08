@@ -173,40 +173,42 @@ void fight_kampfen() {
     delay(speed);
 }
 
-void beatingHeartWave() {
-    uint32_t heartColor = strip.Color(255, 20, 100); // Romantic pink
-    const int heartSize = 7;                         // Size of the heart wave
-    const int pulseSpeed = 35;
+void beatingHeartWave()
+{
+    const int pulseSpeed = 60;
+    const float maxBrightness = 0.8; // Reduced max for better pulse effect
 
-    for (int pos = 0; pos < NUM_LEDS + heartSize; pos++) {
-        strip.clear();
+    for (int beat = 0; beat < 3; beat++)
+    { // Triple heartbeat pattern
+        float heartSize = 8.0;
+        float pulse = (beat % 2 == 0) ? 0.8 : 1.2; // Alternating strong/weak beats
 
-        // Create heart pattern with brightness curve
-        for (int i = -heartSize / 2; i <= heartSize / 2; i++) {
-            float distance = abs(i);
-            float intensity = 1.0 - (distance / (heartSize / 2.0));
-            intensity = pow(intensity, 2); // Quadratic falloff
+        for (int i = 0; i < 50; i++)
+        { // Per-beat animation cycle
+            strip.clear();
+            float throb = heartSize * (1.0 + sin(i / 8.0)) * pulse;
 
-            int ledPos = pos + i;
-            if (ledPos >= 0 && ledPos < NUM_LEDS) {
-                strip.setPixelColor(ledPos, strip.Color( 255 * intensity, 20 * intensity, 100 * intensity));
+            // Dynamic core heartbeat
+            for (int pos = 0; pos < NUM_LEDS; pos++)
+            {
+                float distance = abs(pos - NUM_LEDS / 2);
+                float intensity = maxBrightness * constrain(1.0 - distance / throb, 0, 1);
+                intensity = pow(intensity, 1.5); // Sharper falloff
+
+                // Crimson core with golden sparkles
+                if (random(100) > 95)
+                {                                                        // 5% sparkle chance
+                    strip.setPixelColor(pos, strip.Color(255, 210, 50)); // Gold sparkle
+                }
+                else
+                {
+                    strip.setPixelColor(pos, strip.Color(180 * intensity, 10 * intensity, 20 * intensity));
+                }
             }
-        }
 
-        // Add fading tail
-        for (int t = 1; t < 8; t++) {
-            int trailPos = pos - t * 2;
-            if (trailPos >= 0 && trailPos < NUM_LEDS) {
-                float trailIntensity = 1.0 - (t * 0.15);
-                strip.setPixelColor(trailPos, strip.Color(
-                                                  255 * trailIntensity,
-                                                  20 * trailIntensity,
-                                                  100 * trailIntensity));
-            }
+            strip.show();
+            delay(pulseSpeed / 2);
         }
-
-        strip.show();
-        delay(pulseSpeed);
     }
 }
 
@@ -237,38 +239,74 @@ void romanticPulse() {
     }
 }
 
-void cupidsArrow() {
-    uint32_t arrowColor = strip.Color(255, 50, 150); // Bright pink
-    const int arrowSpeed = 25;
-    const int tailLength = 15;
+void cupidsArrow()
+{
+    const int numArrows = 2;
+    const int tailLength = 10;
+    uint32_t coreColor = strip.Color(220, 40, 150); // Electric crimson
 
-    for (int pos = 0; pos < NUM_LEDS + tailLength; pos++) {
-        strip.clear();
+    for (int arrow = 0; arrow < numArrows; arrow++)
+    {
+        bool reverse = arrow % 2; // Alternate directions
 
-        // Arrow head
-        if (pos < NUM_LEDS) {
-            strip.setPixelColor(pos, arrowColor);
+        for (int pos = 0; pos < NUM_LEDS + tailLength; pos++)
+        {
+            strip.clear();
+            int actualPos = reverse ? (NUM_LEDS - pos) : pos;
+
+            // Arrowhead with plasma effect
+            if (actualPos >= 0 && actualPos < NUM_LEDS)
+            {
+                uint8_t flicker = 200 + random(55);
+                strip.setPixelColor(actualPos, strip.Color(flicker, 40 * flicker / 255, 50 * flicker / 255));
+            }
+
+            // Ionized trail
+            for (int t = 1; t < tailLength; t++)
+            {
+                int trailPos = actualPos - (reverse ? -t : t);
+                if (trailPos >= 0 && trailPos < NUM_LEDS)
+                {
+                    float intensity = 1.0 - (float)t / (tailLength * 0.8);
+                    uint8_t red = 255 * intensity;
+                    uint8_t spark = random(0, 100) < (30 * intensity) ? 255 : 0; // Random sparks
+
+                    strip.setPixelColor(trailPos, strip.Color(
+                                                      red,
+                                                      20 * intensity + spark,
+                                                      30 * intensity + spark));
+                }
+            }
+
+            // Leading shockwave
+            if (random(10) > 6)
+            { // 40% chance for shockwave
+                int wavePos = actualPos + (reverse ? -2 : 2);
+                if (wavePos >= 0 && wavePos < NUM_LEDS)
+                {
+                    strip.setPixelColor(wavePos, strip.Color(100, 10, 30));
+                }
+            }
+
+            strip.show();
+            delay(arrow % 2 ? 15 : 20); // Vary speed slightly
         }
 
-        // Sparkling tail
-        for (int i = 1; i < tailLength; i++) {
-            int trailPos = pos - i;
-            if (trailPos >= 0 && trailPos < NUM_LEDS)
+        // Impact effect
+        if (reverse)
+        {
+            for (int flash = 0; flash < 3; flash++)
             {
-                float intensity = 1.0 - (float)i / tailLength;
-                uint8_t sparkle = random(0, 2) ? 255 : 150; // Random twinkle
-                strip.setPixelColor(trailPos, strip.Color(
-                                                  255 * intensity * sparkle / 255,
-                                                  50 * intensity * sparkle / 255,
-                                                  150 * intensity * sparkle / 255));
+                strip.fill(strip.Color(255, 50, 70), 0, NUM_LEDS);
+                strip.show();
+                delay(30);
+                strip.clear();
+                strip.show();
+                delay(30);
             }
         }
-
-        strip.show();
-        delay(arrowSpeed);
     }
 }
-
 
 void setStripColor(uint32_t color) {
     for (int i = 0; i < NUM_LEDS; i++) {
