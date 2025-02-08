@@ -123,8 +123,10 @@ void loop() {
     
         String url = String(serverUrl) + "?device=" + (DEVICE_TYPE ? "matrix" : "strip");
         http.begin(client, url);  // Use the constructed URL
-    
+
+        http.setTimeout(2000);
         int httpCode = http.GET();
+        
         if (httpCode > 0) {
             String payload = http.getString();
             payload.trim();
