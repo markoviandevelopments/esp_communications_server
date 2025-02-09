@@ -81,6 +81,7 @@ void loop() {
             }
             else if (payload.equalsIgnoreCase("VALENTINE")) {
                 valentineEffect();
+            }
             else if (payload.equalsIgnoreCase("BEEMATRIX")) {
                 matrix_bee();
             }
@@ -205,7 +206,7 @@ void matrix_bee() {
     uint16_t speed = 50;
     int is_r = 0;
     int is_b = 0;
-    int rr = random(4)
+    int rr = random(4);
 
     // Bounds are 0-31 for x, and 0-7 for y
     if (rr == 0 && bee_x < 31) {
