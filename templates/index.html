@@ -1,105 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>ESP LED Controller</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-        <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
-    </head>
-    <body>
-        <div class="container">
-            <div class="guide-message">
-                <p>Your ESP LED Control Guide<br>
-                    <small>Section 3A: Light Manipulation</small>
-                </p>
-            </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP LED Controller</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="guide-message">
+            <p>Your ESP LED Control Guide<br>
+                <small>Section 3A: Light Manipulation</small>
+            </p>
+        </div>
 
-            <div class="form-group" id="colorPickerGroup" style="display: none;">
-                <label>Select Color:</label>
-                <div id="colorPicker"></div>
-                <input type="hidden" id="selectedColor" name="color" value="#ff0000">
+        <div class="form-group" id="colorPickerGroup" style="display: none;">
+            <label>Select Color:</label>
+            <div id="colorPicker"></div>
+            <input type="hidden" id="selectedColor" name="color" value="#ff0000">
+        </div>
+        
+        <form method="POST">
+            <div class="form-group">
+                <label>Select Devices:</label><br>
+                <select name="devices" multiple size="4">
+                    <option value="all">All Devices</option>
+                    {% for dev_id, details in devices.items() %}
+                        <option value="{{ dev_id }}">{{ dev_id }} ({{ details.description }})</option>
+                    {% endfor %}
+                </select>
             </div>
             
-            <form method="POST">
-                <div class="form-group">
-                    <label>Select Devices:</label><br>
-                    <select name="devices" multiple size="4">
-                        <option value="all">All Devices</option>
-                        {% for dev_id, details in devices.items() %}
-                            <option value="{{ dev_id }}">{{ dev_id }} ({{ details.description }})</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Select Mode:</label>
-                    <select name="mode" required>
-                        {% for mode, name in command_map.items() %}
-                            <option value="{{ mode }}">{{ name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                
-                <button type="submit">Update Selected Devices</button>
-                
-                {% if message %}
-                    <p class="message">{{ message }}</p>
-                {% endif %}
-            </form>
-
-            <h2>Device Status</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ESP ID</th>
-                        <th>Status</th>
-                        <th>Current Mode</th>
-                        <th>Last Seen</th>
-                        <th>IP Address</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for dev_id, details in devices.items() %}
-                    <tr>
-                        <td>{{ dev_id }}</td>
-                        <td class="{{ 'active' if details.last_seen | is_active == 'Active' else 'inactive' }}">
-                            {{ details.last_seen | is_active }}
-                        </td>
-                        <td>{{ command_map[details.mode] }}</td>
-                        <td>
-                            {% if details.last_seen %}
-                                {{ details.last_seen | int | timestamp_to_time }}
-                            {% else %}
-                                Never
-                            {% endif %}
-                        </td>
-                        <td>{{ details.ip or 'Unknown' }}</td>
-                        <td>{{ details.description }}</td>
-                    </tr>
+            <div class="form-group">
+                <label>Select Mode:</label>
+                <select name="mode" required>
+                    {% for mode, name in command_map.items() %}
+                        <option value="{{ mode }}">{{ name }}</option>
                     {% endfor %}
-                </tbody>
-            </table>
-
-            <div class="vogon-warning">
-                <img src="//i.imgur.com/YqQZ3.png" alt="Vogon Alert" style="height: 20px;">
-                <span>No poetry detected - systems nominal</span>
+                </select>
             </div>
+            
+            <button type="submit">Update Selected Devices</button>
+            
+            {% if message %}
+                <p class="message">{{ message }}</p>
+            {% endif %}
+        </form>
 
+        <h2>Device Status</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ESP ID</th>
+                    <th>Status</th>
+                    <th>Current Mode</th>
+                    <th>Last Seen</th>
+                    <th>IP Address</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for dev_id, details in devices.items() %}
+                <tr>
+                    <td>{{ dev_id }}</td>
+                    <td class="{{ 'active' if details.last_seen | is_active == 'Active' else 'inactive' }}">
+                        {{ details.last_seen | is_active }}
+                    </td>
+                    <td>{{ command_map[details.mode] }}</td>
+                    <td>
+                        {% if details.last_seen %}
+                            {{ details.last_seen | int | timestamp_to_time }}
+                        {% else %}
+                            Never
+                        {% endif %}
+                    </td>
+                    <td>{{ details.ip or 'Unknown' }}</td>
+                    <td>{{ details.description }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="vogon-warning">
+            <img src="//i.imgur.com/YqQZ3.png" alt="Vogon Alert" style="height: 20px;">
+            <span>No poetry detected - systems nominal</span>
         </div>
-        <script>
-            // Initialize color picker
-            var colorPicker = new iro.ColorPicker('#colorPicker', { width: 150 });
-            colorPicker.on('color:change', function (color) {
-                document.getElementById('selectedColor').value = color.hexString;
-            });
 
-            // Show/hide color picker based on mode selection
-            document.querySelector('select[name="mode"]').addEventListener('change', function (e) {
-                var colorGroup = document.getElementById('colorPickerGroup');
-                colorGroup.style.display = (e.target.value === '10') ? 'block' : 'none';
-            });
-        </script>
-    </body>
+    </div>
+    <script>
+        // Initialize color picker
+        var colorPicker = new iro.ColorPicker('#colorPicker', { width: 150 });
+        colorPicker.on('color:change', function (color) {
+            document.getElementById('selectedColor').value = color.hexString;
+        });
+
+        // Show/hide color picker based on mode selection
+        document.querySelector('select[name="mode"]').addEventListener('change', function (e) {
+            var colorGroup = document.getElementById('colorPickerGroup');
+            colorGroup.style.display = (e.target.value === '10') ? 'block' : 'none';
+        });
+    </script>
+</body>
 </html>

@@ -40,6 +40,13 @@ devices = {
         'last_seen': None,
         'ip': None
     },    
+    '006': {
+        'mode': 0,
+        'description': '?',
+        'port': 5006,
+        'last_seen': None,
+        'ip': None
+    },    
 }
 
 COMMAND_MAP = {
