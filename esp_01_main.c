@@ -23,6 +23,47 @@ uint32_t pulseColor = strip.Color(0, 0, 0);
 int pulseBrightness = 0;
 int pulseDirection = 1;
 
+#define HEIGHT 8
+#define WIDTH_P 6
+#define WIDTH_PLUS 5
+#define WIDTH_W 7
+
+// Define the letter "P"
+int letter_P[HEIGHT][WIDTH_P] = {
+    {1, 1, 1, 1, 0, 0},
+    {1, 0, 0, 1, 0, 0},
+    {1, 0, 0, 1, 0, 0},
+    {1, 1, 1, 1, 0, 0},
+    {1, 0, 0, 0, 0, 0},
+    {1, 0, 0, 0, 0, 0},
+    {1, 0, 0, 0, 0, 0},
+    {1, 0, 0, 0, 0, 0}
+};
+
+// Define the letter "+"
+int letter_PLUS[HEIGHT][WIDTH_PLUS] = {
+    {0, 0, 1, 0, 0},
+    {0, 0, 1, 0, 0},
+    {0, 0, 1, 0, 0},
+    {1, 1, 1, 1, 1},
+    {0, 0, 1, 0, 0},
+    {0, 0, 1, 0, 0},
+    {0, 0, 1, 0, 0},
+    {0, 0, 0, 0, 0}
+};
+
+// Define the letter "W"
+int letter_W[HEIGHT][WIDTH_W] = {
+    {1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 1, 0, 0, 1},
+    {1, 0, 0, 1, 0, 0, 1},
+    {1, 0, 1, 0, 1, 0, 1},
+    {1, 0, 1, 0, 1, 0, 1},
+    {1, 1, 0, 0, 0, 1, 1},
+    {1, 0, 0, 0, 0, 0, 1}
+};
+
 void setup() {
     Serial.begin(115200);
     strip.begin();
@@ -99,6 +140,9 @@ void loop() {
             }
             else if (payload.equalsIgnoreCase("BEEMATRIX")) {
                 matrix_bee();
+            }
+            else if (payload.equalsIgnoreCase("TEXTMATRIX")) {
+                matrix_text();
             }
             else {
                 setRandomColor();
@@ -200,6 +244,18 @@ void fight_kampfen() {
     delay(speed);
 }
 
+int get_index(int x_in, int y_in) {
+    int index_out;
+    if (x_in % 2 == 0) {
+        index_out = y_in + x_in * 8;
+    }
+    else {
+        index_out = (7 - y_in) + x_in * 8;
+    }
+
+    return index_out;
+}
+
 // A bee will move via Brownian Motion across an 8x32 array
 void matrix_bee() {
     uint8_t waveSize = 20;
@@ -223,11 +279,12 @@ void matrix_bee() {
     }
 
     for (int i = 0; i < NUM_LEDS; i++) {
+        int bee_index;
         if (bee_x % 2 == 0) {
-            int bee_index = bee_y + bee_x * 8;
+            bee_index = bee_y + bee_x * 8;
         }
         else {
-            int bee_index = (7 - bee_y) + bee_x * 8;
+            bee_index = (7 - bee_y) + bee_x * 8;
         }
         
         if (i == bee_index) {
@@ -247,6 +304,57 @@ void matrix_bee() {
     strip.show();
     delay(speed);
 }
+
+void matrix_text() {
+    uint8_t waveSize = 20;
+    uint16_t speed = 1000;
+    int is_r = 0;
+    int is_b = 0;
+    int index;
+    int text_in;
+
+    int is_on[300] = {0};
+
+    for (int x=0; x<32;x++) {
+        for (int y=0;y<8;y++) {
+            index = get_index(x, y);
+            if (x < WIDTH_P) {
+                is_on[index] = letter_P[y][x];
+            }
+            else if (x < WIDTH_P + WIDTH_PLUS) {
+                is_on[index] = letter_PLUS[y][x - WIDTH_P];
+            }
+            else if (x < WIDTH_P + WIDTH_PLUS + WIDTH_W) {
+                is_on[index] = letter_W[y][x - WIDTH_P - WIDTH_PLUS];
+            }
+            else {
+                is_on[index] = 0;
+            }
+        }
+    }
+
+    for (int i = 0; i < NUM_LEDS; i++) {
+        
+        if (is_on[i] == 1) {
+            is_r = 1;
+            is_b = 0;
+        }
+        else {
+            is_r = 0;
+            is_b = 1;
+        }
+        uint8_t r = (uint8_t)(255 * is_r);
+        uint8_t g = (uint8_t)(255 * is_r);
+        uint8_t b = (uint8_t)(255 * is_b);
+
+        strip.setPixelColor(i, strip.Color(r, g, b));
+    }
+    strip.show();
+    delay(speed);
+}
+
+
+
 
 void beatingHeartWave()
 {
