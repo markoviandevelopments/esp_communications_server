@@ -85,10 +85,10 @@ def index():
     if request.method == 'POST':
         selected_devices = request.form.getlist('devices')
         mode = request.form.get('mode')
-        color = request.form.get('color', '#DC2896').strip()  # Ensure a default valid color
+        color = request.form.get('color', '#DC2896').strip()
 
-        print(f"DEBUG: Received mode={mode}, color={color}, devices={selected_devices}")
-
+        print(f"DEBUG: Mode={mode}, Color={color}, Devices={selected_devices}")
+        
     if mode == '10':  # COLORPULSE mode
         if not color.startswith('#'):
             color = '#' + color
