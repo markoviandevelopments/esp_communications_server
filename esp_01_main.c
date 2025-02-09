@@ -64,6 +64,8 @@ int letter_W[HEIGHT][WIDTH_W] = {
     {1, 0, 0, 0, 0, 0, 1}
 };
 
+int text_sroll_x = 0;
+
 void setup() {
     Serial.begin(115200);
     strip.begin();
@@ -318,14 +320,14 @@ void matrix_text() {
     for (int x=0; x<32;x++) {
         for (int y=0;y<8;y++) {
             index = get_index(x, y);
-            if (x < WIDTH_P) {
-                is_on[index] = letter_P[y][x];
+            if ((x - text_sroll_x) < WIDTH_P && (x - text_sroll_x) >= 0 ) {
+                is_on[index] = letter_P[y][(x - text_sroll_x)];
             }
-            else if (x < WIDTH_P + WIDTH_PLUS + 1) {
+            else if ((x - text_sroll_x) < WIDTH_P + WIDTH_PLUS + 1 && (x - text_sroll_x) >= WIDTH_P + 1) {
                 is_on[index] = letter_PLUS[y][x - WIDTH_P - 1];
             }
-            else if (x < WIDTH_P + WIDTH_PLUS + WIDTH_W + 2) {
-                is_on[index] = letter_W[y][x - WIDTH_P - WIDTH_PLUS - 2];
+            else if ((x - text_sroll_x) < WIDTH_P + WIDTH_PLUS + WIDTH_W + 2 && (x - text_sroll_x) >= WIDTH_P + WIDTH_PLUS + 2) {
+                is_on[index] = letter_W[y][(x - text_sroll_x) - WIDTH_P - WIDTH_PLUS - 2];
             }
             else {
                 is_on[index] = 0;
@@ -350,6 +352,7 @@ void matrix_text() {
         strip.setPixelColor(i, strip.Color(r, g, b));
     }
     strip.show();
+    text_sroll_x = (text_sroll_x + 1) % 32;
     delay(speed);
 }
 
