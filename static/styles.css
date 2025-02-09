@@ -134,11 +134,3 @@ button:hover {
     animation: guidePulse 20s infinite;
     pointer-events: none;
 }
-
-.vogon-warning {
-    margin-top: 1rem;
-    padding: 0.5rem;
-    border: 1px dashed var(--alert-color);
-    color: var(--vogon-poetry);
-    font-size: 0.8rem;
-}
