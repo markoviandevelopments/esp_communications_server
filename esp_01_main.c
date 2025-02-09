@@ -16,6 +16,9 @@ const char *serverUrl = "http://10.1.10.79:4999/device/001";
 
 int fight_kampf[NUM_LEDS];  // For FIGHTKAMPF effect
 
+int bee_x = 16;
+int bee_y = 4;
+
 uint32_t pulseColor = strip.Color(0, 0, 0);
 int pulseBrightness = 0;
 int pulseDirection = 1;
@@ -78,6 +81,8 @@ void loop() {
             }
             else if (payload.equalsIgnoreCase("VALENTINE")) {
                 valentineEffect();
+            else if (payload.equalsIgnoreCase("BEEMATRIX")) {
+                matrix_bee();
             }
             else {
                 setRandomColor();
@@ -174,6 +179,48 @@ void fight_kampfen() {
         if (random(100) == 0 && i > 0) {
             fight_kampf[i] = fight_kampf[i - 1];
         }
+    }
+    strip.show();
+    delay(speed);
+}
+
+// A bee will move via Brownian Motion across an 8x32 array
+void matrix_bee() {
+    uint8_t waveSize = 20;
+    uint16_t speed = 50;
+    int is_r = 0;
+    int is_b = 0;
+    int rr = random(4)
+
+    // Bounds are 0-31 for x, and 0-7 for y
+    if (rr == 0 && bee_x < 31) {
+        bee_x++;
+    } 
+    else if (rr == 1 && bee_x > 0) {
+        bee_x--;
+    }
+    else if (rr == 2 && bee_y < 7) {
+        bee_y++;
+    }
+    else if (rr == 3 && bee_y > 0) {
+        bee_y--;
+    }
+
+    for (int i = 0; i < NUM_LEDS; i++) {
+        int bee_index = bee_y + bee_x * 8;
+        if (i == bee_index) {
+            is_r = 1;
+            is_b = 0;
+        }
+        else {
+            is_r = 0;
+            is_b = 1;
+        }
+        uint8_t r = (uint8_t)(255 * is_r);
+        uint8_t g = (uint8_t)(255 * is_r);
+        uint8_t b = (uint8_t)(255 * is_b);
+
+        strip.setPixelColor(i, strip.Color(r, g, b));
     }
     strip.show();
     delay(speed);
