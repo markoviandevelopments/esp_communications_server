@@ -77,7 +77,7 @@ def index():
     if request.method == 'POST':
         selected_devices = request.form.getlist('devices')
         mode = request.form.get('mode')
-        color = request.form.get('color', '#0FF0000')
+        color = request.form.get('color', '#FF0000')
 
         if mode == '10':  # COLORPULSE mode
             hex_color = color.lstrip('#')
