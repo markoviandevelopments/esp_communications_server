@@ -155,7 +155,7 @@ void valentineEffect() {
     }
 }
 
-void playfulPinkWaves(int wait) {
+void playfulPinkWaves(int wait=1000) {
     for (int j = 0; j < 256; j++) { // Animation loop
         for (int i = 0; i < NUM_LEDS; i++) {
             // Create a wave effect with a sine function for smooth rolling motion
