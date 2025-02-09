@@ -345,7 +345,7 @@ void matrix_text() {
         }
         else {
             is_r = 0;
-            is_b = 1;
+            is_b = 0;
         }
         uint8_t r = (uint8_t)(255 * is_r);
         uint8_t g = (uint8_t)(255 * is_r);
@@ -356,7 +356,7 @@ void matrix_text() {
     strip.show();
 
     text_sroll_x += text_sroll_x_dir;
-    if (text_sroll_x >= 31 - 2 - WIDTH_P - WIDTH_PLUS - WIDTH_W) {
+    if (text_sroll_x > 31 - 2 - WIDTH_P - WIDTH_PLUS - WIDTH_W) {
         text_sroll_x_dir = -1;
     }
     else if (text_sroll_x <= 0) {
