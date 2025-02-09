@@ -203,7 +203,7 @@ void fight_kampfen() {
 // A bee will move via Brownian Motion across an 8x32 array
 void matrix_bee() {
     uint8_t waveSize = 20;
-    uint16_t speed = 50;
+    uint16_t speed = 1000;
     int is_r = 0;
     int is_b = 0;
     int rr = random(4);
