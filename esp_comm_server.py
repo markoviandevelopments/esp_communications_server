@@ -10,42 +10,48 @@ devices = {
         'description': '?',
         'port': 5000,
         'last_seen': None,
-        'ip': None
+        'ip': None, 
+        'color': '#FF0000'
     },
     '002': {
         'mode': 0,
         'description': '?',
         'port': 5001,
         'last_seen': None,
-        'ip': None
+        'ip': None, 
+        'color': '#FF0000'
     },
     '003': {
         'mode': 0,
         'description': '?',
         'port': 5002,
         'last_seen': None,
-        'ip': None
+        'ip': None, 
+        'color': '#FF0000'
     },
     '004': {
         'mode': 0,
         'description': '?',
         'port': 5003,
         'last_seen': None,
-        'ip': None
+        'ip': None, 
+        'color': '#FF0000'
     },
     '005': {
         'mode': 0,
         'description': '?',
         'port': 5004,
         'last_seen': None,
-        'ip': None
+        'ip': None, 
+        'color': '#FF0000'
     },    
     '006': {
         'mode': 0,
         'description': '?',
         'port': 5006,
         'last_seen': None,
-        'ip': None
+        'ip': None, 
+        'color': '#FF0000'
     },    
 }
 
@@ -84,20 +90,20 @@ def index():
         print(f"DEBUG: Received mode={mode}, color={color}, devices={selected_devices}")
 
         if mode == '10':  # COLORPULSE mode
-            hex_color = color.lstrip('#')
+            color = request.form.get('color', '#FF0000').strip()
+            if not color.startswith('#'):
+                color = '#' + color
+            # Validate hex color
+            if len(color) != 7 or any(c not in '0123456789ABCDEFabcdef' for c in color[1:]):
+                color = '#FF0000'  # Reset to default if invalid
+            hex_color = color.lstrip('#').upper()  # Ensure uppercase without #
 
-            # Ensure valid 6-character hex
-            if len(hex_color) != 6 or not all(c in '0123456789ABCDEFabcdef' for c in hex_color):
-                print(f"ERROR: Invalid color received: {hex_color}")
-                hex_color = "FF0000"  # Default to red
-
-            print(f"Processed color: #{hex_color}")
-
+            # Update devices with the validated color
             for dev_id in selected_devices:
                 if dev_id in devices:
-                    devices[dev_id]['color'] = f"#{hex_color}"  # Store correctly formatted color
+                    devices[dev_id]['color'] = f"#{hex_color}"
 
-        if not mode.isdigit() or int(mode) not in COMMAND_MAP:
+        if mode is None or not mode.isdigit() or int(mode) not in COMMAND_MAP:
             message = "Invalid mode selection"
         else:
             mode = int(mode)

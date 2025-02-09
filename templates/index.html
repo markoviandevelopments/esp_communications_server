@@ -38,12 +38,11 @@
                     </select>
                 </div>
                 
-                
                 <div class="form-group">
                     <label>Select Mode:</label>
                     <select name="mode" required>
                         {% for mode, name in command_map.items() %}
-                        <option value="{{ mode }}" {% if request.method == 'POST' and mode|string == request.form.get('mode') %}selected{% endif
+                        <option value="{{ mode }}" {% if request.method=='POST' and request.form.get('mode')==mode|string %}selected{% endif
                             %}>
                             {{ name }}
                         </option>
@@ -103,30 +102,27 @@
 
         </div>
         <script>
+            function toggleColorPicker() {
+                const modeSelect = document.querySelector('select[name="mode"]');
+                const colorPickerGroup = document.getElementById('colorPickerGroup');
+                colorPickerGroup.style.display = (modeSelect.value === '10') ? 'block' : 'none';
+            }
+
+            // Initial check on page load
+            document.addEventListener('DOMContentLoaded', toggleColorPicker);
+
+            // Add event listener for mode change
+            document.querySelector('select[name="mode"]').addEventListener('change', toggleColorPicker);
+
             var colorPicker = new iro.ColorPicker('#colorPicker', { width: 150 });
 
             colorPicker.on('color:change', function (color) {
-                let hexColor = color.hexString.toUpperCase(); // Convert to uppercase
-                hexColor = hexColor.replace('#', ''); // Remove leading `#`
-
-                // Ensure it's a valid 6-character hex string
-                if (hexColor.length !== 6) {
-                    console.error("ERROR: Invalid color received:", hexColor);
-                    return;
-                }
-
+                let hexColor = color.hexString.toUpperCase().replace('#', '');
                 document.getElementById('selectedColor').value = `#${hexColor}`;
-                console.log("Color selected:", `#${hexColor}`);
             });
 
             document.querySelector('form').addEventListener('submit', function () {
                 let colorValue = document.getElementById('selectedColor').value;
-
-                if (colorValue.length !== 7 || !colorValue.startsWith('#')) {
-                    console.error("ERROR: Invalid color submitted:", colorValue);
-                    return;
-                }
-
                 console.log("Submitting color:", colorValue);
             });
         </script>
