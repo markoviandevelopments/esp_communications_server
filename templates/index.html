@@ -1,130 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>ESP LED Controller</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-        <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
-    </head>
-    <body>
-        <div class="container">
-            <!-- Don't Panic Banner -->
-            <div class="dont-panic">DON'T PANIC</div>
-            
-            <!-- Babel Fish Loader -->
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Babelfish_icon.png/640px-Babelfish_icon.png"
-                class="babel-fish" alt="Babel Fish">
 
-            <div class="guide-message">
-                <h1>Your ESP LED Control Guide</h1>
-                    <small>Section 3A: Light Manipulation</small>
-            </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP LED Controller</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
+</head>
 
-            <div class="form-group" id="colorPickerGroup" style="display: none;">
-                <label>Select Color:</label>
-                <div id="colorPicker"></div>
-                <input type="hidden" id="selectedColor" name="color" value="#ff0000">
-            </div>
-            
-            <form method="POST">
-                <div class="form-group">
-                    <label>Select Devices:</label><br>
-                    <select name="devices" multiple size="4">
-                        <option value="all">All Devices</option>
-                        {% for dev_id, details in devices.items() %}
-                            <option value="{{ dev_id }}">{{ dev_id }} ({{ details.description }})</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Select Mode:</label>
-                    <select name="mode" required>
-                        {% for mode, name in command_map.items() %}
-                        <option value="{{ mode }}" {% if request.method=='POST' and request.form.get('mode')==mode|string %}selected{% endif
-                            %}>
-                            {{ name }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                
-                <button type="submit">Update Selected Devices</button>
-                
-                {% if message %}
-                    <p class="message">{{ message }}</p>
-                {% endif %}
-            </form>
+<body>
+    <div class="container">
+        <!-- Don't Panic Banner -->
+        <div class="dont-panic">DON'T PANIC</div>
 
-            <h2>Device Status</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ESP ID</th>
-                        <th>Status</th>
-                        <th>Current Mode</th>
-                        <th>Last Seen</th>
-                        <th>IP Address</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for dev_id, details in devices.items() %}
-                    <tr>
-                        <td>{{ dev_id }}</td>
-                        <td class="{{ 'active' if details.last_seen | is_active == 'Active' else 'inactive' }}">
-                            {{ details.last_seen | is_active }}
-                        </td>
-                        <td>{{ command_map[details.mode] }}</td>
-                        <td>
-                            {% if details.last_seen %}
-                                {{ details.last_seen | int | timestamp_to_time }}
-                            {% else %}
-                                Never
-                            {% endif %}
-                        </td>
-                        <td>{{ details.ip or 'Unknown' }}</td>
-                        <td>{{ details.description }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <!-- Babel Fish Loader -->
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Babelfish_icon.png/640px-Babelfish_icon.png"
+            class="babel-fish" alt="Babel Fish">
 
-            <!-- Towel Status -->
-            <div class="towel-status">Towel Status: <strong>Carried ✅</strong></div>
-            
-            <!-- Vogon Poetry Alert -->
-            <div class="vogon-warning">
-                <img src="//i.imgur.com/YqQZ3.png" alt="Vogon Alert" style="height: 20px;">
-                <span>No poetry detected - systems nominal</span>
-            </div>
-
+        <div class="guide-message">
+            <h1>Your ESP LED Control Guide</h1>
+            <small>Section 3A: Light Manipulation</small>
         </div>
-        <script>
-            function toggleColorPicker() {
-                const modeSelect = document.querySelector('select[name="mode"]');
-                const colorPickerGroup = document.getElementById('colorPickerGroup');
-                colorPickerGroup.style.display = (modeSelect.value === '10') ? 'block' : 'none';
-            }
 
-            // Initial check on page load
-            document.addEventListener('DOMContentLoaded', toggleColorPicker);
+        <!-- Color Picker Group -->
+        <div class="form-group" id="colorPickerGroup" style="display: none;">
+            <label>Select Color:</label>
+            <div id="colorPicker"></div>
+            <input type="hidden" id="selectedColor" name="color" value="#ff0000">
+            <p id="currentColor">Selected Color: #FF0000</p>
+        </div>
 
-            // Add event listener for mode change
-            document.querySelector('select[name="mode"]').addEventListener('change', toggleColorPicker);
+        <form method="POST">
+            <!-- Device Selection -->
+            <div class="form-group">
+                <label>Select Devices:</label><br>
+                <select name="devices" multiple size="4">
+                    <option value="all">All Devices</option>
+                    {% for dev_id, details in devices.items() %}
+                    <option value="{{ dev_id }}">{{ dev_id }} ({{ details.description }})</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-            var colorPicker = new iro.ColorPicker('#colorPicker', { width: 150 });
+            <!-- Mode Selection -->
+            <div class="form-group">
+                <label>Select Mode:</label>
+                <select name="mode" required id="modeSelector">
+                    {% for mode, name in command_map.items() %}
+                    <option value="{{ mode }}" {% if request.method=='POST' and request.form.get('mode')==mode|string
+                        %}selected{% endif %}>
+                        {{ name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-            colorPicker.on('color:change', function (color) {
-                let hexColor = color.hexString.toUpperCase().replace('#', '');
-                document.getElementById('selectedColor').value = `#${hexColor}`;
-            });
+            <button type="submit">Update Selected Devices</button>
 
-            document.querySelector('form').addEventListener('submit', function () {
-                let colorValue = document.getElementById('selectedColor').value;
-                console.log("Submitting color:", colorValue);
-            });
-        </script>
-    </body>
+            {% if message %}
+            <p class="message">{{ message }}</p>
+            {% endif %}
+        </form>
+
+        <!-- Device Status -->
+        <h2>Device Status</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ESP ID</th>
+                    <th>Status</th>
+                    <th>Current Mode</th>
+                    <th>Last Seen</th>
+                    <th>IP Address</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for dev_id, details in devices.items() %}
+                <tr>
+                    <td>{{ dev_id }}</td>
+                    <td class="{{ 'active' if details.last_seen | is_active == 'Active' else 'inactive' }}">
+                        {{ details.last_seen | is_active }}
+                    </td>
+                    <td>{{ command_map[details.mode] }}</td>
+                    <td>
+                        {% if details.last_seen %}
+                        {{ details.last_seen | int | timestamp_to_time }}
+                        {% else %}
+                        Never
+                        {% endif %}
+                    </td>
+                    <td>{{ details.ip or 'Unknown' }}</td>
+                    <td>{{ details.description }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Towel Status -->
+        <div class="towel-status">Towel Status: <strong>Carried ✅</strong></div>
+
+        <!-- Vogon Poetry Alert -->
+        <div class="vogon-warning">
+            <img src="//i.imgur.com/YqQZ3.png" alt="Vogon Alert" style="height: 20px;">
+            <span>No poetry detected - systems nominal</span>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Initialize the color picker
+        const colorPicker = new iro.ColorPicker('#colorPicker', { width: 150 });
+
+        // Display the selected color in real-time
+        colorPicker.on('color:change', function (color) {
+            const hexColor = color.hexString.toUpperCase();
+            document.getElementById('selectedColor').value = hexColor;
+            document.getElementById('currentColor').textContent = `Selected Color: ${hexColor}`;
+        });
+
+        // Show/hide color picker based on selected mode
+        function updateColorPickerVisibility() {
+            const modeSelector = document.getElementById('modeSelector');
+            const colorPickerGroup = document.getElementById('colorPickerGroup');
+            colorPickerGroup.style.display = modeSelector.value === '10' ? 'block' : 'none';
+        }
+
+        // Add event listener to mode selector
+        document.getElementById('modeSelector').addEventListener('change', updateColorPickerVisibility);
+
+        // Update visibility on page load
+        document.addEventListener('DOMContentLoaded', updateColorPickerVisibility);
+
+        // Debug submitted values
+        document.querySelector('form').addEventListener('submit', function () {
+            const colorValue = document.getElementById('selectedColor').value;
+            console.log("Submitting color:", colorValue);
+        });
+    </script>
+</body>
+
 </html>
