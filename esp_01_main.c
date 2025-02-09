@@ -12,7 +12,7 @@ Adafruit_NeoPixel strip(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 // WiFi credentials & Server URL
 const char *ssid = "Brubaker Wifi";
 const char *password = "Pre$ton01";
-const char *serverUrl = "http://50.188.120.138:4999/device/001";
+const char *serverUrl = "http://10.1.10.79:4999/device/001";
 
 int fight_kampf[NUM_LEDS];  // For FIGHTKAMPF effect
 
