@@ -324,7 +324,7 @@ void matrix_text() {
                 is_on[index] = letter_P[y][(x - text_sroll_x)];
             }
             else if ((x - text_sroll_x) < WIDTH_P + WIDTH_PLUS + 1 && (x - text_sroll_x) >= WIDTH_P + 1) {
-                is_on[index] = letter_PLUS[y][x - WIDTH_P - 1];
+                is_on[index] = letter_PLUS[y][(x - text_sroll_x) - WIDTH_P - 1];
             }
             else if ((x - text_sroll_x) < WIDTH_P + WIDTH_PLUS + WIDTH_W + 2 && (x - text_sroll_x) >= WIDTH_P + WIDTH_PLUS + 2) {
                 is_on[index] = letter_W[y][(x - text_sroll_x) - WIDTH_P - WIDTH_PLUS - 2];
