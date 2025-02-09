@@ -79,20 +79,23 @@ def index():
     if request.method == 'POST':
         selected_devices = request.form.getlist('devices')
         mode = request.form.get('mode')
-        color = request.form.get('color', '#FF0000')
+        color = request.form.get('color', '#FF0000')  # Ensure a default valid color
+
+        print(f"DEBUG: Received mode={mode}, color={color}, devices={selected_devices}")
 
         if mode == '10':  # COLORPULSE mode
             hex_color = color.lstrip('#')
-            rgb = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
-            if 'all' in selected_devices:
-                for dev_id in selected_devices:
-                    if dev_id in devices:
-                        devices[dev_id]['color'] = f"#{hex_color}"  # Store color as hex string
-            else:
-                # Apply to selected devices
-                for dev_id in selected_devices:
-                    if dev_id in devices:
-                        devices[dev_id]['color'] = f"#{hex_color}"
+
+            # Ensure valid 6-character hex
+            if len(hex_color) != 6 or not all(c in '0123456789ABCDEFabcdef' for c in hex_color):
+                print(f"ERROR: Invalid color received: {hex_color}")
+                hex_color = "FF0000"  # Default to red
+
+            print(f"Processed color: #{hex_color}")
+
+            for dev_id in selected_devices:
+                if dev_id in devices:
+                    devices[dev_id]['color'] = f"#{hex_color}"  # Store correctly formatted color
 
         if not mode.isdigit() or int(mode) not in COMMAND_MAP:
             message = "Invalid mode selection"
@@ -109,28 +112,31 @@ def index():
                         devices[dev_id]['mode'] = mode
                         updated_devices.append(dev_id)
                 message = f"Updated {', '.join(updated_devices)} to {COMMAND_MAP[mode]} mode"
-    
-    return render_template('index.html', 
-                         devices=devices,
-                         command_map=COMMAND_MAP,
-                         message=message)
+
+    return render_template('index.html', devices=devices, command_map=COMMAND_MAP, message=message)
 
 @app.route('/device/<device_id>', methods=['GET'])
 def get_device_command(device_id):
     if device_id not in devices:
         abort(404)
-    
-    # Update last seen time and IP address
+
     devices[device_id]['last_seen'] = time.time()
     devices[device_id]['ip'] = request.remote_addr
-    
-    print(f"Device {device_id} color: {devices[device_id].get('color', '#FF0000')}")
+
+    stored_color = devices[device_id].get('color', '#FF0000')
+
+    # Debugging
+    print(f"DEBUG: Device {device_id} requested color. Stored color: {stored_color}")
+
+    if len(stored_color) != 7 or not stored_color.startswith('#'):
+        print(f"ERROR: Invalid stored color '{stored_color}', resetting to default.")
+        stored_color = "#FF0000"
 
     if devices[device_id]['mode'] == 10:  # Custom Color Pulse
-        color = devices[device_id].get('color', '#FF0000')
-        return f"COLORPULSE:{color}\n"
+        return f"COLORPULSE:{stored_color}\n"
 
     return f"{COMMAND_MAP[devices[device_id]['mode']]}\n"
+
 
 @app.template_filter('timestamp_to_time')
 def timestamp_to_time_filter(timestamp):
