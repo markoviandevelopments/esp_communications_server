@@ -62,43 +62,37 @@ void loop() {
             Serial.print("Server command: ");
             Serial.println(payload);
 
-            // Execute corresponding effect
-            if (payload.equalsIgnoreCase("FAST")) {
-                rainbowEffect(50);
-            } else if (payload.equalsIgnoreCase("SLOW")) {
-                bluePulses();
-            } else if (payload.equalsIgnoreCase("VALENTINE")) {
-                valentineEffect();
-            } else if (payload.equalsIgnoreCase("PINKWAVES")) {
-                playfulPinkWaves(50);
-            } else if (payload.equalsIgnoreCase("FIGHTKAMPF")) {
-                fight_kampfen();
-            } else if (payload.equalsIgnoreCase("HEARTWAVE")) {
-                beatingHeartWave();
-            } else if (payload.equalsIgnoreCase("ROMPULSE")) {
-                romanticPulse();
-            } else if (payload.equalsIgnoreCase("CUPIDSARROW")) {
-                cupidsArrow();
-            } else if (payload.startsWith("COLORPULSE")) {
+            if (payload.startsWith("COLORPULSE")) {
                 int colonIndex = payload.indexOf(':');
-                if (colonIndex != -1)
-                {
+                if (colonIndex != -1) {
                     String colorStr = payload.substring(colonIndex + 1);
                     pulseColor = parseColor(colorStr);
                 }
-                colorPulseEffect();
-            } else {
+                runColorPulse(); // Call function
+            }
+            else if (payload.equalsIgnoreCase("FAST")) {
+                rainbowEffect(50);
+            }
+            else if (payload.equalsIgnoreCase("SLOW")) {
+                bluePulses();
+            }
+            else if (payload.equalsIgnoreCase("VALENTINE")) {
+                valentineEffect();
+            }
+            else {
                 setRandomColor();
             }
-        } else {
+        }
+        else {
             Serial.print("HTTP error: ");
             Serial.println(httpCode);
         }
         http.end();
-    } else {
+    }
+    else {
         Serial.println("WiFi not connected.");
     }
-    delay(1000);  // Check server every second
+    delay(1000); // Check server every second
 }
 
 // Effect functions (same as original but removed matrix-specific code)
@@ -358,21 +352,20 @@ void cupidsArrow()
     }
 }
 
-uint32_t parseColor(String hexStr)
-{
+uint32_t parseColor(String hexStr) {
     hexStr = hexStr.substring(1); // Remove '#'
     long number = strtol(hexStr.c_str(), NULL, 16);
     return strip.Color((number >> 16) & 0xFF, (number >> 8) & 0xFF, number & 0xFF);
 }
 
-void colorPulseEffect()
-{
+void runColorPulse() {
     int delayTime = 50;
-    while (true)
-    {
+    int maxBrightness = 255;
+    int minBrightness = 10; // Prevent full blackout
+
+    while (true) {
         pulseBrightness += pulseDirection * 5;
-        if (pulseBrightness >= 255 || pulseBrightness <= 0)
-        {
+        if (pulseBrightness >= maxBrightness || pulseBrightness <= minBrightness) {
             pulseDirection *= -1;
         }
 
@@ -381,31 +374,34 @@ void colorPulseEffect()
         delay(delayTime);
 
         // Check for new commands periodically
-        if (checkForNewCommand())
-            break;
+        if (checkForNewCommand()) {
+            Serial.println("New command detected, exiting pulse effect.");
+            return;
+        }
     }
 }
 
-uint32_t dimColor(uint32_t color, uint8_t brightness)
-{
-    uint8_t r = (color >> 16) * brightness / 255;
-    uint8_t g = (color >> 8) * brightness / 255;
-    uint8_t b = color * brightness / 255;
+uint32_t dimColor(uint32_t color, uint8_t brightness) {
+    uint8_t r = ((color >> 16) & 0xFF) * brightness / 255;
+    uint8_t g = ((color >> 8) & 0xFF) * brightness / 255;
+    uint8_t b = (color & 0xFF) * brightness / 255;
     return strip.Color(r, g, b);
 }
 
-bool checkForNewCommand()
-{
+bool checkForNewCommand() {
     HTTPClient http;
-    http.begin(serverUrl);
+    WiFiClient client;
+    http.begin(client, serverUrl);
     int httpCode = http.GET();
-    if (httpCode > 0)
-    {
+
+    if (httpCode > 0) {
         String newPayload = http.getString();
         newPayload.trim();
+        http.end();
+
         if (!newPayload.startsWith("COLORPULSE"))
         {
-            http.end();
+            Serial.println("New command received!");
             return true;
         }
     }

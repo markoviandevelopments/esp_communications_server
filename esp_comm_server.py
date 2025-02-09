@@ -81,7 +81,8 @@ def index():
             hex_color = color.lstrip('#')
             rgb = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
             for dev_id in selected_devices:
-                devices[dev_id]['color'] = rgb
+                if dev_id in devices:
+                    devices[dev_id]['color'] = f"#{hex_color}"  # Store color as hex string
         
         if not mode.isdigit() or int(mode) not in COMMAND_MAP:
             message = "Invalid mode selection"
@@ -113,6 +114,9 @@ def get_device_command(device_id):
     devices[device_id]['last_seen'] = time.time()
     devices[device_id]['ip'] = request.remote_addr
     
+    if devices[device_id]['mode'] == 10:  # Custom Color Pulse
+        color = devices[device_id].get('color', '#FFFFFF')
+        return f"COLORPULSE:{color}\n"
     return f"{COMMAND_MAP[devices[device_id]['mode']]}\n"
 
 @app.template_filter('timestamp_to_time')
