@@ -169,3 +169,89 @@ th {
     font-weight: bold;
     text-shadow: 0 0 10px #FF4500;
 }
+
+/* === HGTTG THEME UPGRADES === */
+
+/* DON'T PANIC Banner */
+.dont-panic {
+    font-size: 24px;
+    font-weight: bold;
+    color: #FF4500;
+    text-shadow: 0 0 15px #FF4500;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-bottom: 20px;
+    animation: glowText 1.5s infinite alternate;
+}
+
+/* Blinking glow for added HGTTG effect */
+@keyframes glowText {
+    0% {
+        text-shadow: 0 0 10px #FF4500;
+    }
+
+    100% {
+        text-shadow: 0 0 20px #FFD700;
+    }
+}
+
+/* Marvin’s Inactive Status Commentary */
+.status-inactive::after {
+    content: " (Oh dear, another one offline...)";
+    font-size: 14px;
+    color: #FFD700;
+    font-style: italic;
+}
+
+/* Babel Fish Loader */
+@keyframes babelFishSwim {
+    0% {
+        transform: translateX(-50px) rotate(0deg);
+    }
+
+    50% {
+        transform: translateX(50px) rotate(5deg);
+    }
+
+    100% {
+        transform: translateX(-50px) rotate(-5deg);
+    }
+}
+
+.babel-fish {
+    width: 40px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    animation: babelFishSwim 5s infinite ease-in-out;
+}
+
+/* Towel Status */
+.towel-status {
+    font-size: 16px;
+    color: #FFD700;
+    text-shadow: 0 0 5px #FFD700;
+    margin-top: 10px;
+}
+
+/* Vogon Poetry Warning */
+.vogon-warning {
+    font-size: 14px;
+    font-weight: bold;
+    color: #FF4500;
+    margin-top: 20px;
+    text-shadow: 0 0 5px #FF4500;
+    animation: vogonBlink 1.5s infinite alternate;
+}
+
+@keyframes vogonBlink {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.5;
+    }
+}

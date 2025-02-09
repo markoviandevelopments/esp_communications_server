@@ -9,6 +9,13 @@
 </head>
 <body>
     <div class="container">
+        <!-- Don't Panic Banner -->
+        <div class="dont-panic">DON'T PANIC</div>
+        
+        <!-- Babel Fish Loader -->
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Babelfish_icon.png/640px-Babelfish_icon.png"
+            class="babel-fish" alt="Babel Fish">
+
         <div class="guide-message">
             <h1>Your ESP LED Control Guide<h1>
                 <small>Section 3A: Light Manipulation</small>
@@ -63,8 +70,9 @@
                 {% for dev_id, details in devices.items() %}
                 <tr>
                     <td>{{ dev_id }}</td>
-                    <td class="{{ 'status-active' if details.last_seen | is_active else 'status-inactive' }}">
-                        {% if details.last_seen | is_active %}
+                    <td
+                        class="{% if details.last_seen and (details.last_seen | int) > (current_time - 60) %}status-active{% else %}status-inactive{% endif %}">
+                        {% if details.last_seen and (details.last_seen | int) > (current_time - 60) %}
                         🟢 Active
                         {% else %}
                         🔴 Inactive
@@ -85,6 +93,10 @@
             </tbody>
         </table>
 
+        <!-- Towel Status -->
+        <div class="towel-status">Towel Status: <strong>Carried ✅</strong></div>
+        
+        <!-- Vogon Poetry Alert -->
         <div class="vogon-warning">
             <img src="//i.imgur.com/YqQZ3.png" alt="Vogon Alert" style="height: 20px;">
             <span>No poetry detected - systems nominal</span>
