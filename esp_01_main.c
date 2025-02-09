@@ -16,6 +16,10 @@ const char *serverUrl = "http://10.1.10.79:4999/device/001";
 
 int fight_kampf[NUM_LEDS];  // For FIGHTKAMPF effect
 
+uint32_t pulseColor = strip.Color(0, 0, 0);
+int pulseBrightness = 0;
+int pulseDirection = 1;
+
 void setup() {
     Serial.begin(115200);
     strip.begin();
@@ -75,6 +79,14 @@ void loop() {
                 romanticPulse();
             } else if (payload.equalsIgnoreCase("CUPIDSARROW")) {
                 cupidsArrow();
+            } else if (payload.startsWith("COLORPULSE")) {
+                int colonIndex = payload.indexOf(':');
+                if (colonIndex != -1)
+                {
+                    String colorStr = payload.substring(colonIndex + 1);
+                    pulseColor = parseColor(colorStr);
+                }
+                colorPulseEffect();
             } else {
                 setRandomColor();
             }
@@ -344,6 +356,61 @@ void cupidsArrow()
             }
         }
     }
+}
+
+uint32_t parseColor(String hexStr)
+{
+    hexStr = hexStr.substring(1); // Remove '#'
+    long number = strtol(hexStr.c_str(), NULL, 16);
+    return strip.Color((number >> 16) & 0xFF, (number >> 8) & 0xFF, number & 0xFF);
+}
+
+void colorPulseEffect()
+{
+    int delayTime = 50;
+    while (true)
+    {
+        pulseBrightness += pulseDirection * 5;
+        if (pulseBrightness >= 255 || pulseBrightness <= 0)
+        {
+            pulseDirection *= -1;
+        }
+
+        uint32_t dimmedColor = dimColor(pulseColor, pulseBrightness);
+        setStripColor(dimmedColor);
+        delay(delayTime);
+
+        // Check for new commands periodically
+        if (checkForNewCommand())
+            break;
+    }
+}
+
+uint32_t dimColor(uint32_t color, uint8_t brightness)
+{
+    uint8_t r = (color >> 16) * brightness / 255;
+    uint8_t g = (color >> 8) * brightness / 255;
+    uint8_t b = color * brightness / 255;
+    return strip.Color(r, g, b);
+}
+
+bool checkForNewCommand()
+{
+    HTTPClient http;
+    http.begin(serverUrl);
+    int httpCode = http.GET();
+    if (httpCode > 0)
+    {
+        String newPayload = http.getString();
+        newPayload.trim();
+        if (!newPayload.startsWith("COLORPULSE"))
+        {
+            http.end();
+            return true;
+        }
+    }
+    http.end();
+    return false;
 }
 
 void setStripColor(uint32_t color) {
