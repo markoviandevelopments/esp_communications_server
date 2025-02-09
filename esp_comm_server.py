@@ -61,7 +61,7 @@ COMMAND_MAP = {
     8: "ROMPULSE",
     9: "CUPIDSARROW",
     10: "CUSTOM COLOR:PULSE",
-    11: "MATRIXBEE"
+    11: "BEEMATRIX"
 }
 
 @app.template_filter('is_active')

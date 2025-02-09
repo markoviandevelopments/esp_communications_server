@@ -82,9 +82,6 @@ void loop() {
             else if (payload.equalsIgnoreCase("VALENTINE")) {
                 valentineEffect();
             }
-            else if (payload.equalsIgnoreCase("BEEMATRIX")) {
-                matrix_bee();
-            }
             else if (payload.equalsIgnoreCase("PINKWAVES")) {
                 playfulPinkWaves();
             }
@@ -99,6 +96,9 @@ void loop() {
             }
             else if (payload.equalsIgnoreCase("CUPIDSARROW")) {
                 cupidsArrow();
+            }
+            else if (payload.equalsIgnoreCase("BEEMATRIX")) {
+                matrix_bee();
             }
             else {
                 setRandomColor();
@@ -155,7 +155,7 @@ void valentineEffect() {
     }
 }
 
-void playfulPinkWaves(int wait=1000) {
+void playfulPinkWaves() {
     for (int j = 0; j < 256; j++) { // Animation loop
         for (int i = 0; i < NUM_LEDS; i++) {
             // Create a wave effect with a sine function for smooth rolling motion
@@ -165,7 +165,7 @@ void playfulPinkWaves(int wait=1000) {
             strip.setPixelColor(i, strip.ColorHSV(hue, 255, 255)); // Keep full saturation and brightness
         }
         strip.show();
-        delay(wait);
+        delay(100);
     }
 }
 
