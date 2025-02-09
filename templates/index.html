@@ -23,14 +23,6 @@
             <small>Section 3A: Light Manipulation</small>
         </div>
 
-        <!-- Color Picker Group -->
-        <div class="form-group" id="colorPickerGroup" style="display: none;">
-            <label>Select Color:</label>
-            <div id="colorPicker"></div>
-            <input type="hidden" id="selectedColor" name="color" value="#ff0000">
-            <p id="currentColor">Selected Color: #FF0000</p>
-        </div>
-
         <form method="POST">
             <!-- Device Selection -->
             <div class="form-group">
@@ -54,6 +46,14 @@
                     </option>
                     {% endfor %}
                 </select>
+            </div>
+
+            <!-- Color Picker Group -->
+            <div class="form-group" id="colorPickerGroup" style="display: none;">
+                <label>Select Color:</label>
+                <div id="colorPicker"></div>
+                <input type="hidden" id="selectedColor" name="color" value="#FF0000">
+                <p id="currentColor">Selected Color: #FF0000</p>
             </div>
 
             <button type="submit">Update Selected Devices</button>
@@ -113,7 +113,7 @@
         // Initialize the color picker
         const colorPicker = new iro.ColorPicker('#colorPicker', { width: 150 });
 
-        // Display the selected color in real-time
+        // Ensure the selected color is correctly set when changed
         colorPicker.on('color:change', function (color) {
             const hexColor = color.hexString.toUpperCase();
             document.getElementById('selectedColor').value = hexColor;
@@ -133,11 +133,18 @@
         // Update visibility on page load
         document.addEventListener('DOMContentLoaded', updateColorPickerVisibility);
 
-        // Debug submitted values
-        document.querySelector('form').addEventListener('submit', function () {
+        // Ensure the correct color is submitted
+        document.querySelector('form').addEventListener('submit', function (event) {
             const colorValue = document.getElementById('selectedColor').value;
             console.log("Submitting color:", colorValue);
+
+            if (!colorValue.startsWith('#') || colorValue.length !== 7) {
+                console.error("Invalid color value detected!", colorValue);
+                event.preventDefault(); // Stop submission if invalid
+                alert("Invalid color selected. Please pick a color again.");
+            }
         });
+
     </script>
 </body>
 

@@ -43,14 +43,14 @@ def index():
     if request.method == 'POST':
         selected_devices = request.form.getlist('devices')
         mode = request.form.get('mode')
-        color = request.form.get('color', '#DC2896').strip()
+        color = request.form.get('color', '').strip()  # No default, force it to take what is sent
 
         print(f"DEBUG: Received mode={mode}, color={color}, devices={selected_devices}")
 
-        # Validate color format
-        if not color.startswith('#') or len(color) != 7 or not all(c in '0123456789ABCDEFabcdef' for c in color[1:]):
-            color = '#DC2896'  # Fallback to default color
-            print(f"DEBUG: Invalid color received. Fallback to default: {color}")
+        # Ensure color is actually received and valid
+        if not color or not color.startswith('#') or len(color) != 7 or any(c not in '0123456789ABCDEFabcdef' for c in color[1:]):
+            print(f"WARNING: Invalid color received ({color}), ignoring color update.")
+            color = None  # Do not overwrite with default
 
         # Update devices with mode and color
         if mode and mode.isdigit() and int(mode) in COMMAND_MAP:
@@ -58,18 +58,21 @@ def index():
             if 'all' in selected_devices:
                 for dev_id in devices:
                     devices[dev_id]['mode'] = mode
-                    devices[dev_id]['color'] = color
-                    print(f"DEBUG: Updated device {dev_id} to mode={mode}, color={color}")
-                message = f"All devices updated to {COMMAND_MAP[mode]} mode with color {color}"
+                    if color:  # Only update color if a valid one was received
+                        devices[dev_id]['color'] = color
+                    print(f"DEBUG: Updated device {dev_id} to mode={mode}, color={devices[dev_id]['color']}")
+                message = f"All devices updated to {COMMAND_MAP[mode]} mode"
             else:
                 updated_devices = []
                 for dev_id in selected_devices:
                     if dev_id in devices:
                         devices[dev_id]['mode'] = mode
-                        devices[dev_id]['color'] = color
+                        if color:  # Only update color if a valid one was received
+                            devices[dev_id]['color'] = color
                         updated_devices.append(dev_id)
-                        print(f"DEBUG: Updated device {dev_id} to mode={mode}, color={color}")
-                message = f"Updated {', '.join(updated_devices)} to {COMMAND_MAP[mode]} mode with color {color}"
+                        print(f"DEBUG: Updated device {dev_id} to mode={mode}, color={devices[dev_id]['color']}")
+                message = f"Updated {', '.join(updated_devices)} to {COMMAND_MAP[mode]} mode"
+
         else:
             message = "Invalid mode selected"
 
