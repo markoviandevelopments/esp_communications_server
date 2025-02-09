@@ -70,13 +70,8 @@
                 {% for dev_id, details in devices.items() %}
                 <tr>
                     <td>{{ dev_id }}</td>
-                    <td
-                        class="{% if details.last_seen and (details.last_seen | int) > (current_time - 60) %}status-active{% else %}status-inactive{% endif %}">
-                        {% if details.last_seen and (details.last_seen | int) > (current_time - 60) %}
-                        🟢 Active
-                        {% else %}
-                        🔴 Inactive
-                        {% endif %}
+                    <td class="{{ 'active' if details.last_seen | is_active == 'Active' else 'inactive' }}">
+                        {{ details.last_seen | is_active }}
                     </td>
                     <td>{{ command_map[details.mode] }}</td>
                     <td>
