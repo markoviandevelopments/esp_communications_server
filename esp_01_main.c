@@ -84,6 +84,21 @@ void loop() {
             else if (payload.equalsIgnoreCase("BEEMATRIX")) {
                 matrix_bee();
             }
+            else if (payload.equalsIgnoreCase("PINKWAVES")) {
+                playfulPinkWaves();
+            }
+            else if (payload.equalsIgnoreCase("FIGHTKAMPF")) {
+                fight_kampfen();
+            }
+            else if (payload.equalsIgnoreCase("HEARTWAVE")) {
+                beatingHeartWave();
+            }
+            else if (payload.equalsIgnoreCase("ROMPULSE")) {
+                romanticPulse();
+            }
+            else if (payload.equalsIgnoreCase("CUPIDSARROW")) {
+                cupidsArrow();
+            }
             else {
                 setRandomColor();
             }
