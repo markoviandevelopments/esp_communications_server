@@ -85,7 +85,7 @@ def index():
     if request.method == 'POST':
         selected_devices = request.form.getlist('devices')
         mode = request.form.get('mode')
-        color = request.form.get('color', '#FF0000')  # Ensure a default valid color
+        color = request.form.get('color', '#DC2896')  # Ensure a default valid color
 
         print(f"DEBUG: Received mode={mode}, color={color}, devices={selected_devices}")
 
@@ -95,7 +95,7 @@ def index():
                 color = '#' + color
             # Validate hex color
             if len(color) != 7 or any(c not in '0123456789ABCDEFabcdef' for c in color[1:]):
-                color = '#FF0000'  # Reset to default if invalid
+                color = '#DDB328'  # Reset to default if invalid
             hex_color = color.lstrip('#').upper()  # Ensure uppercase without #
 
             # Update devices with the validated color
