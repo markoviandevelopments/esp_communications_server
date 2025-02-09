@@ -318,7 +318,11 @@ void matrix_bee() {
     delay(speed);
 }
 
-void matrix_text(uint16_t speed, int is_blue_background=0) {
+void matrix_text(uint16_t speed) {
+    matrix_text(speed, 0);  // Call the full version with default blue=0
+}
+
+void matrix_text(uint16_t speed, int is_blue_background) {
     uint8_t waveSize = 20;
     int is_r = 0;
     int is_b = 0;
