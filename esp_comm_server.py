@@ -89,19 +89,25 @@ def index():
 
         print(f"DEBUG: Received mode={mode}, color={color}, devices={selected_devices}")
 
-        if mode == '10':  # COLORPULSE mode
-            # color = request.form.get('color', '#FF0000').strip()
-            if not color.startswith('#'):
-                color = '#' + color
-            # Validate hex color
-            if len(color) != 7 or any(c not in '0123456789ABCDEFabcdef' for c in color[1:]):
-                color = '#DDB328'  # Reset to default if invalid
-            hex_color = color.lstrip('#').upper()  # Ensure uppercase without #
+    if mode == '10':  # COLORPULSE mode
+        if not color.startswith('#'):
+            color = '#' + color
+        if len(color) != 7 or any(c not in '0123456789ABCDEFabcdef' for c in color[1:]):
+            color = '#DDB328'  # Default if invalid
 
-            # Update devices with the validated color
+        hex_color = color.lstrip('#').upper()
+        print(f"DEBUG: Validated color: {color}")
+
+        # Update all devices if "all" is selected
+        if 'all' in selected_devices:
+            for dev_id in devices:
+                devices[dev_id]['color'] = f"#{hex_color}"  # Update stored color
+                print(f"DEBUG: Updated device {dev_id} to color {color}")
+        else:  # Update specific devices
             for dev_id in selected_devices:
                 if dev_id in devices:
-                    devices[dev_id]['color'] = f"#{hex_color}"
+                    devices[dev_id]['color'] = f"#{hex_color}"  # Update stored color
+                    print(f"DEBUG: Updated device {dev_id} to color {color}")
 
         if mode is None or not mode.isdigit() or int(mode) not in COMMAND_MAP:
             message = "Invalid mode selection"
