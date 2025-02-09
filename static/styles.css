@@ -1,80 +1,161 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&display=swap');
+
+/* === VARIABLES === */
 :root {
-    --primary-color: #6CF0FF;  /* Futuristic blue */
-    --secondary-color: #FFB347; /* Orange like the book cover */
-    --highlight-color: #FF69B4;  /* Zaphod pink */
-    --bg-color: #0A0025;  /* Deep space purple */
-    --container-bg: rgba(10, 0, 37, 0.95); /* Semi-transparent dark */
-    --font-main: 'Courier New', monospace;  /* Typewriter feel */
+    --primary-color: #00FF41;
+    --secondary-color: #FFD700;
+    --highlight-color: #FF4500;
+    --bg-color: black;
+    --container-bg: rgba(0, 0, 0, 0.85);
+    --border-radius: 10px;
+    --shadow-glow: 0 0 20px var(--primary-color);
+    --font-main: 'Orbitron', sans-serif;
+    --font-size-default: 18px;
+    --font-size-large: 40px;
+    --font-size-xlarge: 42px;
 }
 
+/* === BODY === */
 body {
-    background: var(--bg-color) url('https://assets.codepen.io/557388/stars.png');
-    animation: stars 60s linear infinite;
+    background-color: var(--bg-color);
+    background-image: radial-gradient(var(--bg-color) 1px, transparent 1px),
+        radial-gradient(var(--bg-color) 1px, transparent 1px);
+    background-size: 50px 50px;
+    background-position: 0 0, 25px 25px;
+    animation: stars 10s linear infinite;
     font-family: var(--font-main);
-}
-
-.container {
-    max-width: 800px;
-    margin: 2rem auto;
-    padding: 2rem;
-    border: 3px dashed var(--secondary-color);
-    background: var(--container-bg);
-    position: relative;
-}
-
-/* Don't Panic! watermark */
-.container::after {
-    content: "DON'T PANIC";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-15deg);
-    font-size: 4rem;
-    color: rgba(108, 240, 255, 0.1);
-    pointer-events: none;
-}
-
-/* Form Elements */
-select {
-    background: black;
-    border: 2px solid var(--secondary-color);
     color: var(--primary-color);
-    padding: 0.5rem;
-    font-family: var(--font-main);
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+/* Starry background animation */
+@keyframes stars {
+    from { background-position: 0 0; }
+    to { background-position: -1000px 1000px; }
+}
+
+/* === CONTAINER === */
+.container {
+    margin-top: 50px;
+    padding: 30px;
+    border: 2px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    background-color: var(--container-bg);
+    box-shadow: var(--shadow-glow);
+    display: inline-block;
+}
+
+
+/* === HEADERS & TEXT === */
+h1 {
+    color: var(--secondary-color);
+    text-shadow: 0 0 10px var(--secondary-color), 0 0 20px var(--highlight-color);
+    font-size: var(--font-size-large);
+}
+
+p {
+    font-size: var(--font-size-default);
+    color: var(--primary-color);
+}
+
+.message {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 20px;
+    color: var(--secondary-color);
+    text-shadow: 0 0 5px var(--secondary-color);
+}
+
+/* === FORM ELEMENTS === */
+form {
+    margin-top: 20px;
+}
+
+select, input {
+    background-color: var(--bg-color);
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    padding: 10px;
+    font-size: 16px;
+    text-align: center;
+    outline: none;
+    box-shadow: 0 0 10px var(--primary-color);
 }
 
 button {
-    background: linear-gradient(to bottom, #FFB347, #FF4500);
-    border: 1px solid var(--secondary-color);
-    padding: 0.5rem 2rem;
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    border: none;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
+    box-shadow: var(--shadow-glow);
+    border-radius: 5px;
 }
 
-/* Table - Spaceship Console Style */
+button:hover {
+    background-color: var(--highlight-color);
+    color: white;
+    box-shadow: 0 0 20px var(--highlight-color);
+}
+
+/* === EASTER EGG: THE ULTIMATE ANSWER === */
+#answer {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: var(--font-size-xlarge);
+    color: var(--secondary-color);
+    text-shadow: 0 0 10px var(--secondary-color), 0 0 20px var(--highlight-color);
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    pointer-events: none;
+}
+
+body:hover #answer {
+    opacity: 1;
+}
+
+/* === IMAGE DISPLAY === */
+.image-container {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.image-container img {
+    width: 50%;
+    max-width: 500px;
+    border: 3px solid var(--primary-color);
+    box-shadow: 0 0 15px var(--primary-color);
+    border-radius: var(--border-radius);
+}
+
+.caption {
+    font-size: var(--font-size-default);
+    color: var(--secondary-color);
+    text-shadow: 0 0 5px var(--secondary-color);
+    margin-top: 10px;
+}
+
+/* === TABLE STYLING === */
 table {
-    border: 2px solid var(--primary-color);
-    margin: 2rem 0;
-    background: black;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
 }
 
 th {
-    background: #1A0035 !important;
-    color: var(--primary-color) !important;
-    border-bottom: 3px solid var(--secondary-color);
-    font-family: 'Orbitron', sans-serif;
-}
-
-td {
-    border-color: rgba(108, 240, 255, 0.2);
-    padding: 12px !important;
-}
-
-.active { color: #00FF00; }
-.inactive { color: #FF0033; }
-
-/* Hitchhiker Status Indicators */
-tr:hover td {
-    background: rgba(108, 240, 255, 0.1);
-    cursor: url('https://assets.codepen.io/557388/hand_white.png'), auto;
+    background-color: #a19696;
 }
