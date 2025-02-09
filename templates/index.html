@@ -42,7 +42,10 @@
                 <label>Select Mode:</label>
                 <select name="mode" required>
                     {% for mode, name in command_map.items() %}
-                        <option value="{{ mode }}">{{ name }}</option>
+                    <option value="{{ mode }}" {% if request.method=='POST' and mode|string==request.form.get('mode') %}selected{% endif
+                        %}>
+                        {{ name }}
+                    </option>
                     {% endfor %}
                 </select>
             </div>
@@ -110,6 +113,12 @@
             var colorGroup = document.getElementById('colorPickerGroup');
             colorGroup.style.display = (e.target.value === '10') ? 'block' : 'none';
         });
-    </script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var modeSelect = document.querySelector('select[name="mode"]');
+            var colorGroup = document.getElementById('colorPickerGroup');
+            colorGroup.style.display = (modeSelect.value === '10') ? 'block' : 'none';
+        });
+</script>
 </body>
 </html>

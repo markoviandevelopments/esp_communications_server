@@ -82,10 +82,16 @@ def index():
         if mode == '10':  # COLORPULSE mode
             hex_color = color.lstrip('#')
             rgb = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
-            for dev_id in selected_devices:
-                if dev_id in devices:
-                    devices[dev_id]['color'] = f"#{hex_color}"  # Store color as hex string
-        
+            if 'all' in selected_devices:
+                for dev_id in selected_devices:
+                    if dev_id in devices:
+                        devices[dev_id]['color'] = f"#{hex_color}"  # Store color as hex string
+            else:
+                # Apply to selected devices
+                for dev_id in selected_devices:
+                    if dev_id in devices:
+                        devices[dev_id]['color'] = f"#{hex_color}"
+
         if not mode.isdigit() or int(mode) not in COMMAND_MAP:
             message = "Invalid mode selection"
         else:
