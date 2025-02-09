@@ -38,11 +38,12 @@
                     </select>
                 </div>
                 
+                
                 <div class="form-group">
                     <label>Select Mode:</label>
                     <select name="mode" required>
                         {% for mode, name in command_map.items() %}
-                        <option value="{{ mode }}" {% if request.method='POST' and mode|string=request.form.get('mode') %}selected{% endif
+                        <option value="{{ mode }}" {% if request.method == 'POST' and mode|string == request.form.get('mode') %}selected{% endif
                             %}>
                             {{ name }}
                         </option>
