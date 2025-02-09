@@ -541,8 +541,7 @@ void cupidsArrow() {
     }
 }
 
-uint32_t parseColor(String hexStr)
-{
+uint32_t parseColor(String hexStr) {
     hexStr.trim();
     if (hexStr.startsWith("#"))
     {
@@ -551,8 +550,8 @@ uint32_t parseColor(String hexStr)
 
     if (hexStr.length() != 6)
     {
-        Serial.println("Invalid color format!");
-        return strip.Color(255, 255, 255); // Default to white if parsing fails
+        Serial.println("❌ ERROR: Invalid color format! Defaulting to white.");
+        return strip.Color(255, 255, 255);
     }
 
     long number = strtol(hexStr.c_str(), NULL, 16);
@@ -560,7 +559,7 @@ uint32_t parseColor(String hexStr)
     uint8_t g = (number >> 8) & 0xFF;
     uint8_t b = number & 0xFF;
 
-    Serial.print("Parsed Color - R: ");
+    Serial.print("✅ Parsed Color - R: ");
     Serial.print(r);
     Serial.print(" G: ");
     Serial.print(g);
@@ -570,11 +569,18 @@ uint32_t parseColor(String hexStr)
     return strip.Color(r, g, b);
 }
 
-void runColorPulse() {
+void runColorPulse()
+{
+    Serial.print("🚀 Running Color Pulse with color: ");
+    Serial.println(pulseColor, HEX);
+
     int delayTime = 50;
     int maxBrightness = 255;
     int minBrightness = 10;
     unsigned long lastCheckTime = millis();
+
+    // 🛑 Exit after 30 seconds
+    unsigned long startTime = millis();
 
     while (true)
     {
@@ -585,16 +591,25 @@ void runColorPulse() {
         }
 
         uint32_t dimmedColor = dimColor(pulseColor, pulseBrightness);
+
+        Serial.print("🟢 Setting LEDs to Dimmed Color: ");
+        Serial.println(dimmedColor, HEX);
+
         setStripColor(dimmedColor);
         delay(delayTime);
 
-        // Check for new commands every 5 seconds
+        if (millis() - startTime > 30000)
+        { // Exit after 30 seconds
+            Serial.println("🛑 Exiting pulse effect after timeout.");
+            return;
+        }
+
         if (millis() - lastCheckTime >= 5000)
         {
             lastCheckTime = millis();
             if (checkForNewCommand())
             {
-                Serial.println("New command detected, exiting pulse effect.");
+                Serial.println("🔄 New command detected, exiting pulse effect.");
                 return;
             }
         }
