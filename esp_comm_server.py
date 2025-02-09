@@ -33,7 +33,13 @@ devices = {
         'last_seen': None,
         'ip': None
     },
-    
+    '005': {
+        'mode': 0,
+        'description': '?',
+        'port': 5004,
+        'last_seen': None,
+        'ip': None
+    },    
 }
 
 COMMAND_MAP = {
@@ -46,7 +52,8 @@ COMMAND_MAP = {
     6: "FIGHTKAMPF",
     7: "HEARTWAVE",
     8: "ROMPULSE",
-    9: "CUPIDSARROW"
+    9: "CUPIDSARROW",
+    10: "COLORPULSE"
 }
 
 @app.template_filter('is_active')
@@ -61,6 +68,13 @@ def index():
     if request.method == 'POST':
         selected_devices = request.form.getlist('devices')
         mode = request.form.get('mode')
+        color = request.form.get('color', '#000000')
+
+        if mode == '10':  # COLORPULSE mode
+            hex_color = color.lstrip('#')
+            rgb = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+            for dev_id in selected_devices:
+                devices[dev_id]['color'] = rgb
         
         if not mode.isdigit() or int(mode) not in COMMAND_MAP:
             message = "Invalid mode selection"
