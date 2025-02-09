@@ -155,3 +155,17 @@ th, td {
 th {
     background-color: #a19696;
 }
+
+.status-active {
+    color: #00FF41;
+    /* Bright green */
+    font-weight: bold;
+    text-shadow: 0 0 10px #00FF41;
+}
+
+.status-inactive {
+    color: #FF4500;
+    /* Bright red */
+    font-weight: bold;
+    text-shadow: 0 0 10px #FF4500;
+}
