@@ -5,48 +5,12 @@ app = Flask(__name__)
 
 # Store device states with last seen timestamps
 devices = {
-    '001': {
-        'mode': 0,
-        'description': '?',
-        'port': 5000,
-        'last_seen': None,
-        'ip': None, 
-    },
-    '002': {
-        'mode': 0,
-        'description': '?',
-        'port': 5001,
-        'last_seen': None,
-        'ip': None, 
-    },
-    '003': {
-        'mode': 0,
-        'description': '?',
-        'port': 5002,
-        'last_seen': None,
-        'ip': None, 
-    },
-    '004': {
-        'mode': 0,
-        'description': '?',
-        'port': 5003,
-        'last_seen': None,
-        'ip': None, 
-    },
-    '005': {
-        'mode': 0,
-        'description': '?',
-        'port': 5004,
-        'last_seen': None,
-        'ip': None, 
-    },    
-    '006': {
-        'mode': 0,
-        'description': '?',
-        'port': 5006,
-        'last_seen': None,
-        'ip': None, 
-    },    
+    '001': {'mode': 0, 'description': '?', 'port': 5000, 'last_seen': None, 'ip': None, 'color': '#FF0000'},
+    '002': {'mode': 0, 'description': '?', 'port': 5001, 'last_seen': None, 'ip': None, 'color': '#FF0000'},
+    '003': {'mode': 0, 'description': '?', 'port': 5002, 'last_seen': None, 'ip': None, 'color': '#FF0000'},
+    '004': {'mode': 0, 'description': '?', 'port': 5003, 'last_seen': None, 'ip': None, 'color': '#FF0000'},
+    '005': {'mode': 0, 'description': '?', 'port': 5004, 'last_seen': None, 'ip': None, 'color': '#FF0000'},
+    '006': {'mode': 0, 'description': '?', 'port': 5006, 'last_seen': None, 'ip': None, 'color': '#FF0000'},
 }
 
 COMMAND_MAP = {
@@ -81,43 +45,33 @@ def index():
         mode = request.form.get('mode')
         color = request.form.get('color', '#DC2896').strip()
 
-        print(f"DEBUG: Mode={mode}, Color={color}, Devices={selected_devices}")
+        print(f"DEBUG: Received mode={mode}, color={color}, devices={selected_devices}")
 
-    if mode == '10':  # COLORPULSE mode
-        if not color.startswith('#'):
-            color = '#' + color
-        if len(color) != 7 or any(c not in '0123456789ABCDEFabcdef' for c in color[1:]):
-            color = '#DDB328'  # Default if invalid
+        # Validate color format
+        if not color.startswith('#') or len(color) != 7 or not all(c in '0123456789ABCDEFabcdef' for c in color[1:]):
+            color = '#DC2896'  # Fallback to default color
+            print(f"DEBUG: Invalid color received. Fallback to default: {color}")
 
-        hex_color = color.lstrip('#').upper()
-        print(f"DEBUG: Validated color: {color}")
-
-        # Update all devices if "all" is selected
-        if 'all' in selected_devices:
-            for dev_id in devices:
-                devices[dev_id]['color'] = f"#{hex_color}"  # Update stored color
-                print(f"DEBUG: Updated device {dev_id} to color {color}")
-        else:  # Update specific devices
-            for dev_id in selected_devices:
-                if dev_id in devices:
-                    devices[dev_id]['color'] = f"#{hex_color}"  # Update stored color
-                    print(f"DEBUG: Updated device {dev_id} to color {color}")
-
-        if mode is None or not mode.isdigit() or int(mode) not in COMMAND_MAP:
-            message = "Invalid mode selection"
-        else:
+        # Update devices with mode and color
+        if mode and mode.isdigit() and int(mode) in COMMAND_MAP:
             mode = int(mode)
             if 'all' in selected_devices:
-                for dev in devices:
-                    devices[dev]['mode'] = mode
-                message = f"All devices updated to {COMMAND_MAP[mode]} mode"
+                for dev_id in devices:
+                    devices[dev_id]['mode'] = mode
+                    devices[dev_id]['color'] = color
+                    print(f"DEBUG: Updated device {dev_id} to mode={mode}, color={color}")
+                message = f"All devices updated to {COMMAND_MAP[mode]} mode with color {color}"
             else:
                 updated_devices = []
                 for dev_id in selected_devices:
                     if dev_id in devices:
                         devices[dev_id]['mode'] = mode
+                        devices[dev_id]['color'] = color
                         updated_devices.append(dev_id)
-                message = f"Updated {', '.join(updated_devices)} to {COMMAND_MAP[mode]} mode"
+                        print(f"DEBUG: Updated device {dev_id} to mode={mode}, color={color}")
+                message = f"Updated {', '.join(updated_devices)} to {COMMAND_MAP[mode]} mode with color {color}"
+        else:
+            message = "Invalid mode selected"
 
     return render_template('index.html', devices=devices, command_map=COMMAND_MAP, message=message)
 
@@ -134,15 +88,10 @@ def get_device_command(device_id):
     # Debugging
     print(f"DEBUG: Device {device_id} requested color. Stored color: {stored_color}")
 
-    if len(stored_color) != 7 or not stored_color.startswith('#'):
-        print(f"ERROR: Invalid stored color '{stored_color}', resetting to default.")
-        stored_color = "#FF0000"
-
     if devices[device_id]['mode'] == 10:  # Custom Color Pulse
         return f"COLORPULSE:{stored_color}\n"
 
     return f"{COMMAND_MAP[devices[device_id]['mode']]}\n"
-
 
 @app.template_filter('timestamp_to_time')
 def timestamp_to_time_filter(timestamp):
