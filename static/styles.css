@@ -156,18 +156,21 @@ th {
     background-color: #a19696;
 }
 
-.status-active {
-    color: #00FF41;
-    /* Bright green */
-    font-weight: bold;
-    text-shadow: 0 0 10px #00FF41;
+/* Optional enhanced version */
+td.active {
+    color: #00ff00;
+    background-color: #003300;
+    padding: 3px 8px;
+    border-radius: 12px;
+    display: inline-block;
 }
 
-.status-inactive {
-    color: #FF4500;
-    /* Bright red */
-    font-weight: bold;
-    text-shadow: 0 0 10px #FF4500;
+td.inactive {
+    color: #ff6666;
+    background-color: #330000;
+    padding: 3px 8px;
+    border-radius: 12px;
+    display: inline-block;
 }
 
 /* === HGTTG THEME UPGRADES === */
