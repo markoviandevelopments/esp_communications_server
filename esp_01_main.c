@@ -223,7 +223,7 @@ void matrix_bee() {
     }
 
     for (int i = 0; i < NUM_LEDS; i++) {
-        int bee_index = bee_y * 8 + bee_x;
+        int bee_index = bee_y + bee_x * 8;
         if (i == bee_index) {
             is_r = 1;
             is_b = 0;
