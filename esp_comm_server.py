@@ -60,7 +60,7 @@ COMMAND_MAP = {
     7: "HEARTWAVE",
     8: "ROMPULSE",
     9: "CUPIDSARROW",
-    10: "COLORPULSE"
+    10: "CUSTOM COLOR:PULSE"
 }
 
 @app.template_filter('is_active')
