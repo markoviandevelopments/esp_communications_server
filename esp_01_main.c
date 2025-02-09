@@ -287,8 +287,7 @@ void romanticPulse()
     const float pulseFrequency = 2.5; // More dynamic movement
     const int glitterChance = 50;     // 2% chance per LED for glitter
 
-    for (int t = 0; t < 1000; t++)
-    {
+    for (int t = 0; t < 500; t++) {
         float timeFactor = millis() * 0.001;
 
         // Multi-layer waveform with harmonics
@@ -297,8 +296,7 @@ void romanticPulse()
         float pulseWave = (baseWave + harmonic + 1.2) * 0.6;
 
         // Create crimson core with golden accents
-        for (int i = 0; i < NUM_LEDS; i++)
-        {
+        for (int i = 0; i < NUM_LEDS; i++) {
             float posWave = sin((i * 0.3) + timeFactor * 3);
             float ripple = cos((i * 0.15) - timeFactor * 4);
 
@@ -329,8 +327,7 @@ void romanticPulse()
         // Add traveling "love surge" wave
         static float surgePos = 0;
         surgePos = fmod(surgePos + 0.7, NUM_LEDS);
-        for (int s = -2; s <= 2; s++)
-        {
+        for (int s = -2; s <= 2; s++) {
             int pos = (int)surgePos + s;
             if (pos >= 0 && pos < NUM_LEDS)
             {
@@ -346,34 +343,28 @@ void romanticPulse()
     }
 }
 
-void cupidsArrow()
-{
+void cupidsArrow() {
     const int numArrows = 2;
     const int tailLength = 10;
     uint32_t coreColor = strip.Color(220, 40, 150); // Electric crimson
 
-    for (int arrow = 0; arrow < numArrows; arrow++)
-    {
+    for (int arrow = 0; arrow < numArrows; arrow++) {
         bool reverse = arrow % 2; // Alternate directions
 
-        for (int pos = 0; pos < NUM_LEDS + tailLength; pos++)
-        {
+        for (int pos = 0; pos < NUM_LEDS + tailLength; pos++) {
             strip.clear();
             int actualPos = reverse ? (NUM_LEDS - pos) : pos;
 
             // Arrowhead with plasma effect
-            if (actualPos >= 0 && actualPos < NUM_LEDS)
-            {
+            if (actualPos >= 0 && actualPos < NUM_LEDS) {
                 uint8_t flicker = 200 + random(55);
                 strip.setPixelColor(actualPos, strip.Color(flicker, 40 * flicker / 255, 50 * flicker / 255));
             }
 
             // Ionized trail
-            for (int t = 1; t < tailLength; t++)
-            {
+            for (int t = 1; t < tailLength; t++) {
                 int trailPos = actualPos - (reverse ? -t : t);
-                if (trailPos >= 0 && trailPos < NUM_LEDS)
-                {
+                if (trailPos >= 0 && trailPos < NUM_LEDS) {
                     float intensity = 1.0 - (float)t / (tailLength * 0.8);
                     uint8_t red = 255 * intensity;
                     uint8_t spark = random(0, 100) < (30 * intensity) ? 255 : 0; // Random sparks
@@ -389,8 +380,7 @@ void cupidsArrow()
             if (random(10) > 6)
             { // 40% chance for shockwave
                 int wavePos = actualPos + (reverse ? -2 : 2);
-                if (wavePos >= 0 && wavePos < NUM_LEDS)
-                {
+                if (wavePos >= 0 && wavePos < NUM_LEDS) {
                     strip.setPixelColor(wavePos, strip.Color(100, 10, 30));
                 }
             }
@@ -400,10 +390,8 @@ void cupidsArrow()
         }
 
         // Impact effect
-        if (reverse)
-        {
-            for (int flash = 0; flash < 3; flash++)
-            {
+        if (reverse) {
+            for (int flash = 0; flash < 3; flash++) {
                 strip.fill(strip.Color(255, 50, 70), 0, NUM_LEDS);
                 strip.show();
                 delay(30);
