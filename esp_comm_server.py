@@ -62,7 +62,9 @@ COMMAND_MAP = {
     9: "CUPIDSARROW",
     10: "CUSTOM COLOR:PULSE",
     11: "BEEMATRIX",
-    12: "TEXTMATRIX"
+    12: "TEXTMATRIX",
+    13: "TEXTMATRIXFAST",
+    14: "TEXTMATRIXBLUE"
 }
 
 @app.template_filter('is_active')

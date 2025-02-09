@@ -153,6 +153,10 @@ void loop() {
                 uint16_t speed = 100;
                 matrix_text(speed);
             }
+            else if (payload.equalsIgnoreCase("TEXTMATRIXBLUE")) {
+                uint16_t speed = 1000;
+                matrix_text(speed, 1);
+            }
             else {
                 setRandomColor();
             }
@@ -314,7 +318,7 @@ void matrix_bee() {
     delay(speed);
 }
 
-void matrix_text(uint16_t speed) {
+void matrix_text(uint16_t speed, int is_blue_background=0) {
     uint8_t waveSize = 20;
     int is_r = 0;
     int is_b = 0;
@@ -349,7 +353,7 @@ void matrix_text(uint16_t speed) {
         }
         else {
             is_r = 0;
-            is_b = 0;
+            is_b = is_blue_background;
         }
         uint8_t r = (uint8_t)(255 * is_r);
         uint8_t g = (uint8_t)(255 * is_r);
