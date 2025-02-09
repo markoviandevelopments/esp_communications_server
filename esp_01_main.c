@@ -64,7 +64,9 @@ int letter_W[HEIGHT][WIDTH_W] = {
     {1, 0, 0, 0, 0, 0, 1}
 };
 
+int text_sroll_x_dir = 1;
 int text_sroll_x = 0;
+
 
 void setup() {
     Serial.begin(115200);
@@ -352,7 +354,14 @@ void matrix_text() {
         strip.setPixelColor(i, strip.Color(r, g, b));
     }
     strip.show();
-    text_sroll_x = (text_sroll_x + 1) % 32;
+
+    text_sroll_x += text_sroll_x_dir;
+    if (text_sroll_x >= 31 - 2 - WIDTH_P - WIDTH_PLUS - WIDTH_W) {
+        text_sroll_x_dir = -1;
+    }
+    else if (text_sroll_x <= 0) {
+        text_sroll_x_dir = 1;
+    }
     delay(speed);
 }
 
