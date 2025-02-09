@@ -569,22 +569,23 @@ uint32_t parseColor(String hexStr) {
     return strip.Color(r, g, b);
 }
 
-void runColorPulse()
-{
-    Serial.print("🚀 Running Color Pulse with color: ");
+void runColorPulse() {
+    Serial.print("🚀 Running Chill Color Pulse: ");
     Serial.println(pulseColor, HEX);
 
-    int delayTime = 50;
-    int maxBrightness = 255;
-    int minBrightness = 10;
+    int delayTime = 80;      // ⏳ More relaxed effect
+    int maxBrightness = 255; // 🔆 Slightly dimmer max brightness for softer pulses
+    int minBrightness = 20;  // 🔅 Avoids completely turning off LEDs
+    pulseBrightness = minBrightness;
+    pulseDirection = 1;
+
     unsigned long lastCheckTime = millis();
 
-    // 🛑 Exit after 30 seconds
-    unsigned long startTime = millis();
-
-    while (true)
+    // Run pulse continuously, checking for updates
+    while (WiFi.status() == WL_CONNECTED)
     {
-        pulseBrightness += pulseDirection * 5;
+        pulseBrightness += pulseDirection * 1; // 🔄 Smoother, gradual fade
+
         if (pulseBrightness >= maxBrightness || pulseBrightness <= minBrightness)
         {
             pulseDirection *= -1;
@@ -592,28 +593,25 @@ void runColorPulse()
 
         uint32_t dimmedColor = dimColor(pulseColor, pulseBrightness);
 
-        Serial.print("🟢 Setting LEDs to Dimmed Color: ");
+        Serial.print("🎨 Chill Dimmed Color: ");
         Serial.println(dimmedColor, HEX);
 
         setStripColor(dimmedColor);
-        delay(delayTime);
+        delay(delayTime); // 🌊 Smooth transition delay
 
-        if (millis() - startTime > 30000)
-        { // Exit after 30 seconds
-            Serial.println("🛑 Exiting pulse effect after timeout.");
-            return;
-        }
-
-        if (millis() - lastCheckTime >= 5000)
+        // 🔄 Check for new commands every **1 second** instead of 5
+        if (millis() - lastCheckTime >= 1000)
         {
             lastCheckTime = millis();
             if (checkForNewCommand())
             {
                 Serial.println("🔄 New command detected, exiting pulse effect.");
-                return;
+                return; // **Exit immediately on new command**
             }
         }
     }
+
+    Serial.println("🛑 Lost WiFi connection, exiting pulse.");
 }
 
 uint32_t dimColor(uint32_t color, uint8_t brightness) {
