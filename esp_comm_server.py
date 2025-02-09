@@ -77,7 +77,7 @@ def index():
     if request.method == 'POST':
         selected_devices = request.form.getlist('devices')
         mode = request.form.get('mode')
-        color = request.form.get('color', '#000000')
+        color = request.form.get('color', '#0FF0000')
 
         if mode == '10':  # COLORPULSE mode
             hex_color = color.lstrip('#')
@@ -122,9 +122,12 @@ def get_device_command(device_id):
     devices[device_id]['last_seen'] = time.time()
     devices[device_id]['ip'] = request.remote_addr
     
+    print(f"Device {device_id} color: {devices[device_id].get('color', '#FF0000')}")
+
     if devices[device_id]['mode'] == 10:  # Custom Color Pulse
         color = devices[device_id].get('color', '#FF0000')
         return f"COLORPULSE:{color}\n"
+
     return f"{COMMAND_MAP[devices[device_id]['mode']]}\n"
 
 @app.template_filter('timestamp_to_time')
