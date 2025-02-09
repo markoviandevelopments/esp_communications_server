@@ -24,20 +24,20 @@ int pulseBrightness = 0;
 int pulseDirection = 1;
 
 #define HEIGHT 8
-#define WIDTH_P 6
+#define WIDTH_P 4
 #define WIDTH_PLUS 5
 #define WIDTH_W 7
 
 // Define the letter "P"
 int letter_P[HEIGHT][WIDTH_P] = {
-    {1, 1, 1, 1, 0, 0},
-    {1, 0, 0, 1, 0, 0},
-    {1, 0, 0, 1, 0, 0},
-    {1, 1, 1, 1, 0, 0},
-    {1, 0, 0, 0, 0, 0},
-    {1, 0, 0, 0, 0, 0},
-    {1, 0, 0, 0, 0, 0},
-    {1, 0, 0, 0, 0, 0}
+    {1, 1, 1, 1},
+    {1, 0, 0, 1},
+    {1, 0, 0, 1},
+    {1, 1, 1, 1},
+    {1, 0, 0, 0},
+    {1, 0, 0, 0},
+    {1, 0, 0, 0},
+    {1, 0, 0, 0}
 };
 
 // Define the letter "+"
@@ -321,11 +321,11 @@ void matrix_text() {
             if (x < WIDTH_P) {
                 is_on[index] = letter_P[y][x];
             }
-            else if (x < WIDTH_P + WIDTH_PLUS) {
-                is_on[index] = letter_PLUS[y][x - WIDTH_P];
+            else if (x < WIDTH_P + WIDTH_PLUS + 1) {
+                is_on[index] = letter_PLUS[y][x - WIDTH_P - 1];
             }
-            else if (x < WIDTH_P + WIDTH_PLUS + WIDTH_W) {
-                is_on[index] = letter_W[y][x - WIDTH_P - WIDTH_PLUS];
+            else if (x < WIDTH_P + WIDTH_PLUS + WIDTH_W + 2) {
+                is_on[index] = letter_W[y][x - WIDTH_P - WIDTH_PLUS - 2];
             }
             else {
                 is_on[index] = 0;
