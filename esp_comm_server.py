@@ -11,7 +11,7 @@ devices = {
         'port': 5000,
         'last_seen': None,
         'ip': None, 
-        # 'color': '#FFBBDD'
+        'color': '#FFBBDD'
     },
     '002': {
         'mode': 0,
