@@ -11,7 +11,6 @@ devices = {
         'port': 5000,
         'last_seen': None,
         'ip': None, 
-        'color': '#FFBBDD'
     },
     '002': {
         'mode': 0,
@@ -19,7 +18,6 @@ devices = {
         'port': 5001,
         'last_seen': None,
         'ip': None, 
-        'color': '#FF0000'
     },
     '003': {
         'mode': 0,
@@ -27,7 +25,6 @@ devices = {
         'port': 5002,
         'last_seen': None,
         'ip': None, 
-        'color': '#FF0000'
     },
     '004': {
         'mode': 0,
@@ -35,7 +32,6 @@ devices = {
         'port': 5003,
         'last_seen': None,
         'ip': None, 
-        'color': '#FF0000'
     },
     '005': {
         'mode': 0,
@@ -43,7 +39,6 @@ devices = {
         'port': 5004,
         'last_seen': None,
         'ip': None, 
-        'color': '#FF0000'
     },    
     '006': {
         'mode': 0,
@@ -51,7 +46,6 @@ devices = {
         'port': 5006,
         'last_seen': None,
         'ip': None, 
-        'color': '#FF0000'
     },    
 }
 
@@ -88,7 +82,7 @@ def index():
         color = request.form.get('color', '#DC2896').strip()
 
         print(f"DEBUG: Mode={mode}, Color={color}, Devices={selected_devices}")
-        
+
     if mode == '10':  # COLORPULSE mode
         if not color.startswith('#'):
             color = '#' + color
