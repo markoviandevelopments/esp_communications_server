@@ -1,136 +1,80 @@
 :root {
-    /* Maintained Your Dark Theme Core */
-    --bg-color: #0a0a0a;
-    --container-bg: rgba(15, 15, 15, 0.95);
-    --font-main: 'Orbitron', sans-serif;
-
-    /* Hitchhiker's Accent Colors */
-    --primary-glow: #6CF0FF;
-    /* Guidebook blue */
-    --secondary-accent: #FFB347;
-    /* Orange towel highlight */
-    --alert-color: #FF69B4;
-    /* Zaphod's pink shirt */
-    --vogon-poetry: #4AFF72;
-    /* Sickly green */
+    --primary-color: #6CF0FF;  /* Futuristic blue */
+    --secondary-color: #FFB347; /* Orange like the book cover */
+    --highlight-color: #FF69B4;  /* Zaphod pink */
+    --bg-color: #0A0025;  /* Deep space purple */
+    --container-bg: rgba(10, 0, 37, 0.95); /* Semi-transparent dark */
+    --font-main: 'Courier New', monospace;  /* Typewriter feel */
 }
 
 body {
-    background:
-        radial-gradient(circle at 50% 50%, #1a1a1a 0%, var(--bg-color) 100%),
-        repeating-linear-gradient(45deg,
-            transparent,
-            transparent 2px,
-            rgba(108, 240, 255, 0.05) 2px,
-            rgba(108, 240, 255, 0.05) 4px);
+    background: var(--bg-color) url('https://assets.codepen.io/557388/stars.png');
+    animation: stars 60s linear infinite;
     font-family: var(--font-main);
 }
 
 .container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border: 3px dashed var(--secondary-color);
     background: var(--container-bg);
-    border: 1px solid var(--primary-glow);
-    box-shadow: 0 0 30px rgba(108, 240, 255, 0.2);
     position: relative;
-    overflow: hidden;
 }
 
-/* Subtle Guidebook Elements */
-.container::before {
-    content: "✋🌌";
-    /* Hitchhiker hand + galaxy */
-    position: absolute;
-    bottom: -30px;
-    right: -30px;
-    font-size: 4rem;
-    opacity: 0.1;
-    pointer-events: none;
-}
-
-/* Hybrid Table Design */
-table {
-    background: #111111;
-    border: 1px solid rgba(108, 240, 255, 0.3);
-}
-
-th {
-    background: #1a1a1a !important;
-    border-bottom: 2px solid var(--secondary-accent);
-    color: var(--primary-glow) !important;
-}
-
-td {
-    border-color: rgba(108, 240, 255, 0.1);
-}
-
-/* Status Indicators with Thematic Flair */
-.active {
-    color: var(--vogon-poetry);
-    position: relative;
-    padding-left: 25px !important;
-}
-
-.active::before {
-    content: "✔";
-    position: absolute;
-    left: 5px;
-    color: #00FF00;
-}
-
-.inactive {
-    color: var(--alert-color);
-    padding-left: 25px !important;
-}
-
-.inactive::before {
-    content: "✖";
-    position: absolute;
-    left: 5px;
-}
-
-/* Form Elements - Dark Base with Guide Flair */
-select {
-    background: #000;
-    border: 1px solid var(--primary-glow);
-    color: var(--primary-glow);
-    font-family: 'Courier New', monospace;
-    /* Guidebook feel */
-}
-
-button {
-    background: linear-gradient(to bottom, #2a2a2a, #000);
-    border: 1px solid var(--secondary-accent);
-    color: var(--secondary-accent);
-    transition: all 0.3s ease;
-}
-
-button:hover {
-    box-shadow: 0 0 15px var(--secondary-accent);
-    text-shadow: 0 0 10px var(--secondary-accent);
-}
-
-/* Subtle Animation */
-@keyframes guidePulse {
-    0% {
-        opacity: 0.8;
-    }
-
-    50% {
-        opacity: 0.4;
-    }
-
-    100% {
-        opacity: 0.8;
-    }
-}
-
+/* Don't Panic! watermark */
 .container::after {
-    content: "42";
+    content: "DON'T PANIC";
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 8rem;
-    color: rgba(108, 240, 255, 0.03);
-    animation: guidePulse 20s infinite;
+    transform: translate(-50%, -50%) rotate(-15deg);
+    font-size: 4rem;
+    color: rgba(108, 240, 255, 0.1);
     pointer-events: none;
+}
+
+/* Form Elements */
+select {
+    background: black;
+    border: 2px solid var(--secondary-color);
+    color: var(--primary-color);
+    padding: 0.5rem;
+    font-family: var(--font-main);
+}
+
+button {
+    background: linear-gradient(to bottom, #FFB347, #FF4500);
+    border: 1px solid var(--secondary-color);
+    padding: 0.5rem 2rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Table - Spaceship Console Style */
+table {
+    border: 2px solid var(--primary-color);
+    margin: 2rem 0;
+    background: black;
+}
+
+th {
+    background: #1A0035 !important;
+    color: var(--primary-color) !important;
+    border-bottom: 3px solid var(--secondary-color);
+    font-family: 'Orbitron', sans-serif;
+}
+
+td {
+    border-color: rgba(108, 240, 255, 0.2);
+    padding: 12px !important;
+}
+
+.active { color: #00FF00; }
+.inactive { color: #FF0033; }
+
+/* Hitchhiker Status Indicators */
+tr:hover td {
+    background: rgba(108, 240, 255, 0.1);
+    cursor: url('https://assets.codepen.io/557388/hand_white.png'), auto;
 }
