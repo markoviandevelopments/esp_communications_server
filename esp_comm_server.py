@@ -116,7 +116,7 @@ def get_device_command(device_id):
     devices[device_id]['ip'] = request.remote_addr
     
     if devices[device_id]['mode'] == 10:  # Custom Color Pulse
-        color = devices[device_id].get('color', '#FFFFFF')
+        color = devices[device_id].get('color', '#FF0000')
         return f"COLORPULSE:{color}\n"
     return f"{COMMAND_MAP[devices[device_id]['mode']]}\n"
 

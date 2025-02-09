@@ -415,20 +415,46 @@ void cupidsArrow()
     }
 }
 
-uint32_t parseColor(String hexStr) {
-    hexStr = hexStr.substring(1); // Remove '#'
+uint32_t parseColor(String hexStr)
+{
+    hexStr.trim();
+    if (hexStr.startsWith("#"))
+    {
+        hexStr = hexStr.substring(1); // Remove leading '#'
+    }
+
+    if (hexStr.length() != 6)
+    {
+        Serial.println("Invalid color format!");
+        return strip.Color(255, 255, 255); // Default to white if parsing fails
+    }
+
     long number = strtol(hexStr.c_str(), NULL, 16);
-    return strip.Color((number >> 16) & 0xFF, (number >> 8) & 0xFF, number & 0xFF);
+    uint8_t r = (number >> 16) & 0xFF;
+    uint8_t g = (number >> 8) & 0xFF;
+    uint8_t b = number & 0xFF;
+
+    Serial.print("Parsed Color - R: ");
+    Serial.print(r);
+    Serial.print(" G: ");
+    Serial.print(g);
+    Serial.print(" B: ");
+    Serial.println(b);
+
+    return strip.Color(r, g, b);
 }
 
 void runColorPulse() {
     int delayTime = 50;
     int maxBrightness = 255;
-    int minBrightness = 10; // Prevent full blackout
+    int minBrightness = 10;
+    unsigned long lastCheckTime = millis();
 
-    while (true) {
+    while (true)
+    {
         pulseBrightness += pulseDirection * 5;
-        if (pulseBrightness >= maxBrightness || pulseBrightness <= minBrightness) {
+        if (pulseBrightness >= maxBrightness || pulseBrightness <= minBrightness)
+        {
             pulseDirection *= -1;
         }
 
@@ -436,18 +462,33 @@ void runColorPulse() {
         setStripColor(dimmedColor);
         delay(delayTime);
 
-        // Check for new commands periodically
-        if (checkForNewCommand()) {
-            Serial.println("New command detected, exiting pulse effect.");
-            return;
+        // Check for new commands every 5 seconds
+        if (millis() - lastCheckTime >= 5000)
+        {
+            lastCheckTime = millis();
+            if (checkForNewCommand())
+            {
+                Serial.println("New command detected, exiting pulse effect.");
+                return;
+            }
         }
     }
 }
 
 uint32_t dimColor(uint32_t color, uint8_t brightness) {
-    uint8_t r = ((color >> 16) & 0xFF) * brightness / 255;
-    uint8_t g = ((color >> 8) & 0xFF) * brightness / 255;
-    uint8_t b = (color & 0xFF) * brightness / 255;
+    float scale = brightness / 255.0; // Ensure floating-point scaling
+
+    uint8_t r = ((color >> 16) & 0xFF) * scale;
+    uint8_t g = ((color >> 8) & 0xFF) * scale;
+    uint8_t b = (color & 0xFF) * scale;
+
+    Serial.print("Dimmed Color - R: ");
+    Serial.print(r);
+    Serial.print(" G: ");
+    Serial.print(g);
+    Serial.print(" B: ");
+    Serial.println(b);
+
     return strip.Color(r, g, b);
 }
 
