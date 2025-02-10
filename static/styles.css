@@ -223,32 +223,6 @@ td.inactive {
     }
 }
 
-.babel-fish {
-    width: 40px;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    animation: babelFishSwim 5s infinite ease-in-out;
-}
-
-/* Towel Status */
-.towel-status {
-    font-size: 16px;
-    color: #FFD700;
-    text-shadow: 0 0 5px #FFD700;
-    margin-top: 10px;
-}
-
-/* Vogon Poetry Warning */
-.vogon-warning {
-    font-size: 14px;
-    font-weight: bold;
-    color: #FF4500;
-    margin-top: 20px;
-    text-shadow: 0 0 5px #FF4500;
-    animation: vogonBlink 1.5s infinite alternate;
-}
-
 @keyframes vogonBlink {
     0% {
         opacity: 1;
