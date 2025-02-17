@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&display=swap');
 
-/* === VARIABLES === */
 :root {
     --primary-color: #00FF41;
     --secondary-color: #FFD700;
@@ -10,19 +9,12 @@
     --border-radius: 10px;
     --shadow-glow: 0 0 20px var(--primary-color);
     --font-main: 'Orbitron', sans-serif;
-    --font-size-default: 18px;
-    --font-size-large: 40px;
-    --font-size-xlarge: 42px;
+    --font-size-default: 16px;
 }
 
-/* === BODY === */
+/* BODY */
 body {
     background-color: var(--bg-color);
-    background-image: radial-gradient(white 1px, transparent 1px),
-        radial-gradient(white 1px, transparent 1px);
-    background-size: 50px 50px;
-    background-position: 0 0, 25px 25px;
-    animation: stars 10s linear infinite;
     font-family: var(--font-main);
     color: var(--primary-color);
     text-align: center;
@@ -30,205 +22,112 @@ body {
     padding: 0;
 }
 
-/* Starry background animation */
-@keyframes stars {
-    from { background-position: 0 0; }
-    to { background-position: -1000px 1000px; }
-}
-
-/* === CONTAINER === */
+/* CONTAINER */
 .container {
-    margin-top: 50px;
-    padding: 30px;
-    border: 2px solid var(--primary-color);
+    max-width: 90%;
+    width: 600px;
+    margin: 20px auto;
+    padding: 20px;
     border-radius: var(--border-radius);
     background-color: var(--container-bg);
     box-shadow: var(--shadow-glow);
-    display: inline-block;
 }
 
-
-/* === HEADERS & TEXT === */
+/* TEXT */
 h1 {
     color: var(--secondary-color);
-    text-shadow: 0 0 10px var(--secondary-color), 0 0 20px var(--highlight-color);
-    font-size: var(--font-size-large);
+    text-shadow: 0 0 10px var(--highlight-color);
+    font-size: 24px;
 }
 
 p {
     font-size: var(--font-size-default);
-    color: var(--primary-color);
 }
 
-.message {
-    font-size: 20px;
-    font-weight: bold;
-    margin-top: 20px;
-    color: var(--secondary-color);
-    text-shadow: 0 0 5px var(--secondary-color);
-}
-
-/* === FORM ELEMENTS === */
+/* FORM */
 form {
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
-select, input {
+select,
+input {
     background-color: var(--bg-color);
     color: var(--primary-color);
     border: 2px solid var(--primary-color);
-    padding: 10px;
-    font-size: 16px;
-    text-align: center;
+    padding: 8px;
+    font-size: 14px;
     outline: none;
     box-shadow: 0 0 10px var(--primary-color);
 }
 
 button {
-    background-color: #00FF41;
+    background-color: var(--primary-color);
     color: black;
     border: none;
-    padding: 12px 24px;
-    font-size: 18px;
-    font-weight: bold;
+    padding: 10px 20px;
+    font-size: 16px;
     cursor: pointer;
-    transition: 0.3s;
     text-transform: uppercase;
     letter-spacing: 1px;
-    box-shadow: 0 0 20px #00FF41;
+    box-shadow: 0 0 15px var(--primary-color);
     border-radius: 5px;
 }
 
 button:hover {
-    background-color: #FF4500;
-    color: #FFF;
-    box-shadow: 0 0 20px #FF4500;
+    background-color: var(--highlight-color);
+    color: white;
+    box-shadow: 0 0 15px var(--highlight-color);
 }
 
-/* Easter egg: The Ultimate Answer */
-#answer {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 42px;
-    color: #FFD700;
-    text-shadow: 0 0 10px #FFD700, 0 0 20px #FF4500;
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
-    pointer-events: none; /* Prevent accidental selection */
-}
-
-body:hover #answer {
-    opacity: 1;
-}
-
-.image-container {
-    margin-top: 30px;
-    text-align: center;
-}
-
-.image-container img {
-    width: 50%;
-    max-width: 500px;
-    border: 3px solid #00FF41;
-    box-shadow: 0 0 15px #00FF41;
-    border-radius: 10px;
-}
-
-.caption {
-    font-size: 18px;
-    color: #FFD700;
-    text-shadow: 0 0 5px #FFD700;
-    margin-top: 10px;
-}
-
+/* DEVICE STATUS TABLE */
 table {
     width: 100%;
     border-collapse: collapse;
-}
-th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-}
-th {
-    background-color: #a19696;
+    font-size: 14px;
 }
 
-/* Optional enhanced version */
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 6px;
+    text-align: left;
+}
+
+th {
+    background-color: #222;
+}
+
 td.active {
     color: #00ff00;
     background-color: #003300;
     padding: 3px 8px;
-    border-radius: 12px;
-    display: inline-block;
+    border-radius: 10px;
 }
 
 td.inactive {
     color: #ff6666;
     background-color: #330000;
     padding: 3px 8px;
-    border-radius: 12px;
-    display: inline-block;
+    border-radius: 10px;
 }
 
-/* === HGTTG THEME UPGRADES === */
-
-/* DON'T PANIC Banner */
-.dont-panic {
-    font-size: 24px;
-    font-weight: bold;
-    color: #FF4500;
-    text-shadow: 0 0 15px #FF4500;
-    background: rgba(0, 0, 0, 0.7);
-    padding: 10px;
-    border-radius: 5px;
-    display: inline-block;
-    margin-bottom: 20px;
-    animation: glowText 1.5s infinite alternate;
-}
-
-/* Blinking glow for added HGTTG effect */
-@keyframes glowText {
-    0% {
-        text-shadow: 0 0 10px #FF4500;
+/* MOBILE OPTIMIZATION */
+@media screen and (max-width: 600px) {
+    .container {
+        width: 95%;
+        padding: 15px;
     }
 
-    100% {
-        text-shadow: 0 0 20px #FFD700;
-    }
-}
-
-/* Marvin’s Inactive Status Commentary */
-.status-inactive::after {
-    content: " (Oh dear, another one offline...)";
-    font-size: 14px;
-    color: #FFD700;
-    font-style: italic;
-}
-
-/* Babel Fish Loader */
-@keyframes babelFishSwim {
-    0% {
-        transform: translateX(-50px) rotate(0deg);
+    h1 {
+        font-size: 20px;
     }
 
-    50% {
-        transform: translateX(50px) rotate(5deg);
+    select,
+    input {
+        font-size: 12px;
     }
 
-    100% {
-        transform: translateX(-50px) rotate(-5deg);
-    }
-}
-
-@keyframes vogonBlink {
-    0% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0.5;
+    button {
+        font-size: 14px;
     }
 }
