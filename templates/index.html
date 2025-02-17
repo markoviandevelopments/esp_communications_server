@@ -11,10 +11,11 @@
 
 <body>
     <div class="container">
+        <!-- Don't Panic Banner -->
         <div class="dont-panic">DON'T PANIC</div>
 
         <div class="guide-message">
-            <h1>ESP LED Control</h1>
+            <h1>Your ESP LED Control Guide</h1>
             <small>Section 3A: Light Manipulation</small>
         </div>
 
@@ -43,8 +44,8 @@
                 </select>
             </div>
 
-            <!-- Color Picker Group (Always Visible) -->
-            <div class="form-group">
+            <!-- Color Picker (Always Visible) -->
+            <div class="color-picker-container">
                 <label>Select Color:</label>
                 <div id="colorPicker"></div>
                 <input type="hidden" id="selectedColor" name="color" value="{{ devices['001']['color'] }}">
@@ -97,7 +98,7 @@
     <!-- JavaScript -->
     <script>
         // Initialize the color picker
-        const colorPicker = new iro.ColorPicker('#colorPicker', { width: 150 });
+        const colorPicker = new iro.ColorPicker('#colorPicker', { width: 200 });
 
         // Set default color on load
         document.getElementById('selectedColor').value = "{{ devices['001']['color'] }}";
