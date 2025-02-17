@@ -14,6 +14,11 @@ const char *ssid = "Brubaker Wifi";
 const char *password = "Pre$ton01";
 const char *serverUrl = "http://10.1.10.79:4999/device/001";
 
+volatile bool newCommandReceived = false; // this flag monitors state changes
+
+unsigned long lastServerCheck = 0;
+const int serverCheckInterval = 300;
+
 int fight_kampf[NUM_LEDS];  // For FIGHTKAMPF effect
 
 int bee_x = 16;
@@ -96,105 +101,136 @@ void setup() {
 
 void loop() {
     if (WiFi.status() == WL_CONNECTED) {
-        WiFiClient client;
-        HTTPClient http;
+        if (millis() - lastServerCheck >= serverCheckInterval) {
+            lastServerCheck = millis();
 
-        http.begin(client, serverUrl);
-        http.setTimeout(2000);
-        
-        int httpCode = http.GET();
+            WiFiClient client;
+            HTTPClient http;
+            http.begin(client, serverUrl);
+            http.setTimeout(2000);
 
-        if (httpCode > 0) {
-            String payload = http.getString();
-            payload.trim();
-            Serial.print("Server command: ");
-            Serial.println(payload);
+            int httpCode = http.GET();
+            if (httpCode > 0) {
+                String payload = http.getString();
+                payload.trim();
+                Serial.print("Server command: ");
+                Serial.println(payload);
 
-            if (payload.startsWith("COLORPULSE")) {
-                int colonIndex = payload.indexOf(':');
-                if (colonIndex != -1) {
-                    String colorStr = payload.substring(colonIndex + 1);
-                    pulseColor = parseColor(colorStr);
+                newCommandReceived = false; // Reset flag before processing new command
+
+                if (payload.startsWith("COLORPULSE")) {
+                    int colonIndex = payload.indexOf(':');
+                    if (colonIndex != -1)
+                    {
+                        String colorStr = payload.substring(colonIndex + 1);
+                        pulseColor = parseColor(colorStr);
+                    }
+                    runColorPulse(); // ✅ No infinite loop now
                 }
-                runColorPulse(); // Call function
-            }
-            else if (payload.equalsIgnoreCase("FAST")) {
-                rainbowEffect(50);
-            }
-            else if (payload.equalsIgnoreCase("SLOW")) {
-                bluePulses();
-            }
-            else if (payload.equalsIgnoreCase("VALENTINE")) {
-                valentineEffect();
-            }
-            else if (payload.equalsIgnoreCase("PINKWAVES")) {
-                playfulPinkWaves();
-            }
-            else if (payload.equalsIgnoreCase("FIGHTKAMPF")) {
-                fight_kampfen();
-            }
-            else if (payload.equalsIgnoreCase("HEARTWAVE")) {
-                beatingHeartWave();
-            }
-            else if (payload.equalsIgnoreCase("ROMPULSE")) {
-                romanticPulse();
-            }
-            else if (payload.equalsIgnoreCase("CUPIDSARROW")) {
-                cupidsArrow();
-            }
-            else if (payload.equalsIgnoreCase("BEEMATRIX")) {
-                matrix_bee();
-            }
-            else if (payload.equalsIgnoreCase("TEXTMATRIX")) {
-                uint16_t speed = 1000;
-                matrix_text(speed);
-            }
-            else if (payload.equalsIgnoreCase("TEXTMATRIXFAST")) {
-                uint16_t speed = 100;
-                matrix_text(speed);
-            }
-            else if (payload.equalsIgnoreCase("TEXTMATRIXBLUE")) {
-                uint16_t speed = 1000;
-                matrix_text(speed, 1);
+                else if (payload.equalsIgnoreCase("FAST")) {
+                    rainbowEffect(50);
+                }
+                else if (payload.equalsIgnoreCase("SLOW")) {
+                    bluePulses();
+                }
+                else if (payload.equalsIgnoreCase("VALENTINE")) {
+                    valentineEffect();
+                }
+                else if (payload.equalsIgnoreCase("PINKWAVES")) {
+                    playfulPinkWaves();
+                }
+                else if (payload.equalsIgnoreCase("FIGHTKAMPF")) {
+                    fight_kampfen();
+                }
+                else if (payload.equalsIgnoreCase("HEARTWAVE")) {
+                    beatingHeartWave();
+                }
+                else if (payload.equalsIgnoreCase("ROMPULSE")) {
+                    romanticPulse();
+                }
+                else if (payload.equalsIgnoreCase("CUPIDSARROW")) {
+                    cupidsArrow();
+                }
+                else if (payload.equalsIgnoreCase("BEEMATRIX")) {
+                    matrix_bee();
+                }
+                else if (payload.equalsIgnoreCase("TEXTMATRIX")) {
+                    uint16_t speed = 1000;
+                    matrix_text(speed);
+                }
+                else if (payload.equalsIgnoreCase("TEXTMATRIXFAST")) {
+                    uint16_t speed = 100;
+                    matrix_text(speed);
+                }
+                else if (payload.equalsIgnoreCase("TEXTMATRIXBLUE")) {
+                    uint16_t speed = 1000;
+                    matrix_text(speed, 1);
+                }
+                else if (payload.equalsIgnoreCase("RESET")) {
+                    Serial.println("🔄 Resetting LED system!");
+                    strip.clear();
+                    strip.show();
+                }
+
+                else {
+                    setRandomColor();
+                }
             }
             else {
-                setRandomColor();
+                Serial.print("HTTP error: ");
+                Serial.println(httpCode);
             }
+            http.end();
         }
-        else {
-            Serial.print("HTTP error: ");
-            Serial.println(httpCode);
+        else
+        {
+            Serial.println("WiFi not connected.");
         }
-        http.end();
     }
-    else {
-        Serial.println("WiFi not connected.");
-    }
-    delay(1000); // Check server every second
 }
 
-// Effect functions (same as original but removed matrix-specific code)
 void rainbowEffect(int wait) {
+    unsigned long startTime = millis();
+
     for (int j = 0; j < 256; j++) {
         for (int i = 0; i < NUM_LEDS; i++) {
             int hue = (i + j) & 255;
             strip.setPixelColor(i, strip.ColorHSV(hue * 256, 255, 255));
         }
         strip.show();
-        delay(wait);
+
+        if (newCommandReceived)
+            return;
+
+        while (millis() - startTime < wait) {
+            if (newCommandReceived)
+                return;
+            delay(1);
+        }
+        startTime = millis();
     }
 }
 
 void bluePulses() {
-    int wait = 50;
+    unsigned long startTime = millis();
+
     for (int j = 0; j < 256; j++) {
         for (int i = 0; i < NUM_LEDS; i++) {
             int hue = (i + j) % 170;
-            hue = map(hue, 0, 170, 0, 65535 / 3);
-            strip.setPixelColor(i, strip.ColorHSV(hue, 255, 255));
+            int adjustedHue = hue * (65535 / 170); // Precompute mapping
+            strip.setPixelColor(i, strip.ColorHSV(adjustedHue, 255, 255));
         }
         strip.show();
-        delay(wait);
+
+        if (newCommandReceived)
+            return;
+
+        while (millis() - startTime < 50) { // Ensures precise timing without blocking
+            if (newCommandReceived)
+                return;
+            delay(1);
+        }
+        startTime = millis();
     }
 }
 
@@ -202,27 +238,53 @@ void valentineEffect() {
     uint32_t baseColor = strip.Color(150, 0, 50);
     int beats[] = {50, 200, 150, 255, 0};
     int durations[] = {50, 30, 80, 200};
+    unsigned long startTime = millis();
 
     for (int i = 0; i < 5; i++) {
         float factor = (float)beats[i] / 255.0f;
         uint8_t r = (uint8_t)(150 * factor);
         setStripColor(strip.Color(r, 0, (uint8_t)(50 * factor)));
         strip.show();
-        delay(durations[i % 4]);
+
+        if (newCommandReceived)
+            return;
+
+        while (millis() - startTime < durations[i % 4]) {
+            if (newCommandReceived)
+                return;
+            delay(1);
+        }
+        startTime = millis();
     }
 }
 
 void playfulPinkWaves() {
-    for (int j = 0; j < 256; j++) { // Animation loop
-        for (int i = 0; i < NUM_LEDS; i++) {
-            // Create a wave effect with a sine function for smooth rolling motion
-            int wave = sin((i + j) * 0.2) * 127 + 128; // Generates values from 0-255 smoothly
-            int hue = map(wave, 0, 255, 48000, 65535); // Focus on pink/magenta hues
+    unsigned long startTime = millis();
 
-            strip.setPixelColor(i, strip.ColorHSV(hue, 255, 255)); // Keep full saturation and brightness
+    for (int j = 0; j < 256; j++) {
+        float sinValues[NUM_LEDS];
+
+        // Precompute sine values to avoid excessive calculations
+        for (int i = 0; i < NUM_LEDS; i++) {
+            sinValues[i] = sin((i + j) * 0.2) * 127 + 128;
+        }
+
+        for (int i = 0; i < NUM_LEDS; i++) {
+            int hue = map(sinValues[i], 0, 255, 48000, 65535);
+            strip.setPixelColor(i, strip.ColorHSV(hue, 255, 255));
         }
         strip.show();
-        delay(100);
+
+        if (newCommandReceived)
+            return;
+
+        while (millis() - startTime < 100)
+        {
+            if (newCommandReceived)
+                return;
+            delay(1);
+        }
+        startTime = millis();
     }
 }
 
@@ -377,82 +439,80 @@ void matrix_text(uint16_t speed, int is_blue_background) {
     delay(speed);
 }
 
-
-
-
 void beatingHeartWave()
 {
     const int pulseSpeed = 60;
-    const float maxBrightness = 0.8; // Reduced max for better pulse effect
+    const float maxBrightness = 0.8;
 
     for (int beat = 0; beat < 3; beat++)
-    { // Triple heartbeat pattern
+    {
         float heartSize = 8.0;
-        float pulse = (beat % 2 == 0) ? 0.8 : 1.2; // Alternating strong/weak beats
+        float pulse = (beat % 2 == 0) ? 0.8 : 1.2;
 
-        for (int i = 0; i < 50; i++)
-        { // Per-beat animation cycle
+        unsigned long startTime = millis();
+        while (millis() - startTime < pulseSpeed * 50)
+        { // Non-blocking loop
             strip.clear();
-            float throb = heartSize * (1.0 + sin(i / 8.0)) * pulse;
+            float timeFactor = (millis() % pulseSpeed) / (float)pulseSpeed;
+            float throb = heartSize * (1.0 + sin(timeFactor * PI)) * pulse;
 
-            // Dynamic core heartbeat
             for (int pos = 0; pos < NUM_LEDS; pos++)
             {
                 float distance = abs(pos - NUM_LEDS / 2);
                 float intensity = maxBrightness * constrain(1.0 - distance / throb, 0, 1);
-                intensity = pow(intensity, 1.5); // Sharper falloff
+                intensity = pow(intensity, 1.5);
 
                 // Crimson core with golden sparkles
                 if (random(100) > 95)
-                {                                                        // 5% sparkle chance
-                    strip.setPixelColor(pos, strip.Color(255, 210, 50)); // Gold sparkle
+                {
+                    strip.setPixelColor(pos, strip.Color(255, 210, 50));
                 }
                 else
                 {
                     strip.setPixelColor(pos, strip.Color(180 * intensity, 10 * intensity, 20 * intensity));
                 }
             }
-
             strip.show();
-            delay(pulseSpeed / 2);
+
+            // ✅ Allow commands to interrupt!
+            if (newCommandReceived)
+                return;
+            delay(10);
         }
     }
 }
 
 void romanticPulse()
 {
-    const int cycleTime = 13;         // Slightly faster tempo
-    const float pulseFrequency = 2.5; // More dynamic movement
-    const int glitterChance = 50;     // 2% chance per LED for glitter
+    const int cycleTime = 13;
+    const float pulseFrequency = 2.5;
+    const int glitterChance = 50;
+    unsigned long startTime = millis();
 
-    for (int t = 0; t < 500; t++) {
+    while (millis() - startTime < 3000)
+    { // Limit to 3 seconds max
         float timeFactor = millis() * 0.001;
-
-        // Multi-layer waveform with harmonics
         float baseWave = sin(timeFactor * pulseFrequency);
         float harmonic = sin(timeFactor * pulseFrequency * 3.7) * 0.3;
         float pulseWave = (baseWave + harmonic + 1.2) * 0.6;
 
-        // Create crimson core with golden accents
-        for (int i = 0; i < NUM_LEDS; i++) {
+        for (int i = 0; i < NUM_LEDS; i++)
+        {
             float posWave = sin((i * 0.3) + timeFactor * 3);
             float ripple = cos((i * 0.15) - timeFactor * 4);
 
-            // Dynamic red gradients
             uint8_t r = constrain(220 * pulseWave * (0.8 + posWave * 0.3), 50, 255);
             uint8_t g = constrain(30 * pulseWave * (0.5 + ripple * 0.2), 0, 40);
             uint8_t b = constrain(25 * (1.2 - pulseWave), 0, 30);
 
-            // Add random ruby sparkles
             if (random(1000) < glitterChance)
             {
                 r = constrain(r + 150, 0, 255);
                 g = constrain(g + 40, 0, 80);
-                b = 0; // Kill blue for pure fire effect
+                b = 0;
             }
 
-            // Velvet fade effect on every 3rd LED
-            if (i % 3 == (t % 3))
+            if (i % 3 == (millis() / cycleTime) % 3)
             {
                 r *= 0.8;
                 g *= 0.5;
@@ -461,95 +521,63 @@ void romanticPulse()
 
             strip.setPixelColor(i, strip.Color(r, g, b));
         }
-
-        // Add traveling "love surge" wave
-        static float surgePos = 0;
-        surgePos = fmod(surgePos + 0.7, NUM_LEDS);
-        for (int s = -2; s <= 2; s++) {
-            int pos = (int)surgePos + s;
-            if (pos >= 0 && pos < NUM_LEDS)
-            {
-                float intensity = 1.0 - abs(s) / 3.0;
-                uint8_t r = strip.getPixelColor(pos) >> 16;
-                r = constrain(r + 80 * intensity, 0, 255);
-                strip.setPixelColor(pos, strip.Color(r, 0, 0));
-            }
-        }
-
         strip.show();
+
+        if (newCommandReceived)
+            return;
         delay(cycleTime);
     }
 }
 
-void cupidsArrow() {
+void cupidsArrow()
+{
     const int numArrows = 2;
     const int tailLength = 10;
-    uint32_t coreColor = strip.Color(220, 40, 150); // Electric crimson
 
-    for (int arrow = 0; arrow < numArrows; arrow++) {
-        bool reverse = arrow % 2; // Alternate directions
+    for (int arrow = 0; arrow < numArrows; arrow++)
+    {
+        bool reverse = arrow % 2;
 
-        for (int pos = 0; pos < NUM_LEDS + tailLength; pos++) {
-            strip.clear();
+        for (int pos = 0; pos < NUM_LEDS + tailLength; pos++)
+        {
             int actualPos = reverse ? (NUM_LEDS - pos) : pos;
 
-            // Arrowhead with plasma effect
-            if (actualPos >= 0 && actualPos < NUM_LEDS) {
-                uint8_t flicker = 200 + random(55);
-                strip.setPixelColor(actualPos, strip.Color(flicker, 40 * flicker / 255, 50 * flicker / 255));
+            // Instead of clearing, fade the trail
+            for (int i = 0; i < NUM_LEDS; i++)
+            {
+                uint32_t currentColor = strip.getPixelColor(i);
+                uint8_t r = (currentColor >> 16) & 0xFF;
+                uint8_t g = (currentColor >> 8) & 0xFF;
+                uint8_t b = currentColor & 0xFF;
+
+                r *= 0.8;
+                g *= 0.8;
+                b *= 0.8;
+
+                strip.setPixelColor(i, strip.Color(r, g, b));
             }
 
-            // Ionized trail
-            for (int t = 1; t < tailLength; t++) {
-                int trailPos = actualPos - (reverse ? -t : t);
-                if (trailPos >= 0 && trailPos < NUM_LEDS) {
-                    float intensity = 1.0 - (float)t / (tailLength * 0.8);
-                    uint8_t red = 255 * intensity;
-                    uint8_t spark = random(0, 100) < (30 * intensity) ? 255 : 0; // Random sparks
-
-                    strip.setPixelColor(trailPos, strip.Color(
-                                                      red,
-                                                      20 * intensity + spark,
-                                                      30 * intensity + spark));
-                }
-            }
-
-            // Leading shockwave
-            if (random(10) > 6)
-            { // 40% chance for shockwave
-                int wavePos = actualPos + (reverse ? -2 : 2);
-                if (wavePos >= 0 && wavePos < NUM_LEDS) {
-                    strip.setPixelColor(wavePos, strip.Color(100, 10, 30));
-                }
+            if (actualPos >= 0 && actualPos < NUM_LEDS)
+            {
+                strip.setPixelColor(actualPos, strip.Color(255, 50, 70));
             }
 
             strip.show();
-            delay(arrow % 2 ? 15 : 20); // Vary speed slightly
-        }
 
-        // Impact effect
-        if (reverse) {
-            for (int flash = 0; flash < 3; flash++) {
-                strip.fill(strip.Color(255, 50, 70), 0, NUM_LEDS);
-                strip.show();
-                delay(30);
-                strip.clear();
-                strip.show();
-                delay(30);
-            }
+            if (newCommandReceived)
+                return;
+            delay(15);
         }
     }
 }
 
 uint32_t parseColor(String hexStr) {
     hexStr.trim();
-    if (hexStr.startsWith("#"))
-    {
-        hexStr = hexStr.substring(1); // Remove leading '#'
+    if (hexStr.startsWith("#")) {
+        hexStr = hexStr.substring(1);
     }
 
-    if (hexStr.length() != 6)
-    {
+    if (hexStr.length() != 6 || !isHexadecimal(hexStr)) {
         Serial.println("❌ ERROR: Invalid color format! Defaulting to white.");
         return strip.Color(255, 255, 255);
     }
@@ -569,49 +597,47 @@ uint32_t parseColor(String hexStr) {
     return strip.Color(r, g, b);
 }
 
+// Helper function to check if string is a valid hex code
+bool isHexadecimal(String str) {
+    for (unsigned int i = 0; i < str.length(); i++) {
+        char c = str.charAt(i);
+        if (!isxdigit(c)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 void runColorPulse() {
     Serial.print("🚀 Running Chill Color Pulse: ");
     Serial.println(pulseColor, HEX);
 
-    int delayTime = 80;      // ⏳ More relaxed effect
-    int maxBrightness = 255; // 🔆 Slightly dimmer max brightness for softer pulses
-    int minBrightness = 20;  // 🔅 Avoids completely turning off LEDs
+    int delayTime = 80;
+    int maxBrightness = 255;
+    int minBrightness = 20;
     pulseBrightness = minBrightness;
     pulseDirection = 1;
+    newCommandReceived = false; // Reset flag before loop starts
 
     unsigned long lastCheckTime = millis();
 
-    // Run pulse continuously, checking for updates
-    while (WiFi.status() == WL_CONNECTED)
-    {
-        pulseBrightness += pulseDirection * 1; // 🔄 Smoother, gradual fade
+    while (WiFi.status() == WL_CONNECTED && !newCommandReceived) { // ✅ Exit loop when flag is set
+        pulseBrightness += pulseDirection * 1;
 
-        if (pulseBrightness >= maxBrightness || pulseBrightness <= minBrightness)
-        {
+        if (pulseBrightness >= maxBrightness || pulseBrightness <= minBrightness) {
             pulseDirection *= -1;
         }
 
         uint32_t dimmedColor = dimColor(pulseColor, pulseBrightness);
-
-        Serial.print("🎨 Chill Dimmed Color: ");
-        Serial.println(dimmedColor, HEX);
-
         setStripColor(dimmedColor);
-        delay(delayTime); // 🌊 Smooth transition delay
+        delay(delayTime);
 
-        // 🔄 Check for new commands every **1 second** instead of 5
-        if (millis() - lastCheckTime >= 1000)
-        {
+        if (millis() - lastCheckTime >= 1000) { // ✅ Check every second
             lastCheckTime = millis();
-            if (checkForNewCommand())
-            {
-                Serial.println("🔄 New command detected, exiting pulse effect.");
-                return; // **Exit immediately on new command**
-            }
+            checkForNewCommand(); // ✅ Flag gets set if a new command arrives
         }
     }
-
-    Serial.println("🛑 Lost WiFi connection, exiting pulse.");
+    Serial.println("🛑 Exiting pulse effect due to new command.");
 }
 
 uint32_t dimColor(uint32_t color, uint8_t brightness) {
@@ -637,14 +663,16 @@ bool checkForNewCommand() {
     http.begin(client, serverUrl);
     int httpCode = http.GET();
 
-    if (httpCode > 0) {
+    if (httpCode > 0)
+    {
         String newPayload = http.getString();
         newPayload.trim();
         http.end();
 
         if (!newPayload.startsWith("COLORPULSE"))
         {
-            Serial.println("New command received!");
+            Serial.println("🔄 New command detected!");
+            newCommandReceived = true; // ✅ Set flag to break loop in `runColorPulse`
             return true;
         }
     }

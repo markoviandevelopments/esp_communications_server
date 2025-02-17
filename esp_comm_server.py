@@ -43,14 +43,14 @@ def index():
     if request.method == 'POST':
         selected_devices = request.form.getlist('devices')
         mode = request.form.get('mode')
-        color = request.form.get('color', '').strip()  # No default, force it to take what is sent
+        color = request.form.get('color', '').strip().upper()  # Convert to uppercase
 
         print(f"DEBUG: Received mode={mode}, color={color}, devices={selected_devices}")
 
-        # Ensure color is actually received and valid
-        if not color or not color.startswith('#') or len(color) != 7 or any(c not in '0123456789ABCDEFabcdef' for c in color[1:]):
+        # Ensure valid hex format
+        if not (color.startswith('#') and len(color) == 7 and all(c in '0123456789ABCDEF' for c in color[1:])):
             print(f"WARNING: Invalid color received ({color}), ignoring color update.")
-            color = None  # Do not overwrite with default
+            color = None  # Prevent overwriting stored color
 
         # Update devices with mode and color
         if mode and mode.isdigit() and int(mode) in COMMAND_MAP:
@@ -86,7 +86,7 @@ def get_device_command(device_id):
     devices[device_id]['last_seen'] = time.time()
     devices[device_id]['ip'] = request.remote_addr
 
-    stored_color = devices[device_id].get('color', '#FF0000')
+    stored_color = devices[device_id]['color']  # Always use stored color
 
     # Debugging
     print(f"DEBUG: Device {device_id} requested color. Stored color: {stored_color}")
