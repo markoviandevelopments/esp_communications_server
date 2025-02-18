@@ -38,15 +38,36 @@ body {
 
 /* === CONTAINER === */
 .container {
-    margin-top: 50px;
-    padding: 30px;
-    border: 2px solid var(--primary-color);
+    max-width: 800px;
+    width: 90%;
+    margin: 20px auto;
+    padding: 20px;
     border-radius: var(--border-radius);
     background-color: var(--container-bg);
     box-shadow: var(--shadow-glow);
-    display: inline-block;
 }
 
+/* COLOR PICKER */
+.color-picker-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px var(--secondary-color);
+    z-index: 1000;
+}
+
+#colorPicker {
+    width: 200px !important;
+    height: 200px !important;
+}
 
 /* === HEADERS & TEXT === */
 h1 {
@@ -84,25 +105,24 @@ select, input {
     box-shadow: 0 0 10px var(--primary-color);
 }
 
+/* BUTTON */
 button {
-    background-color: #00FF41;
+    background-color: var(--primary-color);
     color: black;
     border: none;
-    padding: 12px 24px;
-    font-size: 18px;
-    font-weight: bold;
+    padding: 10px 20px;
+    font-size: 16px;
     cursor: pointer;
-    transition: 0.3s;
     text-transform: uppercase;
     letter-spacing: 1px;
-    box-shadow: 0 0 20px #00FF41;
+    box-shadow: 0 0 15px var(--primary-color);
     border-radius: 5px;
 }
 
 button:hover {
-    background-color: #FF4500;
-    color: #FFF;
-    box-shadow: 0 0 20px #FF4500;
+    background-color: var(--highlight-color);
+    color: white;
+    box-shadow: 0 0 15px var(--highlight-color);
 }
 
 /* Easter egg: The Ultimate Answer */
@@ -143,34 +163,35 @@ body:hover #answer {
     margin-top: 10px;
 }
 
+/* DEVICE STATUS TABLE */
 table {
     width: 100%;
     border-collapse: collapse;
-}
-th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-}
-th {
-    background-color: #a19696;
+    font-size: 14px;
 }
 
-/* Optional enhanced version */
+th, td {
+    border: 1px solid #ddd;
+    padding: 6px;
+    text-align: left;
+}
+
+th {
+    background-color: #222;
+}
+
 td.active {
     color: #00ff00;
     background-color: #003300;
     padding: 3px 8px;
-    border-radius: 12px;
-    display: inline-block;
+    border-radius: 10px;
 }
 
 td.inactive {
     color: #ff6666;
     background-color: #330000;
     padding: 3px 8px;
-    border-radius: 12px;
-    display: inline-block;
+    border-radius: 10px;
 }
 
 /* === HGTTG THEME UPGRADES === */
