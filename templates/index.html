@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,8 +35,7 @@
                 <label>Select Mode:</label>
                 <select name="mode" required id="modeSelector">
                     {% for mode, name in command_map.items() %}
-                    <option value="{{ mode }}" {% if request.method=='POST' and request.form.get('mode')==mode|string
-                        %}selected{% endif %}>
+                    <option value="{{ mode }}" {% if request.method == 'POST' and request.form.get('mode') == mode|string %}selected{% endif %}>
                         {{ name }}
                     </option>
                     {% endfor %}
@@ -120,5 +118,4 @@
         });
     </script>
 </body>
-
 </html>
