@@ -47,26 +47,36 @@ body {
     box-shadow: var(--shadow-glow);
 }
 
-/* COLOR PICKER */
+/* === COLOR PICKER POSITIONING === */
 .color-picker-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.9);
+    width: 100%;
+    max-width: 400px;
+    margin: 20px auto;
     padding: 20px;
+    background: rgba(0, 0, 0, 0.85);
     border-radius: 15px;
     box-shadow: 0 0 20px var(--secondary-color);
-    z-index: 1000;
+    position: relative;
+    /* No longer floating over other content */
+    z-index: 1;
 }
 
+/* Make the color picker bigger */
 #colorPicker {
-    width: 200px !important;
-    height: 200px !important;
+    width: 220px !important;
+    height: 220px !important;
+}
+
+/* Make sure label is correctly placed */
+.color-label {
+    font-size: 18px;
+    color: var(--secondary-color);
+    margin-bottom: 10px;
+    text-shadow: 0 0 5px var(--secondary-color);
 }
 
 /* === HEADERS & TEXT === */
@@ -105,13 +115,13 @@ select, input {
     box-shadow: 0 0 10px var(--primary-color);
 }
 
-/* BUTTON */
+/* === BUTTONS === */
 button {
     background-color: var(--primary-color);
     color: black;
     border: none;
-    padding: 10px 20px;
-    font-size: 16px;
+    padding: 12px 24px;
+    font-size: 18px;
     cursor: pointer;
     text-transform: uppercase;
     letter-spacing: 1px;
