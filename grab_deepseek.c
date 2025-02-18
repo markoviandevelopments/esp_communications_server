@@ -1,6 +1,6 @@
+#include <Arduino_JSON.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
-#include <ArduinoJson.h>
 #include <Adafruit_NeoPixel.h>
 
 #define NUM_LEDS 300
@@ -38,14 +38,13 @@ void loop() {
             Serial.println("Received JSON:");
             Serial.println(payload);
 
-            StaticJsonDocument<1024> doc;
-            DeserializationError error = deserializeJson(doc, payload);
+            JSONVar doc = JSON.parse(payload); // Correct function for Arduino_JSON
 
-            if (!error) {
+            if (JSON.typeof(doc) == "array") {
                 for (int i = 0; i < 10; i++) {
-                    int r = doc[i][0];
-                    int g = doc[i][1];
-                    int b = doc[i][2];
+                    int r = (int)doc[i][0];
+                    int g = (int)doc[i][1];
+                    int b = (int)doc[i][2];
                     
                     for (int j = 0; j < 30; j++) {
                         strip.setPixelColor(i * 30 + j, strip.Color(r, g, b));
