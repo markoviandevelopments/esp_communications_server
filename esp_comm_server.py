@@ -91,10 +91,8 @@ def get_device_command(device_id):
     # Debugging
     print(f"DEBUG: Device {device_id} requested color. Stored color: {stored_color}")
 
-    if devices[device_id]['mode'] == 10:
-        devices[device_id]['color'] = stored_color  # Explicitly refresh stored color
+    if devices[device_id]['mode'] == 10:  # Custom Color Pulse
         return f"COLORPULSE:{stored_color}\n"
-
 
     return f"{COMMAND_MAP[devices[device_id]['mode']]}\n"
 

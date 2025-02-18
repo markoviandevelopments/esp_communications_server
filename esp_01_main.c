@@ -2,7 +2,6 @@
 #include <ESP8266HTTPClient.h>
 #include <Adafruit_NeoPixel.h>
 #include <Arduino.h>
-#include <EEPROM.h>
 
 // Configuration for Device 001 - LED Array
 #define NUM_LEDS 300
@@ -18,7 +17,7 @@ const char *serverUrl = "http://10.1.10.79:4999/device/001";
 volatile bool newCommandReceived = false; // this flag monitors state changes
 
 unsigned long lastServerCheck = 0;
-const int serverCheckInterval = 100;
+const int serverCheckInterval = 300;
 
 int fight_kampf[NUM_LEDS];  // For FIGHTKAMPF effect
 
@@ -78,7 +77,6 @@ void setup() {
     Serial.begin(115200);
     strip.begin();
     strip.show();
-    EEPROM.begin(16);
 
     // Connect to WiFi
     Serial.println("\nConnecting to WiFi...");
@@ -94,14 +92,7 @@ void setup() {
     Serial.println(WiFi.localIP());
 
     randomSeed(ESP.getCycleCount());
-
-    // Restore saved color from EEPROM
-    uint8_t r = EEPROM.read(0);
-    uint8_t g = EEPROM.read(1);
-    uint8_t b = EEPROM.read(2);
-    pulseColor = strip.Color(r, g, b);
-    Serial.printf("🔄 Restored Color: #%02X%02X%02X\n", r, g, b);
-
+    
     // Initialize fight_kampf array
     for (int i = 0; i < NUM_LEDS; i++) {
         fight_kampf[i] = random(0, 2);
@@ -128,17 +119,14 @@ void loop() {
                 newCommandReceived = false; // Reset flag before processing new command
 
                 if (payload.startsWith("COLORPULSE")) {
-                    strip.clear();
-                    strip.show();
                     int colonIndex = payload.indexOf(':');
-                    if (colonIndex != -1) {
+                    if (colonIndex != -1)
+                    {
                         String colorStr = payload.substring(colonIndex + 1);
                         pulseColor = parseColor(colorStr);
                     }
-                    runColorPulse();
+                    runColorPulse(); // ✅ No infinite loop now
                 }
-                newCommandReceived = false; // ✅ Only reset after executing
-
                 else if (payload.equalsIgnoreCase("FAST")) {
                     rainbowEffect(50);
                 }
@@ -583,16 +571,13 @@ void cupidsArrow()
     }
 }
 
-uint32_t parseColor(String hexStr)
-{
+uint32_t parseColor(String hexStr) {
     hexStr.trim();
-    if (hexStr.startsWith("#"))
-    {
+    if (hexStr.startsWith("#")) {
         hexStr = hexStr.substring(1);
     }
 
-    if (hexStr.length() != 6 || !isHexadecimal(hexStr))
-    {
+    if (hexStr.length() != 6 || !isHexadecimal(hexStr)) {
         Serial.println("❌ ERROR: Invalid color format! Defaulting to white.");
         return strip.Color(255, 255, 255);
     }
@@ -602,13 +587,12 @@ uint32_t parseColor(String hexStr)
     uint8_t g = (number >> 8) & 0xFF;
     uint8_t b = number & 0xFF;
 
-    Serial.printf("✅ Parsed Color - R: %d G: %d B: %d\n", r, g, b);
-
-    // ✅ Save color to EEPROM so it persists after a restart
-    EEPROM.write(0, r);
-    EEPROM.write(1, g);
-    EEPROM.write(2, b);
-    EEPROM.commit();
+    Serial.print("✅ Parsed Color - R: ");
+    Serial.print(r);
+    Serial.print(" G: ");
+    Serial.print(g);
+    Serial.print(" B: ");
+    Serial.println(b);
 
     return strip.Color(r, g, b);
 }
@@ -624,20 +608,36 @@ bool isHexadecimal(String str) {
     return true;
 }
 
-void runColorPulse()
-{
-    static unsigned long lastUpdate = 0;
-    if (millis() - lastUpdate >= 80)
-    { // Adjust timing dynamically
-        lastUpdate = millis();
+void runColorPulse() {
+    Serial.print("🚀 Running Chill Color Pulse: ");
+    Serial.println(pulseColor, HEX);
+
+    int delayTime = 80;
+    int maxBrightness = 255;
+    int minBrightness = 20;
+    pulseBrightness = minBrightness;
+    pulseDirection = 1;
+    newCommandReceived = false; // Reset flag before loop starts
+
+    unsigned long lastCheckTime = millis();
+
+    while (WiFi.status() == WL_CONNECTED && !newCommandReceived) { // ✅ Exit loop when flag is set
         pulseBrightness += pulseDirection * 1;
-        if (pulseBrightness >= 255 || pulseBrightness <= 20)
-        {
+
+        if (pulseBrightness >= maxBrightness || pulseBrightness <= minBrightness) {
             pulseDirection *= -1;
         }
+
         uint32_t dimmedColor = dimColor(pulseColor, pulseBrightness);
         setStripColor(dimmedColor);
+        delay(delayTime);
+
+        if (millis() - lastCheckTime >= 1000) { // ✅ Check every second
+            lastCheckTime = millis();
+            checkForNewCommand(); // ✅ Flag gets set if a new command arrives
+        }
     }
+    Serial.println("🛑 Exiting pulse effect due to new command.");
 }
 
 uint32_t dimColor(uint32_t color, uint8_t brightness) {
@@ -681,14 +681,10 @@ bool checkForNewCommand() {
 }
 
 void setStripColor(uint32_t color) {
-    static uint32_t lastColor = 0;
-    if (lastColor != color) { // ✅ Only update if necessary
-        for (int i = 0; i < NUM_LEDS; i++) {
-            strip.setPixelColor(i, color);
-        }
-        strip.show();
-        lastColor = color;
+    for (int i = 0; i < NUM_LEDS; i++) {
+        strip.setPixelColor(i, color);
     }
+    strip.show();
 }
 
 void setRandomColor() {
