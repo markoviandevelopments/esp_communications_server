@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +17,14 @@
         <div class="guide-message">
             <h1>Your ESP LED Control Guide</h1>
             <small>Section 3A: Light Manipulation</small>
+        </div>
+
+        <!-- Color Picker (Properly Positioned and Always Visible) -->
+        <div class="color-picker-container">
+            <label class="color-label">Select Color:</label>
+            <div id="colorPicker"></div>
+            <input type="hidden" id="selectedColor" name="color" value="{{ devices['001']['color'] }}">
+            <p id="currentColor">Selected Color: {{ devices['001']['color'] }}</p>
         </div>
 
         <form method="POST">
@@ -35,19 +44,12 @@
                 <label>Select Mode:</label>
                 <select name="mode" required id="modeSelector">
                     {% for mode, name in command_map.items() %}
-                    <option value="{{ mode }}" {% if request.method == 'POST' and request.form.get('mode') == mode|string %}selected{% endif %}>
+                    <option value="{{ mode }}" {% if request.method=='POST' and request.form.get('mode')==mode|string
+                        %}selected{% endif %}>
                         {{ name }}
                     </option>
                     {% endfor %}
                 </select>
-            </div>
-
-            <!-- Color Picker (Always Visible) -->
-            <div class="color-picker-container">
-                <label>Select Color:</label>
-                <div id="colorPicker"></div>
-                <input type="hidden" id="selectedColor" name="color" value="{{ devices['001']['color'] }}">
-                <p id="currentColor">Selected Color: {{ devices['001']['color'] }}</p>
             </div>
 
             <button type="submit">Update Devices</button>
@@ -95,8 +97,8 @@
 
     <!-- JavaScript -->
     <script>
-        // Initialize the color picker
-        const colorPicker = new iro.ColorPicker('#colorPicker', { width: 200 });
+        // Initialize the color picker with a larger size
+        const colorPicker = new iro.ColorPicker('#colorPicker', { width: 220 });
 
         // Set default color on load
         document.getElementById('selectedColor').value = "{{ devices['001']['color'] }}";
@@ -118,4 +120,5 @@
         });
     </script>
 </body>
+
 </html>
