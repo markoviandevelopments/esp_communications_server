@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESP LED Controller</title>
+    <title>Galactic LED Controller</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
 </head>
@@ -15,11 +15,11 @@
         <div class="dont-panic">DON'T PANIC</div>
 
         <div class="guide-message">
-            <h1>Your ESP LED Control Guide</h1>
-            <small>Section 3A: Light Manipulation</small>
+            <h1>Galactic LED Control Panel</h1>
+            <small>Section 42: Illumination for Improbable Journeys</small>
         </div>
 
-        <!-- Color Picker (Properly Positioned and Always Visible) -->
+        <!-- Color Picker -->
         <div class="color-picker-container">
             <div id="colorPicker"></div>
             <input type="hidden" id="selectedColor" name="color" value="{{ devices['001']['color'] }}">
@@ -30,7 +30,7 @@
             <!-- Device Selection -->
             <div class="form-group">
                 <label>Select Devices:</label>
-                <select name="devices" multiple size="4">
+                <select name="devices" multiple size="6">
                     <option value="all">All Devices</option>
                     {% for dev_id, details in devices.items() %}
                     <option value="{{ dev_id }}">{{ dev_id }} ({{ details.description }})</option>
@@ -40,7 +40,7 @@
 
             <!-- Mode Selection -->
             <div class="form-group">
-                <label>Select Mode:</label>
+                <label>Select Effect:</label>
                 <select name="mode" required id="modeSelector">
                     {% for mode, name in command_map.items() %}
                     <option value="{{ mode }}" {% if request.method=='POST' and request.form.get('mode')==mode|string
@@ -51,7 +51,7 @@
                 </select>
             </div>
 
-            <button type="submit">Update Devices</button>
+            <button type="submit">Engage Effect</button>
 
             {% if message %}
             <p class="message">{{ message }}</p>
@@ -65,7 +65,7 @@
                 <tr>
                     <th>ESP ID</th>
                     <th>Status</th>
-                    <th>Current Mode</th>
+                    <th>Current Effect</th>
                     <th>Last Seen</th>
                     <th>IP Address</th>
                     <th>Description</th>
@@ -79,13 +79,7 @@
                         {{ details.last_seen | is_active }}
                     </td>
                     <td>{{ command_map[details.mode] }}</td>
-                    <td>
-                        {% if details.last_seen %}
-                        {{ details.last_seen | int | timestamp_to_time }}
-                        {% else %}
-                        Never
-                        {% endif %}
-                    </td>
+                    <td>{{ details.last_seen | timestamp_to_time }}</td>
                     <td>{{ details.ip or 'Unknown' }}</td>
                     <td>{{ details.description }}</td>
                 </tr>
@@ -96,24 +90,19 @@
 
     <!-- JavaScript -->
     <script>
-        // Initialize the color picker with a larger size
         const colorPicker = new iro.ColorPicker('#colorPicker', { width: 220 });
-
-        // Set default color on load
         document.getElementById('selectedColor').value = "{{ devices['001']['color'] }}";
 
-        // Handle color selection
         colorPicker.on('color:change', function (color) {
             const hexColor = color.hexString.toUpperCase();
             document.getElementById('selectedColor').value = hexColor;
             document.getElementById('currentColor').textContent = `Selected Color: ${hexColor}`;
         });
 
-        // Ensure the correct color is submitted
         document.querySelector('form').addEventListener('submit', function (event) {
             const colorValue = document.getElementById('selectedColor').value;
             if (!/^#[0-9A-F]{6}$/i.test(colorValue)) {
-                alert("Invalid color selected. Please pick a color again.");
+                alert("Invalid color selected. Please pick a valid hex color.");
                 event.preventDefault();
             }
         });
