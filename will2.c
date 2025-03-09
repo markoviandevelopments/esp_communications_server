@@ -35,26 +35,32 @@ void setAllLEDs(uint8_t r, uint8_t g, uint8_t b) {
     strip.show();
 }
 
-void applyPattern(JSONVar pattern) { // Pass by value
-    if (JSON.typeof(pattern) != "array" || pattern.length() != 10) {
-        setAllLEDs(255, 0, 0); // Red flash for error
+void applyPattern(JSONVar &pattern)
+{
+    if (JSON.typeof(pattern) != "array" || pattern.length() != 10)
+    {
+        // Error: Red blinks, then fallback to all red
+        setAllLEDs(255, 0, 0);
         delay(200);
         setAllLEDs(0, 0, 0);
         delay(200);
         setAllLEDs(255, 0, 0);
         delay(200);
-        setAllLEDs(0, 0, 0);
+        setAllLEDs(255, 0, 0); // Fallback pattern
         return;
     }
-    for (int i = 0; i < 10; i++) {
-        if (JSON.typeof(pattern[i]) != "array" || pattern[i].length() != 3) {
-            setAllLEDs(255, 0, 0); // Red flash for error
+    for (int i = 0; i < 10; i++)
+    {
+        if (JSON.typeof(pattern[i]) != "array" || pattern[i].length() != 3)
+        {
+            // Error: Red blinks, then fallback to all red
+            setAllLEDs(255, 0, 0);
             delay(200);
             setAllLEDs(0, 0, 0);
             delay(200);
             setAllLEDs(255, 0, 0);
             delay(200);
-            setAllLEDs(0, 0, 0);
+            setAllLEDs(255, 0, 0); // Fallback pattern
             return;
         }
         int r = (int)pattern[i][0];
@@ -68,14 +74,18 @@ void applyPattern(JSONVar pattern) { // Pass by value
         }
     }
     strip.show();
+    // Success: Flash green briefly
+    setAllLEDs(0, 255, 0);
+    delay(100);
+    strip.show(); // Restore pattern
 }
 
 void webSocketEvent(WStype_t type, uint8_t *payload, size_t length) {
     switch (type) {
     case WStype_DISCONNECTED:
         isAnimating = false;
-        frameCount = 0; // Reset animation state
-        setAllLEDs(0, 0, 0); // Clear LEDs
+        frameCount = 0;
+        setAllLEDs(0, 0, 0);
         break;
     case WStype_CONNECTED:
         setAllLEDs(10, 10, 10); // Dim white when connected
@@ -106,6 +116,7 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length) {
             currentFrame = 0;
             lastFrameTime = millis();
             isAnimating = true;
+            applyPattern(animationFrames[currentFrame]); // Start immediately
         }
         else {
             applyPattern(JSONVar()); // Trigger error feedback
@@ -113,7 +124,7 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length) {
         break;
     }
     case WStype_ERROR:
-        applyPattern(JSONVar()); // Trigger error feedback
+        applyPattern(JSONVar());
         break;
     default:
         break;
@@ -144,26 +155,32 @@ void loop() {
 
     if (isAnimating) {
         unsigned long currentTime = millis();
-        if (currentTime - lastFrameTime >= frameDelay) {
-            applyPattern(animationFrames[currentFrame]);
+        if (currentTime - lastFrameTime >= frameDelay)
+        {
             currentFrame = (currentFrame + 1) % frameCount;
+            applyPattern(animationFrames[currentFrame]);
             lastFrameTime = currentTime;
         }
-    } else {
-        // Visual feedback when idle
+    }
+    else
+    {
         unsigned long currentTime = millis();
-        if (currentTime - lastFeedbackTime >= 1000) {
-            if (!webSocket.isConnected()) {
-                // Orange pulse when disconnected
-                if (feedbackPhase == 0) {
-                    setAllLEDs(20, 10, 0);
+        if (currentTime - lastFeedbackTime >= 1000)
+        {
+            if (!webSocket.isConnected())
+            {
+                if (feedbackPhase == 0)
+                {
+                    setAllLEDs(20, 10, 0); // Orange pulse
                     feedbackPhase = 1;
                 } else {
                     setAllLEDs(0, 0, 0);
                     feedbackPhase = 0;
                 }
-            } else {
-                setAllLEDs(10, 10, 10); // Dim white when connected, no pattern
+            }
+            else
+            {
+                setAllLEDs(10, 10, 10); // Dim white when idle
             }
             lastFeedbackTime = currentTime;
         }
