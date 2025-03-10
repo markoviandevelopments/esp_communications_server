@@ -24,52 +24,30 @@ unsigned long frameDelay = 0; // ms
 unsigned long lastFrameTime = 0;
 bool isAnimating = false;
 
-// Visual feedback state
-unsigned long lastFeedbackTime = 0;
-int feedbackPhase = 0;
-bool errorShown = false; // Prevent infinite error blinking
-
-void setAllLEDs(uint8_t r, uint8_t g, uint8_t b)
+void applyPattern(JSONVar &pattern)
 {
-    for (int i = 0; i < NUM_LEDS; i++)
-    {
-        strip.setPixelColor(i, strip.Color(r, g, b));
-    }
-    strip.show();
-}
-
-void applyPattern(JSONVar pattern)
-{
+    // Validate pattern is an array of 10 RGB tuples
     if (JSON.typeof(pattern) != "array" || pattern.length() != 10)
     {
-        if (!errorShown)
+        // Fallback: Set LEDs to a debug color (e.g., blue) instead of turning off
+        for (int i = 0; i < NUM_LEDS; i++)
         {
-            setAllLEDs(255, 0, 0); // Red blinks once per message
-            delay(200);
-            setAllLEDs(0, 0, 0);
-            delay(200);
-            setAllLEDs(255, 0, 0);
-            delay(200);
-            setAllLEDs(255, 0, 0); // Fallback to red
-            errorShown = true;
+            strip.setPixelColor(i, strip.Color(0, 0, 255));
         }
+        strip.show();
         return;
     }
+
     for (int i = 0; i < 10; i++)
     {
         if (JSON.typeof(pattern[i]) != "array" || pattern[i].length() != 3)
         {
-            if (!errorShown)
+            // Fallback: Set LEDs to red if RGB tuple is invalid
+            for (int j = 0; j < NUM_LEDS; j++)
             {
-                setAllLEDs(255, 0, 0);
-                delay(200);
-                setAllLEDs(0, 0, 0);
-                delay(200);
-                setAllLEDs(255, 0, 0);
-                delay(200);
-                setAllLEDs(255, 0, 0);
-                errorShown = true;
+                strip.setPixelColor(j, strip.Color(255, 0, 0));
             }
+            strip.show();
             return;
         }
         int r = (int)pattern[i][0];
@@ -84,10 +62,6 @@ void applyPattern(JSONVar pattern)
         }
     }
     strip.show();
-    setAllLEDs(0, 255, 0); // Green flash for success
-    delay(100);
-    strip.show();
-    errorShown = false; // Reset error flag on success
 }
 
 void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
@@ -96,20 +70,17 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
     {
     case WStype_DISCONNECTED:
         isAnimating = false;
-        frameCount = 0;
-        animationFrames = JSONVar(); // Clear frames
-        setAllLEDs(0, 0, 0);
-        errorShown = false;
+        // Clear LEDs on disconnect
+        strip.clear();
+        strip.show();
         break;
     case WStype_CONNECTED:
-        setAllLEDs(10, 10, 10); // Dim white when connected
         break;
     case WStype_TEXT:
     {
         JSONVar doc = JSON.parse((char *)payload);
         if (JSON.typeof(doc) == "undefined")
         {
-            applyPattern(JSONVar());
             return;
         }
 
@@ -117,37 +88,40 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
         if (doc.hasOwnProperty("pattern"))
         {
             isAnimating = false;
-            animationFrames = JSONVar(); // Clear old frames
             JSONVar pattern = doc["pattern"];
             applyPattern(pattern);
         }
         // Animated pattern
         else if (doc.hasOwnProperty("frames") && doc.hasOwnProperty("frame_rate"))
         {
-            isAnimating = false;         // Reset before new animation
-            animationFrames = JSONVar(); // Clear old frames
             animationFrames = doc["frames"];
+            if (JSON.typeof(animationFrames) != "array" || animationFrames.length() < 1)
+            {
+                // Fallback: Set LEDs to green if frames are invalid
+                for (int i = 0; i < NUM_LEDS; i++)
+                {
+                    strip.setPixelColor(i, strip.Color(0, 255, 0));
+                }
+                strip.show();
+                return;
+            }
             frameCount = animationFrames.length();
             double frame_rate = (double)doc["frame_rate"];
-            if (JSON.typeof(animationFrames) != "array" || frameCount < 1)
+            // Ensure frame_rate is reasonable
+            if (frame_rate < 0.05 || frame_rate > 1.0)
             {
-                applyPattern(JSONVar());
-                return;
+                frame_rate = 0.1; // Default to 100ms if out of range
             }
             frameDelay = (unsigned long)(frame_rate * 1000);
             currentFrame = 0;
             lastFrameTime = millis();
             isAnimating = true;
+            // Apply the first frame immediately
             applyPattern(animationFrames[currentFrame]);
-        }
-        else
-        {
-            applyPattern(JSONVar());
         }
         break;
     }
     case WStype_ERROR:
-        applyPattern(JSONVar());
         break;
     default:
         break;
@@ -156,19 +130,15 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
 
 void setup()
 {
-    Serial.begin(115200);
     strip.begin();
-    setAllLEDs(0, 0, 0); // Start dark
+    strip.clear(); // Ensure LEDs start off
+    strip.show();
 
     WiFi.begin(ssid, password);
     while (WiFi.status() != WL_CONNECTED)
     {
-        setAllLEDs(20, 10, 0); // Orange flash while connecting
-        delay(250);
-        setAllLEDs(0, 0, 0);
-        delay(250);
+        delay(500);
     }
-    setAllLEDs(10, 10, 10); // Dim white when WiFi connected
 
     webSocket.begin(ws_host, ws_port, ws_path);
     webSocket.onEvent(webSocketEvent);
@@ -187,31 +157,6 @@ void loop()
             currentFrame = (currentFrame + 1) % frameCount;
             applyPattern(animationFrames[currentFrame]);
             lastFrameTime = currentTime;
-        }
-    }
-    else
-    {
-        unsigned long currentTime = millis();
-        if (currentTime - lastFeedbackTime >= 1000)
-        {
-            if (!webSocket.isConnected())
-            {
-                if (feedbackPhase == 0)
-                {
-                    setAllLEDs(20, 10, 0); // Orange pulse
-                    feedbackPhase = 1;
-                }
-                else
-                {
-                    setAllLEDs(0, 0, 0);
-                    feedbackPhase = 0;
-                }
-            }
-            else
-            {
-                setAllLEDs(10, 10, 10); // Dim white when idle
-            }
-            lastFeedbackTime = currentTime;
         }
     }
 }
