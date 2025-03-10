@@ -8,6 +8,13 @@
 
 Adafruit_NeoPixel strip(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
+// Error Color Codes (All LEDs will pulse these colors)
+#define COLOR_INVALID_STRUCTURE strip.Color(255, 0, 0) // Red
+#define COLOR_INVALID_RGB strip.Color(255, 165, 0)     // Orange
+#define COLOR_WS_ERROR strip.Color(0, 0, 255)          // Blue
+#define COLOR_JSON_ERROR strip.Color(128, 0, 128)      // Purple
+#define COLOR_CONNECTION_OK strip.Color(0, 255, 0)     // Green
+
 const char *ssid = "Brubaker Wifi";
 const char *password = "Pre$ton01";
 const char *ws_host = "10.1.10.79";
@@ -16,6 +23,7 @@ const char *ws_path = "/";
 
 WebSocketsClient webSocket;
 
+// Animation state
 JSONVar animationFrames;
 int frameCount = 0;
 int currentFrame = 0;
@@ -23,30 +31,51 @@ unsigned long frameDelay = 0;
 unsigned long lastFrameTime = 0;
 bool isAnimating = false;
 
+void showError(uint32_t color)
+{
+    for (int i = 0; i < NUM_LEDS; i++)
+    {
+        strip.setPixelColor(i, color);
+    }
+    strip.show();
+    delay(500);
+    strip.clear();
+    strip.show();
+    delay(500);
+}
+
 void applyPattern(JSONVar pattern)
 {
+    // Structure Validation
     if (JSON.typeof(pattern) != "array" || pattern.length() != 10)
     {
-        Serial.printf("Invalid pattern: type=%s, length=%d\n", JSON.typeof(pattern).c_str(), pattern.length());
+        showError(COLOR_INVALID_STRUCTURE);
         return;
     }
 
+    // Process Pattern
     for (int i = 0; i < 10; i++)
     {
-        JSONVar pixel = pattern[i];
-        if (JSON.typeof(pixel) != "array" || pixel.length() != 3)
+        JSONVar pixelGroup = pattern[i];
+
+        // Row Validation
+        if (JSON.typeof(pixelGroup) != "array" || pixelGroup.length() != 3)
         {
-            Serial.printf("Invalid RGB at %d\n", i);
+            showError(COLOR_INVALID_RGB);
             return;
         }
 
-        int r = (int)pixel[0];
-        int g = (int)pixel[1];
-        int b = (int)pixel[2];
+        // Extract RGB values
+        int r = (int)pixelGroup[0];
+        int g = (int)pixelGroup[1];
+        int b = (int)pixelGroup[2];
+
+        // Clamp values
         r = constrain(r, 0, 255);
         g = constrain(g, 0, 255);
         b = constrain(b, 0, 255);
 
+        // Apply to 30 LEDs
         for (int j = 0; j < 30; j++)
         {
             strip.setPixelColor(i * 30 + j, strip.Color(r, g, b));
@@ -60,19 +89,22 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
     switch (type)
     {
     case WStype_DISCONNECTED:
-        Serial.println("[WebSocket] Disconnected");
+        showError(COLOR_WS_ERROR);
         isAnimating = false;
         break;
+
     case WStype_CONNECTED:
-        Serial.printf("[WebSocket] Connected to %s\n", payload);
+        // Quick green pulse on connection
+        showError(COLOR_CONNECTION_OK);
         break;
+
     case WStype_TEXT:
     {
-        Serial.printf("[WebSocket] Received: %s\n", (char *)payload);
         JSONVar doc = JSON.parse((char *)payload);
+
         if (JSON.typeof(doc) == "undefined")
         {
-            Serial.println("JSON Parse Failed");
+            showError(COLOR_JSON_ERROR);
             return;
         }
 
@@ -80,42 +112,49 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
         {
             isAnimating = false;
             applyPattern(doc["pattern"]);
-            Serial.println("Static Pattern Applied");
         }
         else if (doc.hasOwnProperty("frames") && doc.hasOwnProperty("frame_rate"))
         {
             animationFrames = doc["frames"];
             frameCount = animationFrames.length();
+
+            if (frameCount < 1)
+            {
+                showError(COLOR_INVALID_STRUCTURE);
+                return;
+            }
+
             frameDelay = (unsigned long)((double)doc["frame_rate"] * 1000);
             currentFrame = 0;
             lastFrameTime = millis();
             isAnimating = true;
-            Serial.printf("Animation started: %d frames, %lu ms delay\n", frameCount, frameDelay);
         }
         break;
     }
+
     case WStype_ERROR:
-        Serial.printf("[WebSocket] Error: %s\n", payload);
+        showError(COLOR_WS_ERROR);
         break;
     }
 }
 
 void setup()
 {
-    Serial.begin(115200);
     strip.begin();
     strip.show();
 
-    // Set max payload size (only works with WebSockets v2.6.1+)
-    webSocket.setMaxPayloadSize(4096); // <-- Verify this line compiles
+    // Initial connection sequence
+    for (int i = 0; i < 3; i++)
+    {
+        showError(COLOR_CONNECTION_OK);
+    }
 
     WiFi.begin(ssid, password);
     while (WiFi.status() != WL_CONNECTED)
     {
+        showError(COLOR_WS_ERROR); // Red flash while connecting
         delay(500);
-        Serial.print(".");
     }
-    Serial.println("\nWiFi Connected");
 
     webSocket.begin(ws_host, ws_port, ws_path);
     webSocket.onEvent(webSocketEvent);
@@ -125,8 +164,16 @@ void setup()
 void loop()
 {
     webSocket.loop();
+
     if (isAnimating && (millis() - lastFrameTime >= frameDelay))
     {
+        if (currentFrame >= frameCount)
+        {
+            showError(COLOR_INVALID_STRUCTURE);
+            isAnimating = false;
+            return;
+        }
+
         applyPattern(animationFrames[currentFrame]);
         currentFrame = (currentFrame + 1) % frameCount;
         lastFrameTime = millis();
