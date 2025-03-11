@@ -14,6 +14,8 @@ Adafruit_NeoPixel strip(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 #define COLOR_WS_ERROR strip.Color(0, 0, 255)          // Blue
 #define COLOR_JSON_ERROR strip.Color(128, 0, 128)      // Purple
 #define COLOR_CONNECTION_OK strip.Color(0, 255, 0)     // Green
+#define COLOR_FRAME_COUNT_ERROR strip.Color(255, 255, 0) // Yellow
+#define COLOR_ANIMATION_ENDED strip.Color(0, 255, 255)   // Cyan
 
 const char *ssid = "Brubaker Wifi";
 const char *password = "Pre$ton01";
@@ -46,10 +48,24 @@ void showError(uint32_t color)
 
 void applyPattern(JSONVar pattern)
 {
+    // First clear previous pattern
+    strip.clear();
+
     // Structure Validation
-    if (JSON.typeof(pattern) != "array" || pattern.length() != 10)
+    if (JSON.typeof(pattern) != "array")
     {
         showError(COLOR_INVALID_STRUCTURE);
+        return;
+    }
+
+    if (pattern.length() != 10)
+    {
+        // Show error with number of segments (10 blinks)
+        for (int i = 0; i < 10; i++)
+        {
+            showError(COLOR_INVALID_STRUCTURE);
+            delay(100);
+        }
         return;
     }
 
@@ -59,9 +75,27 @@ void applyPattern(JSONVar pattern)
         JSONVar pixelGroup = pattern[i];
 
         // Row Validation
-        if (JSON.typeof(pixelGroup) != "array" || pixelGroup.length() != 3)
+        if (JSON.typeof(pixelGroup) != "array")
         {
-            showError(COLOR_INVALID_RGB);
+            // Blink the faulty segment (i)
+            for (int j = 0; j < 30; j++)
+            {
+                strip.setPixelColor(i * 30 + j, COLOR_INVALID_RGB);
+            }
+            strip.show();
+            delay(1000);
+            return;
+        }
+
+        if (pixelGroup.length() != 3)
+        {
+            // Blink segment with invalid RGB length
+            for (int j = 0; j < 30; j++)
+            {
+                strip.setPixelColor(i * 30 + j, COLOR_INVALID_RGB);
+            }
+            strip.show();
+            delay(1000);
             return;
         }
 
@@ -104,7 +138,8 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
 
         if (JSON.typeof(doc) == "undefined")
         {
-            showError(COLOR_JSON_ERROR);
+            for (int i = 0; i < 3; i++)
+                showError(COLOR_JSON_ERROR);
             return;
         }
 
@@ -120,8 +155,14 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
 
             if (frameCount < 1)
             {
-                showError(COLOR_INVALID_STRUCTURE);
+                showError(COLOR_FRAME_COUNT_ERROR);
                 return;
+            }
+
+            for (int i = 0; i < frameCount; i++)
+            {
+                showError(COLOR_ANIMATION_ENDED);
+                delay(200);
             }
 
             frameDelay = (unsigned long)((double)doc["frame_rate"] * 1000);
