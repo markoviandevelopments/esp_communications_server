@@ -4,71 +4,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galactic LED Controller</title>
+    <title>The Guide: LED Control</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
 </head>
 
 <body>
     <div class="container">
-        <!-- Don't Panic Banner -->
         <div class="dont-panic">DON'T PANIC</div>
-
         <div class="guide-message">
-            <h1>Galactic LED Control Panel</h1>
-            <small>Section 42: Illumination for Improbable Journeys</small>
+            <h1>The Hitchhiker’s Guide to LED Control</h1>
+            <small>Entry 42: Illumination for Intergalactic Travelers</small>
         </div>
 
-        <!-- Color Picker -->
         <div class="color-picker-container">
             <div id="colorPicker"></div>
             <input type="hidden" id="selectedColor" name="color" value="{{ devices['001']['color'] }}">
-            <p id="currentColor">Selected Color: {{ devices['001']['color'] }}</p>
+            <p id="currentColor">Selected Hue: {{ devices['001']['color'] }}</p>
         </div>
 
         <form method="POST">
-            <!-- Device Selection -->
             <div class="form-group">
-                <label>Select Devices:</label>
+                <label>Select Galactic Devices:</label>
                 <select name="devices" multiple size="6">
-                    <option value="all">All Devices</option>
+                    <option value="all">All Devices in the Galaxy</option>
                     {% for dev_id, details in devices.items() %}
-                    <option value="{{ dev_id }}">{{ dev_id }} ({{ details.description }})</option>
+                    <option value="{{ dev_id }}">{{ dev_id }} - {{ details.description }}</option>
                     {% endfor %}
                 </select>
             </div>
 
-            <!-- Mode Selection -->
             <div class="form-group">
-                <label>Select Effect:</label>
-                <select name="mode" required id="modeSelector">
+                <label>Select Guide Effect:</label>
+                <select name="mode" required>
                     {% for mode, name in command_map.items() %}
-                    <option value="{{ mode }}" {% if request.method=='POST' and request.form.get('mode')==mode|string
-                        %}selected{% endif %}>
-                        {{ name }}
-                    </option>
+                    <option value="{{ mode }}">{{ name }}</option>
                     {% endfor %}
                 </select>
             </div>
 
-            <button type="submit">Engage Effect</button>
-
-            {% if message %}
-            <p class="message">{{ message }}</p>
-            {% endif %}
+            <button type="submit">Activate Improbability</button>
+            {% if message %}<p class="message">{{ message }}</p>{% endif %}
         </form>
 
-        <!-- Device Status -->
-        <h2>Device Status</h2>
+        <h2>Galactic Device Status</h2>
         <table>
             <thead>
                 <tr>
-                    <th>ESP ID</th>
+                    <th>ID</th>
                     <th>Status</th>
-                    <th>Current Effect</th>
-                    <th>Last Seen</th>
-                    <th>IP Address</th>
-                    <th>Description</th>
+                    <th>Effect</th>
+                    <th>Last Ping</th>
+                    <th>IP</th>
+                    <th>Location</th>
                 </tr>
             </thead>
             <tbody>
@@ -88,23 +76,13 @@
         </table>
     </div>
 
-    <!-- JavaScript -->
     <script>
         const colorPicker = new iro.ColorPicker('#colorPicker', { width: 220 });
         document.getElementById('selectedColor').value = "{{ devices['001']['color'] }}";
-
         colorPicker.on('color:change', function (color) {
             const hexColor = color.hexString.toUpperCase();
             document.getElementById('selectedColor').value = hexColor;
-            document.getElementById('currentColor').textContent = `Selected Color: ${hexColor}`;
-        });
-
-        document.querySelector('form').addEventListener('submit', function (event) {
-            const colorValue = document.getElementById('selectedColor').value;
-            if (!/^#[0-9A-F]{6}$/i.test(colorValue)) {
-                alert("Invalid color selected. Please pick a valid hex color.");
-                event.preventDefault();
-            }
+            document.getElementById('currentColor').textContent = `Selected Hue: ${hexColor}`;
         });
     </script>
 </body>
