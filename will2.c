@@ -8,6 +8,15 @@
 
 Adafruit_NeoPixel strip(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
+// Error Color Codes
+#define COLOR_INVALID_STRUCTURE strip.Color(255, 0, 0)   // Red
+#define COLOR_INVALID_RGB strip.Color(255, 165, 0)       // Orange
+#define COLOR_WS_ERROR strip.Color(0, 0, 255)            // Blue
+#define COLOR_JSON_ERROR strip.Color(128, 0, 128)        // Purple
+#define COLOR_CONNECTION_OK strip.Color(0, 255, 0)       // Green
+#define COLOR_FRAME_COUNT_ERROR strip.Color(255, 255, 0) // Yellow
+#define COLOR_ANIMATION_ENDED strip.Color(0, 255, 255)   // Cyan
+
 const char *ssid = "Brubaker Wifi";
 const char *password = "Pre$ton01";
 const char *ws_host = "10.1.10.79";
@@ -16,6 +25,7 @@ const char *ws_path = "/";
 
 WebSocketsClient webSocket;
 
+// Animation state
 JSONVar animationFrames;
 int frameCount = 0;
 int currentFrame = 0;
@@ -23,36 +33,62 @@ unsigned long frameDelay = 0;
 unsigned long lastFrameTime = 0;
 bool isAnimating = false;
 
-void setDebugColor(uint32_t color)
+void showError(uint32_t color)
 {
     for (int i = 0; i < NUM_LEDS; i++)
     {
         strip.setPixelColor(i, color);
     }
     strip.show();
+    delay(500);
+    strip.clear();
+    strip.show();
+    delay(500);
 }
 
-void applyPattern(JSONVar &pattern)
+void applyPattern(JSONVar pattern)
 {
-    if (strcmp(JSON.typeof(pattern), "array") != 0 || pattern.length() != 10)
+    strip.clear();
+
+    if (JSON.typeof(pattern) != "array")
     {
-        setDebugColor(strip.Color(0, 0, 255)); // Blue: Invalid pattern
+        showError(COLOR_INVALID_STRUCTURE);
+        return;
+    }
+
+    if (pattern.length() != 10)
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            showError(COLOR_INVALID_STRUCTURE);
+            delay(100);
+        }
         return;
     }
 
     for (int i = 0; i < 10; i++)
     {
-        if (strcmp(JSON.typeof(pattern[i]), "array") != 0 || pattern[i].length() != 3)
+        JSONVar pixelGroup = pattern[i];
+
+        if (JSON.typeof(pixelGroup) != "array" || pixelGroup.length() != 3)
         {
-            setDebugColor(strip.Color(255, 0, 0)); // Red: Invalid RGB tuple
+            for (int j = 0; j < 30; j++)
+            {
+                strip.setPixelColor(i * 30 + j, COLOR_INVALID_RGB);
+            }
+            strip.show();
+            delay(1000);
             return;
         }
-        int r = (int)pattern[i][0];
-        int g = (int)pattern[i][1];
-        int b = (int)pattern[i][2];
+
+        int r = (int)pixelGroup[0];
+        int g = (int)pixelGroup[1];
+        int b = (int)pixelGroup[2];
+
         r = constrain(r, 0, 255);
         g = constrain(g, 0, 255);
         b = constrain(b, 0, 255);
+
         for (int j = 0; j < 30; j++)
         {
             strip.setPixelColor(i * 30 + j, strip.Color(r, g, b));
@@ -66,57 +102,77 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
     switch (type)
     {
     case WStype_DISCONNECTED:
+        showError(COLOR_WS_ERROR);
         isAnimating = false;
-        strip.clear();
-        strip.show();
         break;
+
     case WStype_CONNECTED:
+        showError(COLOR_CONNECTION_OK);
         break;
+
     case WStype_TEXT:
     {
         JSONVar doc = JSON.parse((char *)payload);
-        if (strcmp(JSON.typeof(doc), "undefined") == 0)
+
+        if (JSON.typeof(doc) == "undefined")
         {
-            setDebugColor(strip.Color(255, 255, 0)); // Yellow: JSON parse failed
+            for (int i = 0; i < 3; i++)
+                showError(COLOR_JSON_ERROR);
             return;
         }
 
+        // Handle static pattern
         if (doc.hasOwnProperty("pattern"))
         {
             isAnimating = false;
-            JSONVar pattern = doc["pattern"];
-            applyPattern(pattern);
+            applyPattern(doc["pattern"]);
         }
+        // Handle animation
         else if (doc.hasOwnProperty("frames") && doc.hasOwnProperty("frame_rate"))
         {
-            animationFrames = doc["frames"];
-            if (strcmp(JSON.typeof(animationFrames), "array") != 0 || animationFrames.length() < 1)
+            // Validation
+            if (JSON.typeof(doc["frames"]) != "array" || doc["frames"].length() < 1)
             {
-                setDebugColor(strip.Color(0, 255, 0)); // Green: Invalid frames array
+                showError(COLOR_INVALID_STRUCTURE);
                 return;
             }
-            frameCount = animationFrames.length();
-            double frame_rate = (double)doc["frame_rate"];
-            if (frame_rate < 0.05 || frame_rate > 1.0)
+
+            JSONVar firstFrame = doc["frames"][0];
+            if (JSON.typeof(firstFrame) != "array" || firstFrame.length() != 10)
             {
-                frame_rate = 0.1;
+                showError(COLOR_INVALID_STRUCTURE);
+                return;
             }
-            frameDelay = (unsigned long)(frame_rate * 1000);
+
+            animationFrames = doc["frames"];
+            frameCount = animationFrames.length();
+
+            if (frameCount < 1)
+            {
+                showError(COLOR_FRAME_COUNT_ERROR);
+                return;
+            }
+
+            // Correct frame delay calculation (convert seconds to milliseconds)
+            double frameRate = (double)doc["frame_rate"];
+            if (frameRate <= 0)
+            {
+                showError(COLOR_FRAME_COUNT_ERROR);
+                return;
+            }
+            frameDelay = (unsigned long)(1000.0 / frameRate); // Convert FPS to ms delay
             currentFrame = 0;
             lastFrameTime = millis();
             isAnimating = true;
-            applyPattern(animationFrames[currentFrame]);
-        }
-        else
-        {
-            setDebugColor(strip.Color(255, 0, 255)); // Magenta: Unknown format
+
+            // Debug: Flash cyan to confirm animation start
+            showError(COLOR_ANIMATION_ENDED);
         }
         break;
     }
+
     case WStype_ERROR:
-        setDebugColor(strip.Color(255, 165, 0)); // Orange: WebSocket error
-        break;
-    default:
+        showError(COLOR_WS_ERROR);
         break;
     }
 }
@@ -124,12 +180,17 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
 void setup()
 {
     strip.begin();
-    strip.clear();
     strip.show();
+
+    for (int i = 0; i < 3; i++)
+    {
+        showError(COLOR_CONNECTION_OK);
+    }
 
     WiFi.begin(ssid, password);
     while (WiFi.status() != WL_CONNECTED)
     {
+        showError(COLOR_WS_ERROR);
         delay(500);
     }
 
@@ -142,14 +203,17 @@ void loop()
 {
     webSocket.loop();
 
-    if (isAnimating)
+    if (isAnimating && (millis() - lastFrameTime >= frameDelay))
     {
-        unsigned long currentTime = millis();
-        if (currentTime - lastFrameTime >= frameDelay)
+        applyPattern(animationFrames[currentFrame]);
+        currentFrame++;
+        if (currentFrame >= frameCount)
         {
-            currentFrame = (currentFrame + 1) % frameCount;
-            applyPattern(animationFrames[currentFrame]);
-            lastFrameTime = currentTime;
+            currentFrame = 0; // Loop animation
+            // Optional: Uncomment to stop after one cycle
+            // isAnimating = false;
+            // showError(COLOR_ANIMATION_ENDED);
         }
+        lastFrameTime = millis();
     }
 }
