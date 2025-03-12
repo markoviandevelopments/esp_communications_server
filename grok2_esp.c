@@ -27,7 +27,10 @@ enum EffectState
     ZAPHOD_DUAL,   // Two-headed flashy effect
     GUIDE_MATRIX,  // Scrolling "GUIDE" text
     BEE_SWARM,     // Brownian bee motion
-    LOVE_PRESTON   // "I LOVE YOU, PRESTON" scrolling text
+    LOVE_PRESTON,  // "I LOVE YOU, PRESTON" scrolling text
+    MARVIN_MOAN,   // Depressed flickering
+    FORD_SPARKLE,  // Random towel-inspired sparkles
+    ARTHUR_TEA     // Warm tea glow effect
 };
 EffectState currentEffect = IDLE;
 
@@ -71,7 +74,7 @@ int letter_N[HEIGHT][WIDTH_N] = {{1, 0, 0, 0, 1}, {1, 1, 0, 0, 1}, {1, 0, 1, 0, 
 // Global variables
 int text_scroll_x = 0, text_scroll_dir = 1;
 int bee_x = 16, bee_y = 4;
-uint32_t pulseColor = strip.Color(0, 255, 42); // HHGTTG green
+uint32_t pulseColor = strip.Color(0, 255, 42); // Default HHGTTG green
 int pulseBrightness = 0, pulseDirection = 1;
 
 void setup()
@@ -137,6 +140,15 @@ void loop()
     case LOVE_PRESTON:
         lovePrestonMatrix(500);
         break;
+    case MARVIN_MOAN:
+        marvinMoan();
+        break;
+    case FORD_SPARKLE:
+        fordSparkle();
+        break;
+    case ARTHUR_TEA:
+        arthurTea();
+        break;
     case IDLE:
         delay(10);
         break;
@@ -162,7 +174,7 @@ void checkServer()
         {
             int colonIndex = payload.indexOf(':');
             if (colonIndex != -1)
-                pulseColor = parseColor(payload.substring(colonIndex + 1));
+                pulseColor = parseColor(payload.substring(colonIndex + 1)); // Use color picker value
             currentEffect = DONT_PANIC;
         }
         else if (payload == "RAINBOW")
@@ -187,6 +199,12 @@ void checkServer()
             currentEffect = BEE_SWARM;
         else if (payload == "LOVEPRESTON")
             currentEffect = LOVE_PRESTON;
+        else if (payload == "MARVINMOAN")
+            currentEffect = MARVIN_MOAN;
+        else if (payload == "FORDSPARKLE")
+            currentEffect = FORD_SPARKLE;
+        else if (payload == "ARTHURTEA")
+            currentEffect = ARTHUR_TEA;
         else if (payload == "RESET")
         {
             strip.clear();
@@ -357,7 +375,7 @@ void dontPanicPulse()
             pulseDirection *= -1;
         for (int i = 0; i < NUM_LEDS; i++)
         {
-            strip.setPixelColor(i, dimColor(pulseColor, pulseBrightness));
+            strip.setPixelColor(i, dimColor(pulseColor, pulseBrightness)); // Uses color picker value
         }
         strip.show();
         lastUpdate = millis();
@@ -393,7 +411,7 @@ void zaphodDualHeads()
     for (int i = 0; i < NUM_LEDS; i++)
     {
         if (i % 2 == cycle % 2)
-            strip.setPixelColor(i, strip.Color(255, 0, 42)); // HHGTTG magenta
+            strip.setPixelColor(i, strip.Color(255, 215, 0)); // Gold for Zaphod
         else
             strip.setPixelColor(i, strip.Color(0, 255, 42)); // HHGTTG green
     }
@@ -430,7 +448,7 @@ void guideMatrix(uint16_t speed)
     }
     for (int i = 0; i < NUM_LEDS; i++)
     {
-        strip.setPixelColor(i, is_on[i] ? strip.Color(0, 255, 42) : strip.Color(255, 0, 42)); // HHGTTG green vs magenta
+        strip.setPixelColor(i, is_on[i] ? strip.Color(0, 255, 42) : strip.Color(255, 215, 0)); // Green vs gold
     }
     strip.show();
     text_scroll_x += text_scroll_dir;
@@ -462,9 +480,9 @@ void matrixBee()
     for (int i = 0; i < NUM_LEDS; i++)
     {
         if (i == bee_index)
-            strip.setPixelColor(i, strip.Color(255, 215, 0)); // Bee yellow
+            strip.setPixelColor(i, strip.Color(255, 255, 0)); // Intense golden yellow
         else
-            strip.setPixelColor(i, strip.Color(50, 50, 50)); // Dark gray background
+            strip.setPixelColor(i, strip.Color(10, 10, 10)); // Near-black background
     }
     strip.show();
     delay(1000);
@@ -478,7 +496,7 @@ void matrixBee()
 void lovePrestonMatrix(uint16_t speed)
 {
     int is_on[NUM_LEDS] = {0};
-    int total_width = WIDTH_I + WIDTH_L + WIDTH_O + WIDTH_V + WIDTH_E + WIDTH_Y + WIDTH_O + WIDTH_U + WIDTH_P + WIDTH_R + WIDTH_E + WIDTH_S + WIDTH_T + WIDTH_O + WIDTH_N + 14; // Spaces included
+    int total_width = WIDTH_I + WIDTH_L + WIDTH_O + WIDTH_V + WIDTH_E + WIDTH_Y + WIDTH_O + WIDTH_U + WIDTH_P + WIDTH_R + WIDTH_E + WIDTH_S + WIDTH_T + WIDTH_O + WIDTH_N + 14;
     for (int x = 0; x < 32; x++)
     {
         for (int y = 0; y < 8; y++)
@@ -518,7 +536,7 @@ void lovePrestonMatrix(uint16_t speed)
     }
     for (int i = 0; i < NUM_LEDS; i++)
     {
-        strip.setPixelColor(i, is_on[i] ? strip.Color(255, 0, 42) : strip.Color(0, 255, 42)); // Magenta text, green background
+        strip.setPixelColor(i, is_on[i] ? strip.Color(255, 215, 0) : strip.Color(0, 255, 42)); // Gold text, green background
     }
     strip.show();
     text_scroll_x += text_scroll_dir;
@@ -527,6 +545,65 @@ void lovePrestonMatrix(uint16_t speed)
     else if (text_scroll_x <= 0)
         text_scroll_dir = 1;
     delay(speed);
+    if (newCommandReceived)
+    {
+        newCommandReceived = false;
+        currentEffect = IDLE;
+    }
+}
+
+// New Effects
+void marvinMoan()
+{
+    static int cycle = 0;
+    for (int i = 0; i < NUM_LEDS; i++)
+    {
+        int brightness = random(50, 100);
+        strip.setPixelColor(i, strip.Color(brightness * 0.5, brightness * 0.5, brightness * 0.5)); // Dull gray
+        if (random(20) == 0)
+            strip.setPixelColor(i, strip.Color(0, 0, 0)); // Flicker off
+    }
+    strip.show();
+    delay(random(100, 300));
+    if (newCommandReceived)
+    {
+        newCommandReceived = false;
+        currentEffect = IDLE;
+    }
+}
+
+void fordSparkle()
+{
+    for (int i = 0; i < NUM_LEDS; i++)
+    {
+        strip.setPixelColor(i, strip.Color(10, 10, 10)); // Near-black background
+        if (random(20) == 0)
+            strip.setPixelColor(i, strip.Color(255, 215, 0)); // Gold sparkles
+    }
+    strip.show();
+    delay(100);
+    if (newCommandReceived)
+    {
+        newCommandReceived = false;
+        currentEffect = IDLE;
+    }
+}
+
+void arthurTea()
+{
+    static int brightness = 0;
+    static int direction = 1;
+    if (millis() % 80 == 0)
+    {
+        brightness += direction * 10;
+        if (brightness >= 255 || brightness <= 50)
+            direction *= -1;
+        for (int i = 0; i < NUM_LEDS; i++)
+        {
+            strip.setPixelColor(i, strip.Color(brightness, brightness * 0.8, brightness * 0.4)); // Warm tea glow
+        }
+        strip.show();
+    }
     if (newCommandReceived)
     {
         newCommandReceived = false;

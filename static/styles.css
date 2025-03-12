@@ -4,10 +4,10 @@
 :root {
     --primary-color: #00FF2A;
     /* HHGTTG green */
-    --secondary-color: #FF00A5;
-    /* HHGTTG magenta */
-    --highlight-color: #FFD700;
-    /* Gold for Heart of Gold */
+    --secondary-color: #FFD700;
+    /* Gold instead of pink */
+    --highlight-color: #FF4500;
+    /* Orange for DON'T PANIC */
     --bg-color: #1A1A1A;
     /* Dark gray for space */
     --container-bg: rgba(26, 26, 26, 0.9);
@@ -76,8 +76,8 @@ body {
 
 #currentColor {
     margin-top: 10px;
-    color: var(--highlight-color);
-    text-shadow: 0 0 5px var(--highlight-color);
+    color: var(--secondary-color);
+    text-shadow: 0 0 5px var(--secondary-color);
 }
 
 /* === HEADERS & TEXT === */
@@ -97,8 +97,8 @@ small {
     font-size: 20px;
     font-weight: bold;
     margin-top: 15px;
-    color: var(--highlight-color);
-    text-shadow: 0 0 5px var(--highlight-color);
+    color: var(--secondary-color);
+    text-shadow: 0 0 5px var(--secondary-color);
 }
 
 /* === FORM ELEMENTS === */
@@ -180,7 +180,7 @@ td.active {
 
 td.inactive {
     color: var(--secondary-color);
-    background-color: rgba(255, 0, 165, 0.2);
+    background-color: rgba(255, 215, 0, 0.2);
     border-radius: 5px;
 }
 
