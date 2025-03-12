@@ -3,14 +3,13 @@ import time
 
 app = Flask(__name__)
 
-# Device states with Hitchhiker’s Guide-inspired descriptions
 devices = {
-    '001': {'mode': 0, 'description': 'Heart of Gold Main Array', 'port': 5000, 'last_seen': None, 'ip': None, 'color': '#006496'},
-    '002': {'mode': 0, 'description': 'Vogon Constructor Aux', 'port': 5001, 'last_seen': None, 'ip': None, 'color': '#006496'},
-    '003': {'mode': 0, 'description': 'Guide Cockpit Glow', 'port': 5002, 'last_seen': None, 'ip': None, 'color': '#006496'},
-    '004': {'mode': 0, 'description': 'Improbability Engine', 'port': 5003, 'last_seen': None, 'ip': None, 'color': '#006496'},
-    '005': {'mode': 0, 'description': 'Zaphod’s Cabin Mood', 'port': 5004, 'last_seen': None, 'ip': None, 'color': '#006496'},
-    '006': {'mode': 0, 'description': 'Marvin’s Cargo Bay', 'port': 5006, 'last_seen': None, 'ip': None, 'color': '#006496'},
+    '001': {'mode': 0, 'description': 'Heart of Gold Main Array', 'port': 5000, 'last_seen': None, 'ip': None, 'color': '#00FF2A'},
+    '002': {'mode': 0, 'description': 'Vogon Constructor Aux', 'port': 5001, 'last_seen': None, 'ip': None, 'color': '#00FF2A'},
+    '003': {'mode': 0, 'description': 'Guide Cockpit Glow', 'port': 5002, 'last_seen': None, 'ip': None, 'color': '#00FF2A'},
+    '004': {'mode': 0, 'description': 'Improbability Engine', 'port': 5003, 'last_seen': None, 'ip': None, 'color': '#00FF2A'},
+    '005': {'mode': 0, 'description': 'Zaphod’s Cabin Mood', 'port': 5004, 'last_seen': None, 'ip': None, 'color': '#00FF2A'},
+    '006': {'mode': 0, 'description': 'Marvin’s Cargo Bay', 'port': 5006, 'last_seen': None, 'ip': None, 'color': '#00FF2A'},
 }
 
 COMMAND_MAP = {
@@ -25,6 +24,8 @@ COMMAND_MAP = {
     8: "ZAPHODDUAL",
     9: "GUIDEMATRIX",
     10: "COLORPULSE",
+    11: "BEESWARM",
+    12: "LOVEPRESTON",
 }
 
 @app.template_filter('is_active')

@@ -118,105 +118,125 @@ void applyPattern(JSONVar pattern)
     strip.show();
 }
 
-void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
-{
-    switch (type)
-    {
-    case WStype_DISCONNECTED:
-        showError(COLOR_WS_ERROR);
-        isAnimating = false;
-        break;
+void webSocketEvent(WStype_t type, uint8_t *payload, size_t length) {
+    switch (type) {
+        case WStype_TEXT: {
+            JSONVar doc = JSON.parse((char *)payload);
 
-    case WStype_CONNECTED:
-        // Quick green pulse on connection
-        showError(COLOR_CONNECTION_OK);
-        break;
-
-    case WStype_TEXT:
-    {
-        JSONVar doc = JSON.parse((char *)payload);
-
-        if (JSON.typeof(doc) == "undefined")
-        {
-            for (int i = 0; i < 3; i++)
-                showError(COLOR_JSON_ERROR);
-            return;
-        }
-
-        if (doc.hasOwnProperty("pattern"))
-        {
-            isAnimating = false;
-            applyPattern(doc["pattern"]);
-        }
-        else if (doc.hasOwnProperty("frames") && doc.hasOwnProperty("frame_rate"))
-        {
-            animationFrames = doc["frames"];
-            frameCount = animationFrames.length();
-
-            if (frameCount < 1)
+            // ===== ADD VALIDATION =====
+            if (doc.hasOwnProperty("frames"))
             {
-                showError(COLOR_FRAME_COUNT_ERROR);
+                // Check frames array
+                if (JSON.typeof(doc["frames"]) != "array" || doc["frames"].length() < 1)
+                {
+                    showError(COLOR_INVALID_STRUCTURE);
+                    return;
+                }
+
+                // Check first frame structure
+                JSONVar firstFrame = doc["frames"][0];
+                if (JSON.typeof(firstFrame) != "array" || firstFrame.length() != 10)
+                {
+                    showError(COLOR_INVALID_STRUCTURE);
+                    return;
+                }
+            }
+        }
+        case WStype_DISCONNECTED:
+            showError(COLOR_WS_ERROR);
+            isAnimating = false;
+            break;
+
+        case WStype_CONNECTED:
+            // Quick green pulse on connection
+            showError(COLOR_CONNECTION_OK);
+            break;
+
+        case WStype_TEXT:
+        {
+            JSONVar doc = JSON.parse((char *)payload);
+
+            if (JSON.typeof(doc) == "undefined")
+            {
+                for (int i = 0; i < 3; i++)
+                    showError(COLOR_JSON_ERROR);
                 return;
             }
 
-            for (int i = 0; i < frameCount; i++)
+            if (doc.hasOwnProperty("pattern"))
             {
-                showError(COLOR_ANIMATION_ENDED);
-                delay(200);
+                isAnimating = false;
+                applyPattern(doc["pattern"]);
+            }
+            else if (doc.hasOwnProperty("frames") && doc.hasOwnProperty("frame_rate"))
+            {
+                animationFrames = doc["frames"];
+                frameCount = animationFrames.length();
+
+                if (frameCount < 1)
+                {
+                    showError(COLOR_FRAME_COUNT_ERROR);
+                    return;
+                }
+
+                for (int i = 0; i < frameCount; i++)
+                {
+                    showError(COLOR_ANIMATION_ENDED);
+                    delay(200);
+                }
+
+                frameDelay = (unsigned long)((double)doc["frame_rate"] * 1000);
+                currentFrame = 0;
+                lastFrameTime = millis();
+                isAnimating = true;
+            }
+            break;
+        }
+
+        case WStype_ERROR:
+            showError(COLOR_WS_ERROR);
+            break;
+        }
+    }
+
+        void setup()
+        {
+            strip.begin();
+            strip.show();
+
+            // Initial connection sequence
+            for (int i = 0; i < 3; i++)
+            {
+                showError(COLOR_CONNECTION_OK);
             }
 
-            frameDelay = (unsigned long)((double)doc["frame_rate"] * 1000);
-            currentFrame = 0;
-            lastFrameTime = millis();
-            isAnimating = true;
+            WiFi.begin(ssid, password);
+            while (WiFi.status() != WL_CONNECTED)
+            {
+                showError(COLOR_WS_ERROR); // Red flash while connecting
+                delay(500);
+            }
+
+            webSocket.begin(ws_host, ws_port, ws_path);
+            webSocket.onEvent(webSocketEvent);
+            webSocket.setReconnectInterval(5000);
         }
-        break;
-    }
 
-    case WStype_ERROR:
-        showError(COLOR_WS_ERROR);
-        break;
-    }
-}
-
-void setup()
-{
-    strip.begin();
-    strip.show();
-
-    // Initial connection sequence
-    for (int i = 0; i < 3; i++)
-    {
-        showError(COLOR_CONNECTION_OK);
-    }
-
-    WiFi.begin(ssid, password);
-    while (WiFi.status() != WL_CONNECTED)
-    {
-        showError(COLOR_WS_ERROR); // Red flash while connecting
-        delay(500);
-    }
-
-    webSocket.begin(ws_host, ws_port, ws_path);
-    webSocket.onEvent(webSocketEvent);
-    webSocket.setReconnectInterval(5000);
-}
-
-void loop()
-{
-    webSocket.loop();
-
-    if (isAnimating && (millis() - lastFrameTime >= frameDelay))
-    {
-        if (currentFrame >= frameCount)
+        void loop()
         {
-            showError(COLOR_INVALID_STRUCTURE);
-            isAnimating = false;
-            return;
-        }
+            webSocket.loop();
 
-        applyPattern(animationFrames[currentFrame]);
-        currentFrame = (currentFrame + 1) % frameCount;
-        lastFrameTime = millis();
-    }
-}
+            if (isAnimating && (millis() - lastFrameTime >= frameDelay))
+            {
+                if (currentFrame >= frameCount)
+                {
+                    showError(COLOR_INVALID_STRUCTURE);
+                    isAnimating = false;
+                    return;
+                }
+
+                applyPattern(animationFrames[currentFrame]);
+                currentFrame = (currentFrame + 1) % frameCount;
+                lastFrameTime = millis();
+            }
+        }
