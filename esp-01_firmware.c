@@ -200,3 +200,20 @@ void loop()
         lastFrameTime = millis();
     }
 }
+
+Arduino: 1.8.19 (Linux), Board: "Generic ESP8266 Module, 80 MHz, Flash, Disabled (new aborts on oom), Disabled, All SSL ciphers (most compatible), 32KB cache + 32KB IRAM (balanced), Use pgm_read macros for IRAM/PROGMEM, dtr (aka nodemcu), 26 MHz, 40MHz, DOUT (compatible), 1MB (FS:64KB OTA:~470KB), 2, nonos-sdk 2.2.1+100 (190703), v2 Lower Memory, Disabled, None, Only Sketch, 115200"
+
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino: In function 'void webSocketEvent(WStype_t, uint8_t*, size_t)':
+sketch_feb02b:160:10: error: jump to case label
+  160 |     case WStype_ERROR:
+      |          ^~~~~~~~~~~~
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:109:17: note:   crosses initialization of 'JSONVar msg'
+  109 |         JSONVar msg = JSON.parse((char *)payload);
+      |                 ^~~
+exit status 1
+jump to case label
+
+
+This report would have more information with
+"Show verbose output during compilation"
+option enabled in File -> Preferences.
