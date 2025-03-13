@@ -20,16 +20,15 @@ COMMAND_MAP = {
     4: "IMPROBABILITY",
     5: "VOGONPOETRY",
     6: "GOLDTRAIL",
-    7: "TOWELFLICKER",
-    8: "ZAPHODPARTY",
-    9: "LIFEMATRIX",
+    7: "TOWELWAVE",
+    8: "ZAPHODDUAL",
+    9: "GUIDEMATRIX",
     10: "COLORPULSE",
     11: "BEESWARM",
     12: "LOVEPRESTON",
-    13: "MARVINGLOOM",
+    13: "MARVINMOAN",
     14: "FORDSPARKLE",
     15: "ARTHURTEA",
-    16: "COSMICDUST",
 }
 
 @app.template_filter('is_active')
@@ -51,7 +50,7 @@ def index():
             if 'all' in selected_devices:
                 for dev_id in devices:
                     devices[dev_id]['mode'] = mode
-                    if color and mode == 10:
+                    if color and mode == 10:  # Update color for COLORPULSE
                         devices[dev_id]['color'] = color
                 message = f"Galaxy updated to {COMMAND_MAP[mode]}"
             else:
