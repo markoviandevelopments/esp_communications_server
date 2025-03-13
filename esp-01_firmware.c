@@ -102,65 +102,61 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
         showError(COLOR_WS_ERROR);
         isAnimating = false;
         break;
-
     case WStype_CONNECTED:
         showError(COLOR_CONNECTION_OK);
         break;
-
     case WStype_TEXT:
-    {
-        JSONVar doc = JSON.parse((char *)payload);
-
-        if (JSON.typeof(doc) == "undefined")
+        JSONVar msg = JSON.parse((char *)payload);
+        if (JSON.typeof(msg) == "array" && msg.length() == 2)
+        {
+            String event_name = msg[0];
+            JSONVar data = msg[1];
+            if (event_name == "pattern_update")
+            {
+                if (data.hasOwnProperty("pattern"))
+                {
+                    isAnimating = false;
+                    applyPattern(data["pattern"]);
+                }
+                else if (data.hasOwnProperty("frames") && data.hasOwnProperty("frame_rate"))
+                {
+                    if (JSON.typeof(data["frames"]) != "array" || data["frames"].length() < 1)
+                    {
+                        showError(COLOR_INVALID_STRUCTURE, 2);
+                        return;
+                    }
+                    JSONVar firstFrame = data["frames"][0];
+                    if (JSON.typeof(firstFrame) != "array" || firstFrame.length() != 10)
+                    {
+                        showError(COLOR_INVALID_STRUCTURE, 3);
+                        return;
+                    }
+                    animationFrames = data["frames"];
+                    frameCount = animationFrames.length();
+                    if (frameCount < 1)
+                    {
+                        showError(COLOR_FRAME_COUNT_ERROR);
+                        return;
+                    }
+                    double frameRate = (double)data["frame_rate"];
+                    if (frameRate <= 0)
+                    {
+                        showError(COLOR_FRAME_COUNT_ERROR);
+                        return;
+                    }
+                    frameDelay = (unsigned long)(1000.0 / frameRate);
+                    currentFrame = 0;
+                    lastFrameTime = millis();
+                    isAnimating = true;
+                    showError(COLOR_ANIMATION_ENDED);
+                }
+            }
+        }
+        else
         {
             showError(COLOR_JSON_ERROR, 3);
-            return;
-        }
-
-        if (doc.hasOwnProperty("pattern"))
-        {
-            isAnimating = false;
-            applyPattern(doc["pattern"]);
-        }
-        else if (doc.hasOwnProperty("frames") && doc.hasOwnProperty("frame_rate"))
-        {
-            if (JSON.typeof(doc["frames"]) != "array" || doc["frames"].length() < 1)
-            {
-                showError(COLOR_INVALID_STRUCTURE, 2);
-                return;
-            }
-
-            JSONVar firstFrame = doc["frames"][0];
-            if (JSON.typeof(firstFrame) != "array" || firstFrame.length() != 10)
-            {
-                showError(COLOR_INVALID_STRUCTURE, 3);
-                return;
-            }
-
-            animationFrames = doc["frames"];
-            frameCount = animationFrames.length();
-
-            if (frameCount < 1)
-            {
-                showError(COLOR_FRAME_COUNT_ERROR);
-                return;
-            }
-
-            double frameRate = (double)doc["frame_rate"];
-            if (frameRate <= 0)
-            {
-                showError(COLOR_FRAME_COUNT_ERROR);
-                return;
-            }
-            frameDelay = (unsigned long)(1000.0 / frameRate);
-            currentFrame = 0;
-            lastFrameTime = millis();
-            isAnimating = true;
-            showError(COLOR_ANIMATION_ENDED);
         }
         break;
-    }
-
     case WStype_ERROR:
         showError(COLOR_WS_ERROR);
         break;
