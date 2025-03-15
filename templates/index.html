@@ -44,6 +44,7 @@
             </div>
 
             <button type="submit">Activate Improbability</button>
+            <button type="submit" name="mode" value="0">Reset Galaxy</button>
             {% if message %}<p class="message">{{ message }}</p>{% endif %}
         </form>
 
@@ -77,12 +78,19 @@
     </div>
 
     <script>
-        const colorPicker = new iro.ColorPicker('#colorPicker', { width: 220 });
-        document.getElementById('selectedColor').value = "{{ devices['001']['color'] }}";
+        const colorPicker = new iro.ColorPicker("#colorPicker", {
+            width: 220,
+            color: "{{ devices['001']['color'] }}"
+        });
         colorPicker.on('color:change', function (color) {
             const hexColor = color.hexString.toUpperCase();
             document.getElementById('selectedColor').value = hexColor;
             document.getElementById('currentColor').textContent = `Selected Hue: ${hexColor}`;
+            fetch('/update_color', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ device: '001', color: hexColor })
+            });
         });
     </script>
 </body>
