@@ -17,16 +17,10 @@
             <small>Entry 42: Illumination for Intergalactic Travelers</small>
         </div>
 
-        <div class="color-picker-container">
-            <div id="colorPicker"></div>
-            <input type="hidden" id="selectedColor" name="color" value="{{ devices['001']['color'] }}">
-            <p id="currentColor">Selected Hue: {{ devices['001']['color'] }}</p>
-        </div>
-
         <form method="POST">
             <div class="form-group">
-                <label>Select Galactic Devices:</label>
-                <select name="devices" multiple size="6">
+                <label for="devices">Select Galactic Devices:</label>
+                <select name="devices" id="devices" multiple>
                     <option value="all">All Devices in the Galaxy</option>
                     {% for dev_id, details in devices.items() %}
                     <option value="{{ dev_id }}">{{ dev_id }} - {{ details.description }}</option>
@@ -35,53 +29,74 @@
             </div>
 
             <div class="form-group">
-                <label>Select Guide Effect:</label>
-                <select name="mode" required>
+                <label for="mode">Select Guide Effect:</label>
+                <select name="mode" id="mode" required>
                     {% for mode, name in command_map.items() %}
                     <option value="{{ mode }}">{{ name }}</option>
                     {% endfor %}
                 </select>
             </div>
 
-            <button type="submit">Activate Improbability</button>
-            <button type="submit" name="mode" value="0">Reset Galaxy</button>
+            <div class="form-group color-picker-container" id="colorPickerGroup">
+                <label>Color (for COLORPULSE):</label>
+                <div id="colorPicker"></div>
+                <input type="hidden" id="selectedColor" name="color" value="{{ devices['001']['color'] }}">
+                <p id="currentColor">Selected Hue: {{ devices['001']['color'] }}</p>
+            </div>
+
+            <div class="form-group chaos-container" id="chaosGroup">
+                <label for="chaos">Chaos Factor (for CHAOS):</label>
+                <input type="range" id="chaos" name="chaos" min="0" max="100" value="50">
+                <p id="currentChaos">Chaos Level: 50</p>
+            </div>
+
+            <div class="button-group">
+                <button type="submit">Activate Improbability</button>
+                <button type="submit" name="mode" value="0">Reset Galaxy</button>
+            </div>
             {% if message %}<p class="message">{{ message }}</p>{% endif %}
         </form>
 
         <h2>Galactic Device Status</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Status</th>
-                    <th>Effect</th>
-                    <th>Last Ping</th>
-                    <th>IP</th>
-                    <th>Location</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for dev_id, details in devices.items() %}
-                <tr>
-                    <td>{{ dev_id }}</td>
-                    <td class="{{ 'active' if details.last_seen | is_active == 'Active' else 'inactive' }}">
-                        {{ details.last_seen | is_active }}
-                    </td>
-                    <td>{{ command_map[details.mode] }}</td>
-                    <td>{{ details.last_seen | timestamp_to_time }}</td>
-                    <td>{{ details.ip or 'Unknown' }}</td>
-                    <td>{{ details.description }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="status-container">
+            {% for dev_id, details in devices.items() %}
+            <div class="status-card">
+                <h3>{{ dev_id }}</h3>
+                <p><strong>Location:</strong> {{ details.description }}</p>
+                <p><strong>Status:</strong> <span
+                        class="{{ 'active' if details.last_seen | is_active == 'Active' else 'inactive' }}">{{
+                        details.last_seen | is_active }}</span></p>
+                <p><strong>Effect:</strong> {{ command_map[details.mode] }}</p>
+                <p><strong>Last Ping:</strong> {{ details.last_seen | timestamp_to_time }}</p>
+                <p><strong>IP:</strong> {{ details.ip or 'Unknown' }}</p>
+                <p><strong>Color:</strong> <span class="color-preview"
+                        style="background-color: {{ details.color }};"></span> {{ details.color }}</p>
+                <p><strong>Chaos:</strong> {{ details.chaos }}</p>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 
     <script>
         const colorPicker = new iro.ColorPicker("#colorPicker", {
-            width: 220,
+            width: 200,
             color: "{{ devices['001']['color'] }}"
         });
+        const chaosSlider = document.getElementById('chaos');
+        const currentChaos = document.getElementById('currentChaos');
+        const modeSelect = document.getElementById('mode');
+        const colorGroup = document.getElementById('colorPickerGroup');
+        const chaosGroup = document.getElementById('chaosGroup');
+
+        function updateVisibility() {
+            const mode = modeSelect.value;
+            colorGroup.style.display = mode === '1' ? 'block' : 'none';
+            chaosGroup.style.display = mode === '14' ? 'block' : 'none';
+        }
+
+        modeSelect.addEventListener('change', updateVisibility);
+        updateVisibility();
+
         colorPicker.on('color:change', function (color) {
             const hexColor = color.hexString.toUpperCase();
             document.getElementById('selectedColor').value = hexColor;
@@ -90,6 +105,16 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ device: '001', color: hexColor })
+            });
+        });
+
+        chaosSlider.addEventListener('input', function () {
+            const chaosValue = chaosSlider.value;
+            currentChaos.textContent = `Chaos Level: ${chaosValue}`;
+            fetch('/update_chaos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ device: '001', chaos: chaosValue })
             });
         });
     </script>
