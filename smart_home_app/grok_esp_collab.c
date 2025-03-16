@@ -13,15 +13,197 @@ const char *ssid = "Brubaker Wifi";
 const char *password = "Pre$ton01";
 const char *serverUrl = "http://10.1.10.79:4999/device/001";
 
-// Enum EffectState unchanged
+// Define the EffectState enum
+enum EffectState
+{
+    IDLE,
+    DONT_PANIC,
+    RAINBOW,
+    BABEL_FISH,
+    PAN_GALACTIC,
+    IMPROBABILITY,
+    VOGON_POETRY,
+    GOLD_TRAIL,
+    BEE_SWARM,
+    LOVE_PRESTON,
+    COSMIC_DUST,
+    EARTH_DEMOLITION,
+    KRICKET_WARS,
+    MILLIWAYS
+};
+
 EffectState currentEffect = IDLE;
 
+// Letter arrays for matrix displays (assuming 5x7 font)
+#define WIDTH_D 5
+const uint8_t letter_D[8][WIDTH_D] = {
+    {1, 0, 0, 0, 0},
+    {1, 0, 0, 0, 0},
+    {1, 0, 1, 1, 0},
+    {1, 1, 0, 0, 1},
+    {1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1},
+    {1, 1, 1, 1, 0},
+    {0, 0, 0, 0, 0}};
+
+#define WIDTH_O 5
+const uint8_t letter_O[8][WIDTH_O] = {
+    {0, 1, 1, 1, 0},
+    {1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1},
+    {0, 1, 1, 1, 0},
+    {0, 0, 0, 0, 0}};
+
+#define WIDTH_N 5
+const uint8_t letter_N[8][WIDTH_N] = {
+    {1, 0, 0, 0, 1},
+    {1, 1, 0, 0, 1},
+    {1, 0, 1, 0, 1},
+    {1, 0, 0, 1, 1},
+    {1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1},
+    {0, 0, 0, 0, 0}};
+
+#define WIDTH_T 5
+const uint8_t letter_T[8][WIDTH_T] = {
+    {1, 1, 1, 1, 1},
+    {0, 0, 1, 0, 0},
+    {0, 0, 1, 0, 0},
+    {0, 0, 1, 0, 0},
+    {0, 0, 1, 0, 0},
+    {0, 0, 1, 0, 0},
+    {0, 0, 1, 0, 0},
+    {0, 0, 0, 0, 0}};
+
+#define WIDTH_P 5
+const uint8_t letter_P[8][WIDTH_P] = {
+    {1, 1, 1, 1, 0},
+    {1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1},
+    {1, 1, 1, 1, 0},
+    {1, 0, 0, 0, 0},
+    {1, 0, 0, 0, 0},
+    {1, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0}};
+
+#define WIDTH_A 5
+const uint8_t letter_A[8][WIDTH_A] = {
+    {0, 0, 1, 0, 0},
+    {0, 1, 0, 1, 0},
+    {1, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1},
+    {0, 0, 0, 0, 0}};
+
+#define WIDTH_I 3
+const uint8_t letter_I[8][WIDTH_I] = {
+    {1, 1, 1},
+    {0, 1, 0},
+    {0, 1, 0},
+    {0, 1, 0},
+    {0, 1, 0},
+    {0, 1, 0},
+    {1, 1, 1},
+    {0, 0, 0}};
+
+#define WIDTH_C 5
+const uint8_t letter_C[8][WIDTH_C] = {
+    {0, 1, 1, 1, 0},
+    {1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0},
+    {1, 0, 0, 0, 0},
+    {1, 0, 0, 0, 0},
+    {1, 0, 0, 0, 1},
+    {0, 1, 1, 1, 0},
+    {0, 0, 0, 0, 0}};
+
+#define WIDTH_L 5
+const uint8_t letter_L[8][WIDTH_L] = {
+    {1, 0, 0, 0, 0},
+    {1, 0, 0, 0, 0},
+    {1, 0, 0, 0, 0},
+    {1, 0, 0, 0, 0},
+    {1, 0, 0, 0, 0},
+    {1, 0, 0, 0, 0},
+    {1, 1, 1, 1, 1},
+    {0, 0, 0, 0, 0}};
+
+#define WIDTH_V 5
+const uint8_t letter_V[8][WIDTH_V] = {
+    {1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1},
+    {0, 1, 0, 1, 0},
+    {0, 1, 0, 1, 0},
+    {0, 0, 1, 0, 0},
+    {0, 0, 1, 0, 0},
+    {0, 0, 0, 0, 0}};
+
+#define WIDTH_E 5
+const uint8_t letter_E[8][WIDTH_E] = {
+    {1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0},
+    {1, 0, 0, 0, 0},
+    {1, 1, 1, 1, 0},
+    {1, 0, 0, 0, 0},
+    {1, 0, 0, 0, 0},
+    {1, 1, 1, 1, 1},
+    {0, 0, 0, 0, 0}};
+
+#define WIDTH_Y 5
+const uint8_t letter_Y[8][WIDTH_Y] = {
+    {1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1},
+    {0, 1, 1, 1, 0},
+    {0, 0, 1, 0, 0},
+    {0, 0, 1, 0, 0},
+    {0, 0, 1, 0, 0},
+    {0, 0, 0, 0, 0}};
+
+#define WIDTH_U 5
+const uint8_t letter_U[8][WIDTH_U] = {
+    {1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1},
+    {0, 1, 1, 1, 0},
+    {0, 0, 0, 0, 0}};
+
+#define WIDTH_R 5
+const uint8_t letter_R[8][WIDTH_R] = {
+    {1, 1, 1, 1, 0},
+    {1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1},
+    {1, 1, 1, 1, 0},
+    {1, 0, 1, 0, 0},
+    {1, 0, 0, 1, 0},
+    {1, 0, 0, 0, 1},
+    {0, 0, 0, 0, 0}};
+
+#define WIDTH_S 5
+const uint8_t letter_S[8][WIDTH_S] = {
+    {0, 1, 1, 1, 0},
+    {1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0},
+    {0, 1, 1, 1, 0},
+    {0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1},
+    {0, 1, 1, 1, 0},
+    {0, 0, 0, 0, 0}};
+
+// Global variables
 volatile bool newCommandReceived = false;
 unsigned long lastServerCheck = 0;
 const int serverCheckInterval = 300;
-
-// Matrix text definitions unchanged
-// [Letter arrays remain as in your original code]
 
 int text_scroll_x = 0, text_scroll_dir = 1;
 uint32_t pulseColor = strip.Color(0, 255, 42);
@@ -972,329 +1154,3 @@ void setStripColor(uint32_t color)
         strip.setPixelColor(i, color);
     strip.show();
 }
-
-Arduino: 1.8.19 (Linux), Board: "Generic ESP8266 Module, 80 MHz, Flash, Disabled (new aborts on oom), Disabled, All SSL ciphers (most compatible), 32KB cache + 32KB IRAM (balanced), Use pgm_read macros for IRAM/PROGMEM, dtr (aka nodemcu), 26 MHz, 40MHz, DOUT (compatible), 1MB (FS:64KB OTA:~470KB), 2, nonos-sdk 2.2.1+100 (190703), v2 Lower Memory, Disabled, None, Only Sketch, 115200"
-
-sketch_feb02b:17:1: error: 'EffectState' does not name a type
-   17 | EffectState currentEffect = IDLE;
-      | ^~~~~~~~~~~
-/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino: In function 'void loop()':
-sketch_feb02b:54:13: error: 'currentEffect' was not declared in this scope
-   54 |     switch (currentEffect)
-      |             ^~~~~~~~~~~~~
-sketch_feb02b:56:10: error: 'DONT_PANIC' was not declared in this scope
-   56 |     case DONT_PANIC:
-      |          ^~~~~~~~~~
-sketch_feb02b:59:10: error: 'RAINBOW' was not declared in this scope
-   59 |     case RAINBOW:
-      |          ^~~~~~~
-sketch_feb02b:62:10: error: 'BABEL_FISH' was not declared in this scope
-   62 |     case BABEL_FISH:
-      |          ^~~~~~~~~~
-sketch_feb02b:65:10: error: 'PAN_GALACTIC' was not declared in this scope
-   65 |     case PAN_GALACTIC:
-      |          ^~~~~~~~~~~~
-sketch_feb02b:68:10: error: 'IMPROBABILITY' was not declared in this scope
-   68 |     case IMPROBABILITY:
-      |          ^~~~~~~~~~~~~
-sketch_feb02b:71:10: error: 'VOGON_POETRY' was not declared in this scope
-   71 |     case VOGON_POETRY:
-      |          ^~~~~~~~~~~~
-sketch_feb02b:74:10: error: 'GOLD_TRAIL' was not declared in this scope
-   74 |     case GOLD_TRAIL:
-      |          ^~~~~~~~~~
-sketch_feb02b:77:10: error: 'BEE_SWARM' was not declared in this scope
-   77 |     case BEE_SWARM:
-      |          ^~~~~~~~~
-sketch_feb02b:80:10: error: 'LOVE_PRESTON' was not declared in this scope
-   80 |     case LOVE_PRESTON:
-      |          ^~~~~~~~~~~~
-sketch_feb02b:83:10: error: 'COSMIC_DUST' was not declared in this scope
-   83 |     case COSMIC_DUST:
-      |          ^~~~~~~~~~~
-sketch_feb02b:86:10: error: 'EARTH_DEMOLITION' was not declared in this scope
-   86 |     case EARTH_DEMOLITION:
-      |          ^~~~~~~~~~~~~~~~
-sketch_feb02b:89:10: error: 'KRICKET_WARS' was not declared in this scope
-   89 |     case KRICKET_WARS:
-      |          ^~~~~~~~~~~~
-sketch_feb02b:92:10: error: 'MILLIWAYS' was not declared in this scope
-   92 |     case MILLIWAYS:
-      |          ^~~~~~~~~
-sketch_feb02b:95:10: error: 'IDLE' was not declared in this scope
-   95 |     case IDLE:
-      |          ^~~~
-/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino: In function 'void checkServer()':
-sketch_feb02b:128:13: error: 'currentEffect' was not declared in this scope
-  128 |         if (currentEffect != IDLE)
-      |             ^~~~~~~~~~~~~
-sketch_feb02b:128:30: error: 'IDLE' was not declared in this scope
-  128 |         if (currentEffect != IDLE)
-      |                              ^~~~
-sketch_feb02b:146:13: error: 'currentEffect' was not declared in this scope
-  146 |             currentEffect = DONT_PANIC;
-      |             ^~~~~~~~~~~~~
-sketch_feb02b:146:29: error: 'DONT_PANIC' was not declared in this scope
-  146 |             currentEffect = DONT_PANIC;
-      |                             ^~~~~~~~~~
-sketch_feb02b:149:13: error: 'currentEffect' was not declared in this scope
-  149 |             currentEffect = RAINBOW;
-      |             ^~~~~~~~~~~~~
-sketch_feb02b:149:29: error: 'RAINBOW' was not declared in this scope
-  149 |             currentEffect = RAINBOW;
-      |                             ^~~~~~~
-sketch_feb02b:151:13: error: 'currentEffect' was not declared in this scope
-  151 |             currentEffect = BABEL_FISH;
-      |             ^~~~~~~~~~~~~
-sketch_feb02b:151:29: error: 'BABEL_FISH' was not declared in this scope
-  151 |             currentEffect = BABEL_FISH;
-      |                             ^~~~~~~~~~
-sketch_feb02b:153:13: error: 'currentEffect' was not declared in this scope
-  153 |             currentEffect = PAN_GALACTIC;
-      |             ^~~~~~~~~~~~~
-sketch_feb02b:153:29: error: 'PAN_GALACTIC' was not declared in this scope
-  153 |             currentEffect = PAN_GALACTIC;
-      |                             ^~~~~~~~~~~~
-sketch_feb02b:155:13: error: 'currentEffect' was not declared in this scope
-  155 |             currentEffect = IMPROBABILITY;
-      |             ^~~~~~~~~~~~~
-sketch_feb02b:155:29: error: 'IMPROBABILITY' was not declared in this scope
-  155 |             currentEffect = IMPROBABILITY;
-      |                             ^~~~~~~~~~~~~
-sketch_feb02b:157:13: error: 'currentEffect' was not declared in this scope
-  157 |             currentEffect = VOGON_POETRY;
-      |             ^~~~~~~~~~~~~
-sketch_feb02b:157:29: error: 'VOGON_POETRY' was not declared in this scope
-  157 |             currentEffect = VOGON_POETRY;
-      |                             ^~~~~~~~~~~~
-sketch_feb02b:159:13: error: 'currentEffect' was not declared in this scope
-  159 |             currentEffect = GOLD_TRAIL;
-      |             ^~~~~~~~~~~~~
-sketch_feb02b:159:29: error: 'GOLD_TRAIL' was not declared in this scope
-  159 |             currentEffect = GOLD_TRAIL;
-      |                             ^~~~~~~~~~
-sketch_feb02b:161:13: error: 'currentEffect' was not declared in this scope
-  161 |             currentEffect = BEE_SWARM;
-      |             ^~~~~~~~~~~~~
-sketch_feb02b:161:29: error: 'BEE_SWARM' was not declared in this scope
-  161 |             currentEffect = BEE_SWARM;
-      |                             ^~~~~~~~~
-sketch_feb02b:163:13: error: 'currentEffect' was not declared in this scope
-  163 |             currentEffect = LOVE_PRESTON;
-      |             ^~~~~~~~~~~~~
-sketch_feb02b:163:29: error: 'LOVE_PRESTON' was not declared in this scope
-  163 |             currentEffect = LOVE_PRESTON;
-      |                             ^~~~~~~~~~~~
-sketch_feb02b:165:13: error: 'currentEffect' was not declared in this scope
-  165 |             currentEffect = COSMIC_DUST;
-      |             ^~~~~~~~~~~~~
-sketch_feb02b:165:29: error: 'COSMIC_DUST' was not declared in this scope
-  165 |             currentEffect = COSMIC_DUST;
-      |                             ^~~~~~~~~~~
-sketch_feb02b:167:13: error: 'currentEffect' was not declared in this scope
-  167 |             currentEffect = EARTH_DEMOLITION;
-      |             ^~~~~~~~~~~~~
-sketch_feb02b:167:29: error: 'EARTH_DEMOLITION' was not declared in this scope
-  167 |             currentEffect = EARTH_DEMOLITION;
-      |                             ^~~~~~~~~~~~~~~~
-sketch_feb02b:169:13: error: 'currentEffect' was not declared in this scope
-  169 |             currentEffect = KRICKET_WARS;
-      |             ^~~~~~~~~~~~~
-sketch_feb02b:169:29: error: 'KRICKET_WARS' was not declared in this scope
-  169 |             currentEffect = KRICKET_WARS;
-      |                             ^~~~~~~~~~~~
-sketch_feb02b:171:13: error: 'currentEffect' was not declared in this scope
-  171 |             currentEffect = MILLIWAYS;
-      |             ^~~~~~~~~~~~~
-sketch_feb02b:171:29: error: 'MILLIWAYS' was not declared in this scope
-  171 |             currentEffect = MILLIWAYS;
-      |                             ^~~~~~~~~
-sketch_feb02b:182:13: error: 'currentEffect' was not declared in this scope
-  182 |             currentEffect = IDLE;
-      |             ^~~~~~~~~~~~~
-sketch_feb02b:182:29: error: 'IDLE' was not declared in this scope
-  182 |             currentEffect = IDLE;
-      |                             ^~~~
-/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino: In function 'void dontPanicPulse()':
-sketch_feb02b:222:55: error: 'WIDTH_D' was not declared in this scope
-  222 |                 if (x - textPos >= 0 && x - textPos < WIDTH_D)
-      |                                                       ^~~~~~~
-sketch_feb02b:223:46: error: 'letter_D' was not declared in this scope
-  223 |                     is_on[index] = glitch ? !letter_D[y][x - textPos] : letter_D[y][x - textPos];
-      |                                              ^~~~~~~~
-sketch_feb02b:225:46: error: 'letter_O' was not declared in this scope
-  225 |                     is_on[index] = glitch ? !letter_O[y][x - textPos - 5] : letter_O[y][x - textPos - 5];
-      |                                              ^~~~~~~~
-sketch_feb02b:227:46: error: 'letter_N' was not declared in this scope
-  227 |                     is_on[index] = glitch ? !letter_N[y][x - textPos - 10] : letter_N[y][x - textPos - 10];
-      |                                              ^~~~~~~~
-sketch_feb02b:229:46: error: 'letter_T' was not declared in this scope
-  229 |                     is_on[index] = glitch ? !letter_T[y][x - textPos - 15] : letter_T[y][x - textPos - 15];
-      |                                              ^~~~~~~~
-sketch_feb02b:231:46: error: 'letter_P' was not declared in this scope
-  231 |                     is_on[index] = glitch ? !letter_P[y][x - textPos - 23] : letter_P[y][x - textPos - 23];
-      |                                              ^~~~~~~~
-sketch_feb02b:233:46: error: 'letter_A' was not declared in this scope
-  233 |                     is_on[index] = glitch ? !letter_A[y][x - textPos - 28] : letter_A[y][x - textPos - 28];
-      |                                              ^~~~~~~~
-sketch_feb02b:235:46: error: 'letter_N' was not declared in this scope
-  235 |                     is_on[index] = glitch ? !letter_N[y][x - textPos - 33] : letter_N[y][x - textPos - 33];
-      |                                              ^~~~~~~~
-sketch_feb02b:237:46: error: 'letter_I' was not declared in this scope
-  237 |                     is_on[index] = glitch ? !letter_I[y][x - textPos - 38] : letter_I[y][x - textPos - 38];
-      |                                              ^~~~~~~~
-sketch_feb02b:239:46: error: 'letter_C' was not declared in this scope
-  239 |                     is_on[index] = glitch ? !letter_C[y][x - textPos - 41] : letter_C[y][x - textPos - 41];
-      |                                              ^~~~~~~~
-sketch_feb02b:261:9: error: 'currentEffect' was not declared in this scope
-  261 |         currentEffect = IDLE;
-      |         ^~~~~~~~~~~~~
-sketch_feb02b:261:25: error: 'IDLE' was not declared in this scope
-  261 |         currentEffect = IDLE;
-      |                         ^~~~
-/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino: In function 'void rainbowGlide(int)':
-sketch_feb02b:303:9: error: 'currentEffect' was not declared in this scope
-  303 |         currentEffect = IDLE;
-      |         ^~~~~~~~~~~~~
-sketch_feb02b:303:25: error: 'IDLE' was not declared in this scope
-  303 |         currentEffect = IDLE;
-      |                         ^~~~
-/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino: In function 'void babelFishSwarm()':
-sketch_feb02b:333:9: error: 'currentEffect' was not declared in this scope
-  333 |         currentEffect = IDLE;
-      |         ^~~~~~~~~~~~~
-sketch_feb02b:333:25: error: 'IDLE' was not declared in this scope
-  333 |         currentEffect = IDLE;
-      |                         ^~~~
-/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino: In function 'void panGalacticGargleBlaster()':
-sketch_feb02b:366:9: error: 'currentEffect' was not declared in this scope
-  366 |         currentEffect = IDLE;
-      |         ^~~~~~~~~~~~~
-sketch_feb02b:366:25: error: 'IDLE' was not declared in this scope
-  366 |         currentEffect = IDLE;
-      |                         ^~~~
-/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino: In function 'void infiniteImprobabilityDrive()':
-sketch_feb02b:443:9: error: 'currentEffect' was not declared in this scope
-  443 |         currentEffect = IDLE;
-      |         ^~~~~~~~~~~~~
-sketch_feb02b:443:25: error: 'IDLE' was not declared in this scope
-  443 |         currentEffect = IDLE;
-      |                         ^~~~
-/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino: In function 'void vogonPoetrySlam()':
-sketch_feb02b:494:9: error: 'currentEffect' was not declared in this scope
-  494 |         currentEffect = IDLE;
-      |         ^~~~~~~~~~~~~
-sketch_feb02b:494:25: error: 'IDLE' was not declared in this scope
-  494 |         currentEffect = IDLE;
-      |                         ^~~~
-/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino: In function 'void heartOfGoldTrail()':
-sketch_feb02b:612:9: error: 'currentEffect' was not declared in this scope
-  612 |         currentEffect = IDLE;
-      |         ^~~~~~~~~~~~~
-sketch_feb02b:612:25: error: 'IDLE' was not declared in this scope
-  612 |         currentEffect = IDLE;
-      |                         ^~~~
-/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino: In function 'void matrixBee()':
-sketch_feb02b:667:9: error: 'currentEffect' was not declared in this scope
-  667 |         currentEffect = IDLE;
-      |         ^~~~~~~~~~~~~
-sketch_feb02b:667:25: error: 'IDLE' was not declared in this scope
-  667 |         currentEffect = IDLE;
-      |                         ^~~~
-/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino: In function 'void lovePrestonMatrix(uint16_t)':
-sketch_feb02b:684:63: error: 'WIDTH_I' was not declared in this scope
-  684 |             if (x - text_scroll_x >= 0 && x - text_scroll_x < WIDTH_I)
-      |                                                               ^~~~~~~
-sketch_feb02b:685:32: error: 'letter_I' was not declared in this scope
-  685 |                 is_on[index] = letter_I[y][x - text_scroll_x];
-      |                                ^~~~~~~~
-sketch_feb02b:687:32: error: 'letter_L' was not declared in this scope
-  687 |                 is_on[index] = letter_L[y][x - text_scroll_x - 6];
-      |                                ^~~~~~~~
-sketch_feb02b:689:32: error: 'letter_O' was not declared in this scope
-  689 |                 is_on[index] = letter_O[y][x - text_scroll_x - 11];
-      |                                ^~~~~~~~
-sketch_feb02b:691:32: error: 'letter_V' was not declared in this scope
-  691 |                 is_on[index] = letter_V[y][x - text_scroll_x - 16];
-      |                                ^~~~~~~~
-sketch_feb02b:693:32: error: 'letter_E' was not declared in this scope
-  693 |                 is_on[index] = letter_E[y][x - text_scroll_x - 21];
-      |                                ^~~~~~~~
-sketch_feb02b:695:32: error: 'letter_Y' was not declared in this scope
-  695 |                 is_on[index] = letter_Y[y][x - text_scroll_x - 29];
-      |                                ^~~~~~~~
-sketch_feb02b:697:32: error: 'letter_O' was not declared in this scope
-  697 |                 is_on[index] = letter_O[y][x - text_scroll_x - 34];
-      |                                ^~~~~~~~
-sketch_feb02b:699:32: error: 'letter_U' was not declared in this scope
-  699 |                 is_on[index] = letter_U[y][x - text_scroll_x - 39];
-      |                                ^~~~~~~~
-sketch_feb02b:701:32: error: 'letter_P' was not declared in this scope
-  701 |                 is_on[index] = letter_P[y][x - text_scroll_x - 47];
-      |                                ^~~~~~~~
-sketch_feb02b:703:32: error: 'letter_R' was not declared in this scope
-  703 |                 is_on[index] = letter_R[y][x - text_scroll_x - 52];
-      |                                ^~~~~~~~
-sketch_feb02b:705:32: error: 'letter_E' was not declared in this scope
-  705 |                 is_on[index] = letter_E[y][x - text_scroll_x - 57];
-      |                                ^~~~~~~~
-sketch_feb02b:707:32: error: 'letter_S' was not declared in this scope
-  707 |                 is_on[index] = letter_S[y][x - text_scroll_x - 62];
-      |                                ^~~~~~~~
-sketch_feb02b:709:32: error: 'letter_T' was not declared in this scope
-  709 |                 is_on[index] = letter_T[y][x - text_scroll_x - 67];
-      |                                ^~~~~~~~
-sketch_feb02b:711:32: error: 'letter_O' was not declared in this scope
-  711 |                 is_on[index] = letter_O[y][x - text_scroll_x - 72];
-      |                                ^~~~~~~~
-sketch_feb02b:713:32: error: 'letter_N' was not declared in this scope
-  713 |                 is_on[index] = letter_N[y][x - text_scroll_x - 77];
-      |                                ^~~~~~~~
-sketch_feb02b:732:9: error: 'currentEffect' was not declared in this scope
-  732 |         currentEffect = IDLE;
-      |         ^~~~~~~~~~~~~
-sketch_feb02b:732:25: error: 'IDLE' was not declared in this scope
-  732 |         currentEffect = IDLE;
-      |                         ^~~~
-/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino: In function 'void cosmicDust()':
-sketch_feb02b:781:9: error: 'currentEffect' was not declared in this scope
-  781 |         currentEffect = IDLE;
-      |         ^~~~~~~~~~~~~
-sketch_feb02b:781:25: error: 'IDLE' was not declared in this scope
-  781 |         currentEffect = IDLE;
-      |                         ^~~~
-/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino: In function 'void earthDemolition()':
-sketch_feb02b:839:9: error: 'currentEffect' was not declared in this scope
-  839 |         currentEffect = IDLE;
-      |         ^~~~~~~~~~~~~
-sketch_feb02b:839:25: error: 'IDLE' was not declared in this scope
-  839 |         currentEffect = IDLE;
-      |                         ^~~~
-/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino: In function 'void kricketWars()':
-sketch_feb02b:897:9: error: 'currentEffect' was not declared in this scope
-  897 |         currentEffect = IDLE;
-      |         ^~~~~~~~~~~~~
-sketch_feb02b:897:25: error: 'IDLE' was not declared in this scope
-  897 |         currentEffect = IDLE;
-      |                         ^~~~
-/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino: In function 'void milliways()':
-sketch_feb02b:942:9: error: 'currentEffect' was not declared in this scope
-  942 |         currentEffect = IDLE;
-      |         ^~~~~~~~~~~~~
-sketch_feb02b:942:25: error: 'IDLE' was not declared in this scope
-  942 |         currentEffect = IDLE;
-      |                         ^~~~
-/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino: In function 'void setRandomColor()':
-sketch_feb02b:966:5: error: 'currentEffect' was not declared in this scope
-  966 |     currentEffect = IDLE;
-      |     ^~~~~~~~~~~~~
-sketch_feb02b:966:21: error: 'IDLE' was not declared in this scope
-  966 |     currentEffect = IDLE;
-      |                     ^~~~
-exit status 1
-'EffectState' does not name a type
-
-
-This report would have more information with
-"Show verbose output during compilation"
-option enabled in File -> Preferences.
