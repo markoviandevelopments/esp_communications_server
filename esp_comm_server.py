@@ -14,20 +14,18 @@ devices = {
 
 COMMAND_MAP = {
     0: "RESET",
-    1: "COLORPULSE",  # Changed to match Arduino's expected command for DONT_PANIC
-    2: "RAINBOW",
-    3: "BABELFISH",
-    4: "PANGLACTIC",
-    5: "IMPROBABILITY",
-    6: "VOGONPOETRY",
-    7: "GOLDTRAIL",
-    8: "BEESWARM",
-    9: "LOVEPRESTON",
-    10: "COSMICDUST",
-    11: "EARTH",
-    12: "KRICKET",
-    13: "MILLIWAYS",
-    14: "CHAOS"  # Added for chaos factor control
+    1: "COLORPULSE",       # DONT_PANIC
+    2: "BABELFISH",        # BABEL_FISH
+    3: "PANGLACTIC",       # PAN_GALACTIC
+    4: "VOGONPOETRY",      # VOGON_POETRY
+    5: "BEESWARM",         # BEE_SWARM
+    6: "LOVEPRESTON",      # LOVE_PRESTON
+    7: "CHAOS",            # Chaos factor control
+    8: "ZAPHODWAVE",       # ZAPHOD_WAVE
+    9: "TRILLIANSPARK",    # TRILLIAN_SPARK
+    10: "HEARTOFGOLD",     # HEART_OF_GOLD_PULSE
+    11: "SLARTIDATA",      # SLARTI_DATA_STREAM
+    12: "IMPROBABILITY"    # IMPROBABILITY_DRIVE
 }
 
 @app.template_filter('is_active')
@@ -52,7 +50,7 @@ def index():
                     devices[dev_id]['mode'] = mode
                     if color and mode == 1:  # COLORPULSE
                         devices[dev_id]['color'] = color
-                    if chaos and mode == 14:  # CHAOS
+                    if chaos and mode == 7:  # CHAOS
                         try:
                             chaos_val = int(chaos)
                             if 0 <= chaos_val <= 100:
@@ -68,7 +66,7 @@ def index():
                         devices[dev_id]['mode'] = mode
                         if color and mode == 1:
                             devices[dev_id]['color'] = color
-                        if chaos and mode == 14:
+                        if chaos and mode == 7:
                             try:
                                 chaos_val = int(chaos)
                                 if 0 <= chaos_val <= 100:
@@ -90,7 +88,7 @@ def get_device_command(device_id):
     mode = devices[device_id]['mode']
     if mode == 1:  # COLORPULSE
         return f"COLORPULSE:{devices[device_id]['color']}\n"
-    elif mode == 14:  # CHAOS
+    elif mode == 7:  # CHAOS
         return f"CHAOS:{devices[device_id]['chaos']}\n"
     return f"{COMMAND_MAP[mode]}\n"
 
@@ -104,10 +102,11 @@ def update_color():
     data = request.get_json()
     device_id = data.get('device')
     color = data.get('color')
+    mode = data.get('mode')
     if device_id in devices and color:
         devices[device_id]['color'] = color
-        if devices[device_id]['mode'] == 1:  # Refresh COLORPULSE
-            devices[device_id]['mode'] = 1  # Trigger re-send
+        if mode and mode.isdigit() and int(mode) in COMMAND_MAP:
+            devices[device_id]['mode'] = int(mode)  # Set mode to COLORPULSE (1)
         return "Color updated", 200
     return "Invalid request", 400
 
@@ -121,8 +120,8 @@ def update_chaos():
             chaos_val = int(chaos)
             if 0 <= chaos_val <= 100:
                 devices[device_id]['chaos'] = chaos_val
-                if devices[device_id]['mode'] == 14:  # Refresh CHAOS
-                    devices[device_id]['mode'] = 14
+                if devices[device_id]['mode'] == 7:  # Refresh CHAOS
+                    devices[device_id]['mode'] = 7
                 return "Chaos updated", 200
             return "Chaos value must be between 0 and 100", 400
         except ValueError:

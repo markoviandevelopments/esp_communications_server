@@ -480,9 +480,9 @@ void matrixBee()
     for (int i = 0; i < NUM_LEDS; i++)
     {
         if (i == bee_index)
-            strip.setPixelColor(i, strip.Color(255, 255, 0)); // Intense golden yellow
+            strip.setPixelColor(i, strip.Color(255, 255, 0));
         else
-            strip.setPixelColor(i, strip.Color(10, 10, 10)); // Near-black background
+            strip.setPixelColor(i, strip.Color(1, 1, 1));
     }
     strip.show();
     delay(1000);
