@@ -543,62 +543,86 @@ void matrixBee()
 
 void lovePrestonMatrix(uint16_t speed)
 {
+    static unsigned long lastUpdate = 0;
     int is_on[NUM_LEDS] = {0};
     int total_width = 82;
-    float heartbeat = (sin(millis() * 0.05) + 1) * 30;
-    static int hue = 0;
-    hue = (hue + 1) % 65535;
 
-    for (int x = 0; x < 32; x++)
+    if (millis() - lastUpdate >= speed)
     {
-        for (int y = 0; y < 8; y++)
+        strip.clear();
+
+        // Scrolling text: "I LOVE YOU PRESTON" in bright white
+        for (int x = 0; x < 32; x++)
         {
-            int index = (x % 2 == 0) ? (y + x * 8) : ((7 - y) + x * 8);
-            if (x - text_scroll_x >= 0 && x - text_scroll_x < WIDTH_I)
-                is_on[index] = letter_I[y][x - text_scroll_x];
-            else if (x - text_scroll_x >= 6 && x - text_scroll_x < 11)
-                is_on[index] = letter_L[y][x - text_scroll_x - 6];
-            else if (x - text_scroll_x >= 11 && x - text_scroll_x < 16)
-                is_on[index] = letter_O[y][x - text_scroll_x - 11];
-            else if (x - text_scroll_x >= 16 && x - text_scroll_x < 21)
-                is_on[index] = letter_V[y][x - text_scroll_x - 16];
-            else if (x - text_scroll_x >= 21 && x - text_scroll_x < 26)
-                is_on[index] = letter_E[y][x - text_scroll_x - 21];
-            else if (x - text_scroll_x >= 29 && x - text_scroll_x < 34)
-                is_on[index] = letter_Y[y][x - text_scroll_x - 29];
-            else if (x - text_scroll_x >= 34 && x - text_scroll_x < 39)
-                is_on[index] = letter_O[y][x - text_scroll_x - 34];
-            else if (x - text_scroll_x >= 39 && x - text_scroll_x < 44)
-                is_on[index] = letter_U[y][x - text_scroll_x - 39];
-            else if (x - text_scroll_x >= 47 && x - text_scroll_x < 52)
-                is_on[index] = letter_P[y][x - text_scroll_x - 47];
-            else if (x - text_scroll_x >= 52 && x - text_scroll_x < 57)
-                is_on[index] = letter_R[y][x - text_scroll_x - 52];
-            else if (x - text_scroll_x >= 57 && x - text_scroll_x < 62)
-                is_on[index] = letter_E[y][x - text_scroll_x - 57];
-            else if (x - text_scroll_x >= 62 && x - text_scroll_x < 67)
-                is_on[index] = letter_S[y][x - text_scroll_x - 62];
-            else if (x - text_scroll_x >= 67 && x - text_scroll_x < 72)
-                is_on[index] = letter_T[y][x - text_scroll_x - 67];
-            else if (x - text_scroll_x >= 72 && x - text_scroll_x < 77)
-                is_on[index] = letter_O[y][x - text_scroll_x - 72];
-            else if (x - text_scroll_x >= 77 && x - text_scroll_x < 82)
-                is_on[index] = letter_N[y][x - text_scroll_x - 77];
+            for (int y = 0; y < 8; y++)
+            {
+                int index = (x % 2 == 0) ? (y + x * 8) : ((7 - y) + x * 8);
+                if (x - text_scroll_x >= 0 && x - text_scroll_x < WIDTH_I)
+                    is_on[index] = letter_I[y][x - text_scroll_x];
+                else if (x - text_scroll_x >= 6 && x - text_scroll_x < 11)
+                    is_on[index] = letter_L[y][x - text_scroll_x - 6];
+                else if (x - text_scroll_x >= 11 && x - text_scroll_x < 16)
+                    is_on[index] = letter_O[y][x - text_scroll_x - 11];
+                else if (x - text_scroll_x >= 16 && x - text_scroll_x < 21)
+                    is_on[index] = letter_V[y][x - text_scroll_x - 16];
+                else if (x - text_scroll_x >= 21 && x - text_scroll_x < 26)
+                    is_on[index] = letter_E[y][x - text_scroll_x - 21];
+                else if (x - text_scroll_x >= 29 && x - text_scroll_x < 34)
+                    is_on[index] = letter_Y[y][x - text_scroll_x - 29];
+                else if (x - text_scroll_x >= 34 && x - text_scroll_x < 39)
+                    is_on[index] = letter_O[y][x - text_scroll_x - 34];
+                else if (x - text_scroll_x >= 39 && x - text_scroll_x < 44)
+                    is_on[index] = letter_U[y][x - text_scroll_x - 39];
+                else if (x - text_scroll_x >= 47 && x - text_scroll_x < 52)
+                    is_on[index] = letter_P[y][x - text_scroll_x - 47];
+                else if (x - text_scroll_x >= 52 && x - text_scroll_x < 57)
+                    is_on[index] = letter_R[y][x - text_scroll_x - 52];
+                else if (x - text_scroll_x >= 57 && x - text_scroll_x < 62)
+                    is_on[index] = letter_E[y][x - text_scroll_x - 57];
+                else if (x - text_scroll_x >= 62 && x - text_scroll_x < 67)
+                    is_on[index] = letter_S[y][x - text_scroll_x - 62];
+                else if (x - text_scroll_x >= 67 && x - text_scroll_x < 72)
+                    is_on[index] = letter_T[y][x - text_scroll_x - 67];
+                else if (x - text_scroll_x >= 72 && x - text_scroll_x < 77)
+                    is_on[index] = letter_O[y][x - text_scroll_x - 72];
+                else if (x - text_scroll_x >= 77 && x - text_scroll_x < 82)
+                    is_on[index] = letter_N[y][x - text_scroll_x - 77];
+            }
         }
-    }
-    for (int i = 0; i < NUM_LEDS; i++)
-    {
-        strip.setPixelColor(i, strip.ColorHSV(hue, 255, is_on[i] ? 255 : heartbeat));
+
+        // Electric fire background
+        for (int i = 0; i < NUM_LEDS; i++)
+        {
+            if (!is_on[i])
+            {
+                uint8_t flicker = random(100, 255); // Flickering intensity
+                uint8_t r = flicker;                // Red-hot base
+                uint8_t g = flicker * 0.5;          // Orange-yellow tint
+                uint8_t b = flicker * 0.2;          // Slight blue for electric zap
+                strip.setPixelColor(i, strip.Color(r, g, b));
+            }
+            else
+            {
+                strip.setPixelColor(i, strip.Color(255, 255, 255)); // White text
+            }
+        }
+
+        // Sparkles stay
         if (random(100) < chaosFactor / 5)
-            strip.setPixelColor(i, strip.Color(255, 255, random(150, 255)));
+        {
+            int sparkPos = random(NUM_LEDS);
+            strip.setPixelColor(sparkPos, strip.Color(255, 255, random(150, 255))); // Bright sparkle
+        }
+
+        strip.show();
+        text_scroll_x += text_scroll_dir;
+        if (text_scroll_x >= total_width - 32)
+            text_scroll_dir = -1;
+        else if (text_scroll_x <= 0)
+            text_scroll_dir = 1;
+        lastUpdate = millis();
     }
-    strip.show();
-    text_scroll_x += text_scroll_dir;
-    if (text_scroll_x >= total_width - 32)
-        text_scroll_dir = -1;
-    else if (text_scroll_x <= 0)
-        text_scroll_dir = 1;
-    delay(speed);
+
     if (newCommandReceived)
     {
         newCommandReceived = false;
@@ -656,45 +680,34 @@ void zaphodCosmicWave()
 void trillianSpark()
 {
     static unsigned long lastUpdate = 0;
-    static float sparkPos = 0.0;
-    static float sparkSpeed = 5.0; // Initial speed
-    static uint8_t hue = 0;        // Color hue for each bounce
-    const float friction = 0.95;   // Slows down over time
-    static int direction = 1;      // 1 = right, -1 = left
+    static float chunkPos = 0.0;
+    static float chunkSpeed = 8.0;
+    static uint8_t hue = 0;
+    const float friction = 0.92;
+    static int direction = 1;
+    const int chunkSize = 10;
 
-    if (millis() - lastUpdate >= 10) // Fast updates for excitement
+    if (millis() - lastUpdate >= 10)
     {
         strip.clear();
 
-        // Update spark position
-        sparkPos += sparkSpeed * direction;
-        sparkSpeed *= friction; // Apply friction
+        chunkPos += chunkSpeed * direction;
+        chunkSpeed *= friction;
 
-        // Bounce logic with color change
-        if (sparkPos >= NUM_LEDS - 1 || sparkPos <= 0)
+        // Bounce with color change
+        if (chunkPos + chunkSize >= NUM_LEDS || chunkPos <= 0)
         {
-            direction *= -1;        // Reverse direction
-            sparkSpeed = 5.0;       // Reset speed on bounce
-            hue = (hue + 85) % 255; // Shift color (85 ≈ 1/3 of hue circle)
+            direction *= -1;
+            chunkSpeed = max(chunkSpeed, 6.0); // Minimum speed after bounce
+            hue = (hue + 85) % 255;            // Color shift
         }
 
-        // Draw the spark with a small trail
-        int pos = (int)sparkPos;
-        for (int i = max(0, pos - 2); i <= min(NUM_LEDS - 1, pos + 2); i++)
+        // Draw 10-LED chunk
+        int startPos = (int)chunkPos;
+        for (int i = max(0, startPos); i < min(NUM_LEDS, startPos + chunkSize); i++)
         {
-            int brightness = 255 - abs(i - pos) * 85; // Fade out from center
-            if (brightness > 0)
-            {
-                uint32_t color = strip.ColorHSV(hue * 257, 255, brightness); // Convert hue to RGB
-                strip.setPixelColor(i, color);
-            }
-        }
-
-        // Random improbability flicker
-        if (random(100) < chaosFactor / 5)
-        {
-            int flickerPos = random(NUM_LEDS);
-            strip.setPixelColor(flickerPos, strip.Color(255, 255, 255));
+            int brightness = 255 - ((i - startPos) * 255 / chunkSize); // Fade to tail
+            strip.setPixelColor(i, strip.ColorHSV(hue * 257, 255, brightness));
         }
 
         strip.show();
@@ -711,36 +724,21 @@ void trillianSpark()
 void heartOfGoldPulse()
 {
     static unsigned long lastUpdate = 0;
-    static uint16_t hue = 0;
-    static int pulseBrightness = 0;
-    static int pulseDirection = 1;
+    static int flashPhase = 0;
 
-    if (millis() - lastUpdate >= 30) // Smooth 30ms updates
+    if (millis() - lastUpdate >= 20)
     {
-        pulseBrightness += pulseDirection * 10;
-        if (pulseBrightness >= 255 || pulseBrightness <= 20)
-            pulseDirection *= -1;
+        strip.clear();
 
-        hue = (hue + random(50, 100)) % 65535; // Random hue jumps for improbability
-
+        // Flashy chaos
         for (int i = 0; i < NUM_LEDS; i++)
         {
-            // Subtle position-based hue shift
-            uint32_t color = strip.ColorHSV(hue + (i * 100), 255, pulseBrightness);
-            strip.setPixelColor(i, color);
-        }
-
-        // Random improbability burst
-        if (random(100) < chaosFactor / 8)
-        {
-            int burstStart = random(NUM_LEDS - 10);
-            for (int i = burstStart; i < burstStart + 10 && i < NUM_LEDS; i++)
-            {
-                strip.setPixelColor(i, strip.Color(255, 255, 255));
-            }
+            if (random(100) < 50 + sin(flashPhase * 0.1) * 40) // Wave-driven probability
+                strip.setPixelColor(i, strip.ColorHSV(random(65535), 255, 255));
         }
 
         strip.show();
+        flashPhase++;
         lastUpdate = millis();
     }
 
@@ -754,50 +752,47 @@ void heartOfGoldPulse()
 void slartiDataStream()
 {
     static unsigned long lastUpdate = 0;
-    static int streamPos = -20;   // Start off-screen
-    static int streamLength = 20; // Length of the data burst
-    const int streamSpeed = 3;    // Speed of movement
+    static int streamPos = NUM_LEDS + 20; // Start off-screen right
+    static int streamLength = 20;
+    const int streamSpeed = -5;   // Faster, reversed
+    static int beePos = NUM_LEDS; // Bee scooter position
 
-    if (millis() - lastUpdate >= 15) // Fast updates for smooth gliding
+    if (millis() - lastUpdate >= 10) // Faster updates
     {
         strip.clear();
 
-        // Draw the data stream
+        // Data stream (right to left)
         for (int i = max(0, streamPos); i < min(NUM_LEDS, streamPos + streamLength); i++)
         {
-            // Gradient effect: brighter at the front, fading to the tail
-            int brightness = 255 - ((i - streamPos) * 255 / streamLength);
-            // Slartibartfast’s signature teal-ish palette with a glitchy twist
-            uint8_t r = (i % 4 == 0) ? random(50, 100) : 0; // Occasional red glitch
-            uint8_t g = brightness * 0.8;
-            uint8_t b = brightness;
-            strip.setPixelColor(i, strip.Color(r, g, b));
+            int brightness = 255 - ((streamPos + streamLength - i) * 255 / streamLength); // Fade from head to tail
+            if (brightness > 0)
+            {
+                uint8_t r = (i % 4 == 0) ? random(50, 100) : 0;
+                uint8_t g = brightness * 0.8;
+                uint8_t b = brightness;
+                strip.setPixelColor(i, strip.Color(r, g, b));
+            }
         }
 
-        // Hitchhiker’s flare: random "fjord sparkle"
+        // Bee scooter (yellow, chasing the stream)
+        beePos += streamSpeed / 2; // Slower than stream
+        if (beePos < 0)
+            beePos = NUM_LEDS;                                 // Reset to right
+        strip.setPixelColor(beePos, strip.Color(255, 255, 0)); // Bright yellow bee
+
+        // Fjord sparkle
         if (random(100) < chaosFactor / 5)
         {
             int sparklePos = random(NUM_LEDS);
-            strip.setPixelColor(sparklePos, strip.Color(255, 255, 255)); // Bright burst
-        }
-
-        // Background "digital noise" for depth
-        for (int i = 0; i < NUM_LEDS; i++)
-        {
-            if (strip.getPixelColor(i) == 0 && random(100) < 5)
-            {
-                strip.setPixelColor(i, strip.Color(0, 20, 30)); // Subtle teal static
-            }
+            strip.setPixelColor(sparklePos, strip.Color(255, 255, 255));
         }
 
         strip.show();
         streamPos += streamSpeed;
-
-        // Reset when stream fully exits
-        if (streamPos >= NUM_LEDS)
+        if (streamPos <= -streamLength)
         {
-            streamPos = -streamLength;
-            streamLength = random(15, 30); // Vary length for quirkiness
+            streamPos = NUM_LEDS + 20;
+            streamLength = random(15, 30);
         }
 
         lastUpdate = millis();
@@ -813,51 +808,44 @@ void slartiDataStream()
 void improbabilityDrive()
 {
     static unsigned long lastUpdate = 0;
-    static uint8_t entropyGrid[NUM_LEDS] = {0}; // State of each LED
-    static int cycle = 0;
+    static uint8_t entropyGrid[NUM_LEDS] = {0};
+    static uint16_t hueShift = 0;
 
-    if (millis() - lastUpdate >= 50) // Retro speed for that old-school vibe
+    if (millis() - lastUpdate >= 30) // Faster for more energy
     {
-        // Entropy simulation: each LED has a chance to "decay" or "flare"
+        // Entropy sim with more action
         for (int i = 0; i < NUM_LEDS; i++)
         {
             int prob = random(100);
-            if (entropyGrid[i] > 0 && prob < 20) // Decay chance
-            {
-                entropyGrid[i] = max(0, entropyGrid[i] - 20);
-            }
-            else if (prob < chaosFactor / 2) // Flare chance based on chaosFactor
-            {
-                entropyGrid[i] = 255;
-            }
+            if (entropyGrid[i] > 0 && prob < 30) // Faster decay
+                entropyGrid[i] = max(0, entropyGrid[i] - 30);
+            else if (prob < chaosFactor) // Higher flare chance
+                entropyGrid[i] = random(150, 255);
 
-            // Retro color scheme: greens, pinks, and grays
             if (entropyGrid[i] > 0)
             {
-                uint8_t r = (cycle % 3 == 0) ? entropyGrid[i] : entropyGrid[i] * 0.5;
-                uint8_t g = (cycle % 3 == 1) ? entropyGrid[i] : entropyGrid[i] * 0.7;
-                uint8_t b = (cycle % 3 == 2) ? entropyGrid[i] : 0;
-                strip.setPixelColor(i, strip.Color(r, g, b));
+                uint32_t color = strip.ColorHSV(hueShift + (i * 200), 255, entropyGrid[i]);
+                strip.setPixelColor(i, color);
             }
             else
             {
-                strip.setPixelColor(i, strip.Color(10, 10, 10)); // Dim gray "void"
+                strip.setPixelColor(i, strip.Color(5, 5, 5)); // Dimmer void
             }
         }
 
-        // Improbability event: random burst of "dolphin pink" (from Book 4)
-        if (random(100) < chaosFactor / 10)
+        // Wild improbability bursts
+        if (random(100) < chaosFactor / 5)
         {
-            int burstStart = random(NUM_LEDS - 15);
-            for (int i = burstStart; i < burstStart + 15 && i < NUM_LEDS; i++)
+            int burstStart = random(NUM_LEDS - 20);
+            for (int i = burstStart; i < burstStart + 20 && i < NUM_LEDS; i++)
             {
-                strip.setPixelColor(i, strip.Color(255, 105, 180)); // Hot pink burst
+                strip.setPixelColor(i, strip.ColorHSV(random(65535), 255, 255)); // Random hue burst
                 entropyGrid[i] = 255;
             }
         }
 
         strip.show();
-        cycle++;
+        hueShift = (hueShift + random(50, 150)) % 65535; // Wild hue shifts
         lastUpdate = millis();
     }
 
