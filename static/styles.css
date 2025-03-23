@@ -2,21 +2,19 @@
 
 /* === VARIABLES === */
 :root {
-    --primary-color: #00FF2A;
-    /* HHGTTG green */
-    --secondary-color: #FFD700;
-    /* Gold for cosmic flair */
-    --highlight-color: #FF4500;
-    /* Orange for DON'T PANIC */
-    --bg-color: #0A0A0A;
-    /* Deeper space black */
-    --container-bg: rgba(20, 20, 20, 0.95);
-    --border-radius: 10px;
-    --shadow-glow: 0 0 12px var(--primary-color), 0 0 20px rgba(0, 255, 42, 0.5);
-    --font-main: 'Orbitron', sans-serif;
-    --font-size-default: 16px;
-    --font-size-large: 32px;
-    --font-size-xlarge: 40px;
+    --primary-color: #8A2BE2;
+    /* Deep space purple */
+    --secondary-color: #D3D3D3;
+    /* Light silver */
+    --highlight-color: #FF00FF;
+    /* Bright magenta */
+    --bg-color: #1A0033;
+    /* Midnight purple */
+    --container-bg: rgba(50, 0, 100, 0.95);
+    /* Purple-tinted container */
+    --shadow-glow: 0 0 12px var(--primary-color), 0 0 20px rgba(138, 43, 226, 0.5);
+    --font-main: 'Exo 2', sans-serif;
+    /* New font */
 }
 
 /* === BASE STYLES === */
@@ -29,7 +27,7 @@
 body {
     background-color: var(--bg-color);
     background-image: radial-gradient(rgba(255, 255, 255, 0.8) 1px, transparent 1px),
-        radial-gradient(rgba(255, 215, 0, 0.6) 1px, transparent 1px);
+        radial-gradient(rgba(138, 43, 226, 0.6) 1px, transparent 1px);
     background-size: 40px 40px;
     background-position: 0 0, 20px 20px;
     animation: stars 15s linear infinite;
@@ -123,7 +121,7 @@ label {
 
 select,
 input[type="range"] {
-    background: var(--bg-color);
+    background: linear-gradient(to right, var(--primary-color) 0%, var(--highlight-color) 100%);
     color: var(--primary-color);
     border: 2px solid var(--primary-color);
     padding: 8px;
@@ -246,7 +244,7 @@ button {
 button:hover {
     background: var(--secondary-color);
     box-shadow: 0 0 15px var(--secondary-color);
-    color: var(--bg-color);
+    color: #1A0033;
 }
 
 /* === STATUS CARDS === */
