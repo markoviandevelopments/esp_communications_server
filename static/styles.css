@@ -1,20 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
 /* === VARIABLES === */
 :root {
-    --primary-color: #00B7EB;
-    /* Cyan-blue */
-    --secondary-color: #FFD700;
-    /* Gold */
-    --highlight-color: #FF4500;
-    /* Orange */
-    --bg-color: #0A0A0A;
-    /* Deep black */
-    --container-bg: rgba(20, 40, 60, 0.95);
-    /* Blue-gray */
-    --shadow-glow: 0 0 12px var(--primary-color), 0 0 20px rgba(0, 183, 235, 0.5);
-    --font-main: 'Orbitron', sans-serif;
-    /* Stays the same */
+    --primary-color: #00FFEE;
+    /* Neon Cyan */
+    --secondary-color: #FF00FF;
+    /* Neon Magenta */
+    --highlight-color: #39FF14;
+    /* Neon Green */
+    --bg-color: #1A0033;
+    /* Deep cosmic purple */
+    --container-bg: rgba(30, 0, 60, 0.9);
+    /* Darker cosmic overlay */
+    --shadow-glow: 0 0 15px var(--primary-color), 0 0 25px rgba(0, 255, 238, 0.7);
+    --font-main: 'Share Tech Mono', monospace;
+    /* Hitchhiker’s Guide terminal vibe */
 }
 
 /* === BASE STYLES === */
@@ -26,8 +26,9 @@
 
 body {
     background-color: var(--bg-color);
-    background-image: radial-gradient(rgba(255, 255, 255, 0.8) 1px, transparent 1px),
-       radial-gradient(rgba(0, 183, 235, 0.6) 1px, transparent 1px);   background-size: 40px 40px;
+    background-image: radial-gradient(rgba(255, 0, 255, 0.6) 1px, transparent 1px),
+        radial-gradient(rgba(0, 255, 238, 0.5) 1px, transparent 1px);
+    background-size: 40px 40px;
     background-position: 0 0, 20px 20px;
     animation: stars 15s linear infinite;
     font-family: var(--font-main);
@@ -54,7 +55,7 @@ body {
     margin: 0 auto;
     padding: 20px;
     background: var(--container-bg);
-    border-radius: var(--border-radius);
+    border-radius: 8px;
     box-shadow: var(--shadow-glow);
     position: relative;
 }
@@ -64,7 +65,7 @@ body {
     font-size: clamp(24px, 5vw, 40px);
     font-weight: 700;
     color: var(--highlight-color);
-    text-shadow: 0 0 10px var(--highlight-color), 0 0 20px var(--secondary-color);
+    text-shadow: 0 0 12px var(--highlight-color), 0 0 20px var(--secondary-color);
     background: rgba(0, 0, 0, 0.8);
     padding: 8px 16px;
     border-radius: 8px;
@@ -75,7 +76,7 @@ body {
 
 @keyframes glowText {
     0% {
-        text-shadow: 0 0 10px var(--highlight-color);
+        text-shadow: 0 0 12px var(--highlight-color);
     }
 
     100% {
@@ -86,8 +87,8 @@ body {
 /* === HEADERS & TEXT === */
 .guide-message h1 {
     color: var(--secondary-color);
-    text-shadow: 0 0 10px var(--secondary-color);
-    font-size: clamp(24px, 4vw, var(--font-size-large));
+    text-shadow: 0 0 12px var(--secondary-color);
+    font-size: clamp(24px, 4vw, 32px);
     margin-bottom: 5px;
 }
 
@@ -101,8 +102,8 @@ body {
     font-size: clamp(16px, 3vw, 20px);
     font-weight: bold;
     margin: 15px 0;
-    color: var(--secondary-color);
-    text-shadow: 0 0 8px var(--secondary-color);
+    color: var(--highlight-color);
+    text-shadow: 0 0 8px var(--highlight-color);
 }
 
 /* === FORM ELEMENTS === */
@@ -114,19 +115,21 @@ label {
     display: block;
     margin-bottom: 8px;
     color: var(--primary-color);
-    text-shadow: 0 0 5px var(--primary-color);
+    text-shadow: 0 0 6px var(--primary-color);
     font-size: clamp(14px, 2.5vw, 16px);
 }
 
 select,
 input[type="range"] {
-    background: linear-gradient(to right, var(--primary-color) 0%, var(--highlight-color) 100%);
-    color: var(--primary-color);
+    background: rgba(0, 0, 0, 0.8);
+    /* Solid dark background for contrast */
+    color: var(--highlight-color);
+    /* Neon green text */
     border: 2px solid var(--primary-color);
     padding: 8px;
     font-size: clamp(14px, 2vw, 16px);
     border-radius: 6px;
-    box-shadow: 0 0 6px var(--primary-color);
+    box-shadow: 0 0 8px var(--primary-color);
     width: 100%;
     max-width: 400px;
     appearance: none;
@@ -141,7 +144,7 @@ select[multiple] {
 select:focus,
 input:focus {
     outline: none;
-    box-shadow: 0 0 10px var(--secondary-color);
+    box-shadow: 0 0 12px var(--secondary-color);
 }
 
 /* === COLOR PICKER === */
@@ -150,9 +153,9 @@ input:focus {
     flex-direction: column;
     align-items: center;
     padding: 15px;
-    background: rgba(0, 0, 0, 0.6);
-    border-radius: var(--border-radius);
-    box-shadow: 0 0 10px var(--secondary-color);
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+    box-shadow: 0 0 12px var(--secondary-color);
     margin: 20px auto;
     width: 100%;
     max-width: 300px;
@@ -165,8 +168,8 @@ input:focus {
 
 #currentColor {
     margin-top: 10px;
-    color: var(--secondary-color);
-    text-shadow: 0 0 5px var(--secondary-color);
+    color: var(--highlight-color);
+    text-shadow: 0 0 6px var(--highlight-color);
     font-size: clamp(14px, 2vw, 16px);
 }
 
@@ -183,35 +186,35 @@ input:focus {
 
 input[type="range"] {
     -webkit-appearance: none;
-    background: linear-gradient(to right, var(--primary-color) 0%, var(--highlight-color) 100%);
-    height: 6px;
-    border-radius: 3px;
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    height: 8px;
+    border-radius: 4px;
     cursor: pointer;
 }
 
 input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    background: var(--secondary-color);
+    width: 22px;
+    height: 22px;
+    background: var(--highlight-color);
     border-radius: 50%;
-    box-shadow: 0 0 8px var(--secondary-color);
+    box-shadow: 0 0 10px var(--highlight-color);
     cursor: pointer;
 }
 
 input[type="range"]::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    background: var(--secondary-color);
+    width: 22px;
+    height: 22px;
+    background: var(--highlight-color);
     border-radius: 50%;
-    box-shadow: 0 0 8px var(--secondary-color);
+    box-shadow: 0 0 10px var(--highlight-color);
     cursor: pointer;
 }
 
 #currentChaos {
     margin-top: 10px;
     color: var(--primary-color);
-    text-shadow: 0 0 5px var(--primary-color);
+    text-shadow: 0 0 6px var(--primary-color);
     font-size: clamp(14px, 2vw, 16px);
 }
 
@@ -257,8 +260,8 @@ button:hover {
 .status-card {
     background: rgba(0, 0, 0, 0.7);
     padding: 15px;
-    border-radius: var(--border-radius);
-    box-shadow: 0 0 8px var(--primary-color);
+    border-radius: 8px;
+    box-shadow: 0 0 10px var(--primary-color);
     text-align: left;
 }
 
@@ -271,18 +274,20 @@ button:hover {
 .status-card p {
     font-size: clamp(12px, 2vw, 14px);
     margin: 5px 0;
+    color: var(--highlight-color);
+    /* Neon green for readability */
 }
 
 .status-card .active {
     color: var(--primary-color);
-    background: rgba(0, 255, 42, 0.2);
+    background: rgba(0, 255, 238, 0.2);
     padding: 2px 6px;
     border-radius: 4px;
 }
 
 .status-card .inactive {
     color: var(--secondary-color);
-    background: rgba(255, 215, 0, 0.2);
+    background: rgba(255, 0, 255, 0.2);
     padding: 2px 6px;
     border-radius: 4px;
 }
