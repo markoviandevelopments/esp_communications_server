@@ -607,42 +607,42 @@ void lovePrestonMatrix(uint16_t speed)
 void zaphodCosmicWave()
 {
     static unsigned long lastUpdate = 0;
-    static float wavePos1 = 0.0, wavePos2 = NUM_LEDS / 2.0; // Two waves
-    const float waveSpeed1 = 0.15, waveSpeed2 = -0.2;       // Different speeds
-    const float waveWidth = 15.0;
+    static float wavePos1 = 0.0, wavePos2 = NUM_LEDS / 2.0;
+    static float waveSpeed1 = 0.2, waveSpeed2 = -0.25;
+    static uint16_t baseHue = 0;
+    const float waveWidth = 20.0;
 
-    if (millis() - lastUpdate >= 20)
+    if (millis() - lastUpdate >= 15)
     {
         strip.clear();
 
+        // Two erratic waves (Zaphod’s two heads)
         for (int i = 0; i < NUM_LEDS; i++)
         {
-            // Two overlapping sine waves for interference
             float dist1 = fabs(i - wavePos1);
             float dist2 = fabs(i - wavePos2);
-            float intensity1 = sin((dist1 / waveWidth) * PI) * 255;
-            float intensity2 = sin((dist2 / waveWidth) * PI) * 255;
-            float combined = (intensity1 + intensity2) / 2.0; // Average for interference
-            if (combined < 0)
-                combined = 0;
-
-            // Psychedelic colors with Zaphod’s flair
-            uint8_t r = combined * (sin(millis() * 0.001) + 1) / 2;
-            uint8_t g = combined * (cos(millis() * 0.002) + 1) / 2;
-            uint8_t b = combined;
-            strip.setPixelColor(i, strip.Color(r, g, b));
+            float intensity1 = sin((dist1 / waveWidth) * PI + random(-2, 3) * 0.1) * 255; // Jittery wave
+            float intensity2 = sin((dist2 / waveWidth) * PI + random(-2, 3) * 0.1) * 255;
+            float combined = max(intensity1, intensity2); // Overlap for chaos
+            if (combined > 0)
+            {
+                uint16_t hue = (baseHue + (i * 500)) % 65535; // Wild color spread
+                strip.setPixelColor(i, strip.ColorHSV(hue, 255, combined));
+            }
         }
 
-        // Chaotic cosmic bursts
-        if (random(100) < chaosFactor / 5)
+        // Quirky interruptions (Zaphod’s personality)
+        if (random(100) < chaosFactor / 3)
         {
-            int burstPos = random(NUM_LEDS);
-            strip.setPixelColor(burstPos, strip.Color(random(255), random(255), 255)); // Wild flash
+            int zapPos = random(NUM_LEDS);
+            for (int i = max(0, zapPos - 10); i < min(NUM_LEDS, zapPos + 10); i++)
+                strip.setPixelColor(i, strip.Color(random(255), 0, random(255))); // Purple-magenta zap
         }
 
         strip.show();
-        wavePos1 += waveSpeed1;
-        wavePos2 += waveSpeed2;
+        wavePos1 += waveSpeed1 + random(-1, 2) * 0.05; // Erratic speed
+        wavePos2 += waveSpeed2 + random(-1, 2) * 0.05;
+        baseHue = (baseHue + random(50, 200)) % 65535; // Hue drift
         if (wavePos1 >= NUM_LEDS + waveWidth)
             wavePos1 = -waveWidth;
         if (wavePos2 <= -waveWidth)
@@ -661,75 +661,69 @@ void trillianSpark()
 {
     static unsigned long lastUpdate = 0;
     static float puckPos = 0.0;
-    static float puckSpeed = 12.0;
-    static uint8_t hue = 0;
+    static float puckSpeed = 8.0;
+    static uint16_t baseHue = 0;
     static int direction = 1;
     static int bounceCount = 0;
-    static bool paused = false;
-    static unsigned long pauseStart = 0;
-    const int puckSize = 15;
-    const float friction = 0.88;
-    const int pauseDuration = 1000;
+    const int puckSize = 20;     // Larger puck for visibility
+    const float friction = 0.95; // Smoother slowdown
+    const int trailLength = 15;  // Gradient trail
 
     if (millis() - lastUpdate >= 10)
     {
-        if (paused)
+        strip.clear();
+
+        // Update position and bounce
+        puckPos += puckSpeed * direction;
+        puckSpeed *= friction;
+
+        if (puckPos + puckSize >= NUM_LEDS) // Right bounce
         {
-            if (millis() - pauseStart >= pauseDuration)
+            puckPos = NUM_LEDS - puckSize;
+            direction = -1;
+            bounceCount++;
+            baseHue = (baseHue + random(1000, 5000)) % 65535; // Wild hue jump
+            puckSpeed = max(puckSpeed * 0.9, 4.0);            // Keep it lively
+        }
+        else if (puckPos <= 0) // Left bounce
+        {
+            puckPos = 0;
+            direction = 1;
+            bounceCount++;
+            baseHue = (baseHue + random(1000, 5000)) % 65535;
+            puckSpeed = max(puckSpeed * 0.9, 4.0);
+        }
+
+        // Draw puck with gradient and trail
+        int startPos = (int)puckPos;
+        for (int i = max(0, startPos - trailLength); i < min(NUM_LEDS, startPos + puckSize); i++)
+        {
+            int distFromCenter = abs(i - (startPos + puckSize / 2));
+            int brightness = 255 - (distFromCenter * 255 / (puckSize / 2 + trailLength));
+            if (brightness > 0)
             {
-                puckPos = 0.0;
-                puckSpeed = 12.0 + random(-2, 3);
-                direction = 1;
-                hue = random(256);
-                bounceCount = 0;
-                paused = false;
+                uint16_t hue = (baseHue + (i * 200)) % 65535; // Funky color spread
+                strip.setPixelColor(i, strip.ColorHSV(hue, 255, brightness));
             }
         }
-        else
+
+        // Random chaotic spark (Trillian’s unpredictable flair)
+        if (random(100) < chaosFactor / 4)
         {
-            strip.clear();
+            int sparkPos = random(NUM_LEDS);
+            strip.setPixelColor(sparkPos, strip.ColorHSV(random(65535), 255, 255));
+        }
 
-            puckPos += puckSpeed * direction;
-            puckSpeed *= friction;
+        strip.show();
+        lastUpdate = millis();
 
-            // Bounce logic
-            if (puckPos + puckSize >= NUM_LEDS) // Hit right end
-            {
-                puckPos = NUM_LEDS - puckSize;
-                direction = -1;
-                bounceCount++;
-                hue = (hue + 64) % 256;                // Shift color by ~1/4 hue circle
-                puckSpeed = max(puckSpeed * 0.8, 2.0); // Retain some speed, min 2
-            }
-            else if (puckPos <= 0) // Hit left end
-            {
-                puckPos = 0;
-                direction = 1;
-                bounceCount++;
-                hue = (hue + 64) % 256; // Shift color
-                puckSpeed = max(puckSpeed * 0.8, 2.0);
-            }
-
-            // Draw the puck with a smooth gradient
-            int startPos = (int)puckPos;
-            for (int i = max(0, startPos); i < min(NUM_LEDS, startPos + puckSize); i++)
-            {
-                int brightness = 255 - abs(i - (startPos + puckSize / 2)) * 255 / (puckSize / 2);
-                brightness = max(brightness, 0); // Ensure no negative values
-                strip.setPixelColor(i, strip.ColorHSV(hue * 257, 255, brightness));
-            }
-
-            strip.show();
-
-            // Check if puck has stopped (speed too low) and randomize bounce count
-            int maxBounces = 4 + random(0, 3); // 4-6 bounces
-            if ((puckSpeed < 0.5 && bounceCount > 0) || bounceCount >= maxBounces)
-            {
-                paused = true;
-                pauseStart = millis();
-            }
-
-            lastUpdate = millis();
+        // Reset occasionally for variety
+        if (bounceCount > random(5, 10))
+        {
+            puckPos = random(NUM_LEDS / 2);
+            puckSpeed = random(6, 10);
+            direction = random(2) ? 1 : -1;
+            bounceCount = 0;
         }
     }
 
@@ -771,50 +765,52 @@ void heartOfGoldPulse()
 void slartiDataStream()
 {
     static unsigned long lastUpdate = 0;
-    static int streamHeads[10] = {0}; // Multiple data streams
-    static int streamLengths[10] = {0};
+    static float streamPos[5] = {0}; // Fewer, denser streams
+    static float streamSpeeds[5] = {0};
+    static uint8_t ripplePhase = 0;
     static bool initialized = false;
 
     if (!initialized)
     {
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 5; i++)
         {
-            streamHeads[i] = random(NUM_LEDS);
-            streamLengths[i] = random(5, 20);
+            streamPos[i] = random(NUM_LEDS);
+            streamSpeeds[i] = random(50, 150) / 100.0; // Varied speeds
         }
         initialized = true;
     }
 
-    if (millis() - lastUpdate >= 30)
+    if (millis() - lastUpdate >= 20)
     {
         strip.clear();
 
-        // Matrix-style data trickle
-        for (int s = 0; s < 10; s++)
+        // Flowing streams with rippling effect
+        for (int s = 0; s < 5; s++)
         {
-            for (int i = max(0, streamHeads[s]); i < min(NUM_LEDS, streamHeads[s] + streamLengths[s]); i++)
+            streamPos[s] += streamSpeeds[s];
+            if (streamPos[s] >= NUM_LEDS)
+                streamPos[s] = -random(20, 40); // Restart off-screen
+
+            for (int i = max(0, (int)streamPos[s] - 30); i < min(NUM_LEDS, (int)streamPos[s] + 30); i++)
             {
-                int brightness = 255 - ((i - streamHeads[s]) * 255 / streamLengths[s]); // Fade tail
+                float dist = fabs(i - streamPos[s]);
+                int brightness = 255 * exp(-dist / 10.0);        // Gaussian fade
+                brightness += sin((i + ripplePhase) * 0.2) * 50; // Rippling wave
                 if (brightness > 0)
-                    strip.setPixelColor(i, strip.Color(0, brightness, 0)); // Green hacker vibe
-            }
-            streamHeads[s] += 1; // Move down
-            if (streamHeads[s] >= NUM_LEDS)
-            {
-                streamHeads[s] = -streamLengths[s]; // Restart from top
-                streamLengths[s] = random(5, 20);
+                    strip.setPixelColor(i, strip.Color(0, brightness, brightness / 2)); // Cyan-green gradient
             }
         }
 
-        // Random data burst
-        if (random(100) < chaosFactor / 3)
+        // Random data glitches
+        if (random(100) < chaosFactor / 2)
         {
-            int burstPos = random(NUM_LEDS);
-            for (int i = burstPos; i < min(NUM_LEDS, burstPos + 10); i++)
-                strip.setPixelColor(i, strip.Color(0, 255, 0));
+            int glitchPos = random(NUM_LEDS);
+            for (int i = max(0, glitchPos - 5); i < min(NUM_LEDS, glitchPos + 5); i++)
+                strip.setPixelColor(i, strip.Color(255, 255, 0)); // Yellow glitch
         }
 
         strip.show();
+        ripplePhase += 5; // Faster ripple
         lastUpdate = millis();
     }
 
@@ -828,44 +824,71 @@ void slartiDataStream()
 void improbabilityDrive()
 {
     static unsigned long lastUpdate = 0;
-    static uint8_t entropyGrid[NUM_LEDS] = {0};
-    static uint16_t hueShift = 0;
+    static uint8_t improbState[NUM_LEDS] = {0};
+    static uint16_t globalHue = 0;
+    static int phase = 0;
+    static int improbMode = 0; // 0: swirl, 1: burst, 2: glitch
 
-    if (millis() - lastUpdate >= 20) // Faster updates
+    if (millis() - lastUpdate >= 25)
     {
         strip.clear();
 
-        // Entropy simulation with neighbor influence
-        for (int i = 0; i < NUM_LEDS; i++)
+        // Mode switch for variety
+        if (random(100) < chaosFactor / 5)
         {
-            int prob = random(100);
-            if (entropyGrid[i] > 0 && prob < 40)
-                entropyGrid[i] = max(0, entropyGrid[i] - 20);
-            else if (prob < chaosFactor / 2)
-                entropyGrid[i] = random(150, 255);
-            else if (i > 0 && i < NUM_LEDS - 1 && entropyGrid[i - 1] > 200 && entropyGrid[i + 1] > 200)
-                entropyGrid[i] = random(100, 255); // Spread entropy
+            improbMode = random(3);
+            phase = 0;
+        }
 
-            if (entropyGrid[i] > 0)
+        if (improbMode == 0) // Swirling improbability
+        {
+            for (int i = 0; i < NUM_LEDS; i++)
             {
-                uint32_t color = strip.ColorHSV(hueShift + (i * 300), 255, entropyGrid[i]);
-                strip.setPixelColor(i, color);
+                float swirl = sin((i + phase) * 0.1) * cos(millis() * 0.001) * 255;
+                if (swirl > 50)
+                {
+                    uint16_t hue = (globalHue + (i * 1000)) % 65535;
+                    strip.setPixelColor(i, strip.ColorHSV(hue, 255, swirl));
+                }
+            }
+        }
+        else if (improbMode == 1) // Bursting chaos
+        {
+            for (int i = 0; i < NUM_LEDS; i++)
+            {
+                if (random(100) < 20 + phase)
+                    strip.setPixelColor(i, strip.ColorHSV(random(65535), 255, 255));
+            }
+            if (phase > 20)
+            {
+                strip.clear();
+                phase = 0;
+            }
+        }
+        else if (improbMode == 2) // Glitchy reality shift
+        {
+            for (int i = 0; i < NUM_LEDS; i++)
+            {
+                improbState[i] = (improbState[i] + random(-50, 50)) % 255;
+                if (improbState[i] > 100)
+                {
+                    uint16_t hue = (globalHue + random(-5000, 5000)) % 65535;
+                    strip.setPixelColor(i, strip.ColorHSV(hue, 255, improbState[i]));
+                }
             }
         }
 
-        // Eye-catching bursts
+        // Sudden improbable events
         if (random(100) < chaosFactor / 2)
         {
-            int burstStart = random(NUM_LEDS - 30);
-            for (int i = burstStart; i < burstStart + 30 && i < NUM_LEDS; i++)
-            {
-                strip.setPixelColor(i, strip.ColorHSV(random(65535), 255, 255));
-                entropyGrid[i] = 255;
-            }
+            int eventPos = random(NUM_LEDS - 20);
+            for (int i = eventPos; i < eventPos + 20; i++)
+                strip.setPixelColor(i, strip.Color(random(255), random(255), random(255)));
         }
 
         strip.show();
-        hueShift = (hueShift + random(100, 300)) % 65535; // Wild hue jumps
+        globalHue = (globalHue + random(100, 500)) % 65535;
+        phase++;
         lastUpdate = millis();
     }
 
