@@ -2,19 +2,19 @@
 
 /* === VARIABLES === */
 :root {
-    --primary-color: #8A2BE2;
-    /* Deep space purple */
-    --secondary-color: #D3D3D3;
-    /* Light silver */
-    --highlight-color: #FF00FF;
-    /* Bright magenta */
-    --bg-color: #1A0033;
-    /* Midnight purple */
-    --container-bg: rgba(50, 0, 100, 0.95);
-    /* Purple-tinted container */
-    --shadow-glow: 0 0 12px var(--primary-color), 0 0 20px rgba(138, 43, 226, 0.5);
-    --font-main: 'Exo 2', sans-serif;
-    /* New font */
+    --primary-color: #00B7EB;
+    /* Cyan-blue */
+    --secondary-color: #FFD700;
+    /* Gold */
+    --highlight-color: #FF4500;
+    /* Orange */
+    --bg-color: #0A0A0A;
+    /* Deep black */
+    --container-bg: rgba(20, 40, 60, 0.95);
+    /* Blue-gray */
+    --shadow-glow: 0 0 12px var(--primary-color), 0 0 20px rgba(0, 183, 235, 0.5);
+    --font-main: 'Orbitron', sans-serif;
+    /* Stays the same */
 }
 
 /* === BASE STYLES === */
@@ -27,8 +27,7 @@
 body {
     background-color: var(--bg-color);
     background-image: radial-gradient(rgba(255, 255, 255, 0.8) 1px, transparent 1px),
-        radial-gradient(rgba(138, 43, 226, 0.6) 1px, transparent 1px);
-    background-size: 40px 40px;
+       radial-gradient(rgba(0, 183, 235, 0.6) 1px, transparent 1px);   background-size: 40px 40px;
     background-position: 0 0, 20px 20px;
     animation: stars 15s linear infinite;
     font-family: var(--font-main);
@@ -244,7 +243,7 @@ button {
 button:hover {
     background: var(--secondary-color);
     box-shadow: 0 0 15px var(--secondary-color);
-    color: #1A0033;
+    color: var(--bg-color);
 }
 
 /* === STATUS CARDS === */

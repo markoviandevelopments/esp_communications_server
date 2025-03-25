@@ -296,7 +296,6 @@ void checkServer()
         Serial.println("Guide Command: " + payload);
         newCommandReceived = true;
 
-        // Fade transition for new command
         if (currentEffect != IDLE)
         {
             for (int i = 255; i >= 0; i -= 20)
@@ -310,44 +309,46 @@ void checkServer()
             }
         }
 
-        if (payload.startsWith("COLORPULSE"))
+        int modeNum = payload.toInt();
+        bool isNumeric = (payload.length() > 0 && payload.toInt() != 0) || payload == "0";
+        if (payload == "RESET" || (isNumeric && modeNum == 0))
+        {
+            strip.clear();
+            strip.show();
+            currentEffect = IDLE;
+        }
+        else if (payload.startsWith("COLORPULSE"))
         {
             int colonIndex = payload.indexOf(':');
             if (colonIndex != -1)
                 pulseColor = parseColor(payload.substring(colonIndex + 1));
             currentEffect = DONT_PANIC;
         }
-        else if (payload == "BABELFISH")
+        else if (payload == "BABELFISH" || (isNumeric && modeNum == 2))
             currentEffect = BABEL_FISH;
-        else if (payload == "PANGLACTIC")
+        else if (payload == "PANGLACTIC" || (isNumeric && modeNum == 3))
             currentEffect = PAN_GALACTIC;
-        else if (payload == "VOGONPOETRY")
+        else if (payload == "VOGONPOETRY" || (isNumeric && modeNum == 4))
             currentEffect = VOGON_POETRY;
-        else if (payload == "BEESWARM")
+        else if (payload == "BEESWARM" || (isNumeric && modeNum == 5))
             currentEffect = BEE_SWARM;
-        else if (payload == "LOVEPRESTON")
+        else if (payload == "LOVEPRESTON" || (isNumeric && modeNum == 6))
             currentEffect = LOVE_PRESTON;
-        else if (payload == "ZAPHODWAVE")
+        else if (payload == "ZAPHODWAVE" || (isNumeric && modeNum == 7))
             currentEffect = ZAPHOD_WAVE;
-        else if (payload == "TRILLIANSPARK")
+        else if (payload == "TRILLIANSPARK" || (isNumeric && modeNum == 9))
             currentEffect = TRILLIAN_SPARK;
-        else if (payload == "HEARTOFGOLD")
+        else if (payload == "HEARTOFGOLD" || (isNumeric && modeNum == 10))
             currentEffect = HEART_OF_GOLD_PULSE;
-        else if (payload == "SLARTIDATA")
+        else if (payload == "SLARTIDATA" || (isNumeric && modeNum == 11))
             currentEffect = SLARTI_DATA_STREAM;
-        else if (payload == "IMPROBABILITY")
+        else if (payload == "IMPROBABILITY" || (isNumeric && modeNum == 12))
             currentEffect = IMPROBABILITY_DRIVE;
         else if (payload.startsWith("CHAOS:"))
         {
             chaosFactor = payload.substring(6).toInt();
             chaosFactor = constrain(chaosFactor, 0, 100);
             Serial.println("Chaos Factor set to: " + String(chaosFactor));
-        }
-        else if (payload == "RESET")
-        {
-            strip.clear();
-            strip.show();
-            currentEffect = IDLE;
         }
         else
         {
