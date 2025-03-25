@@ -87,50 +87,36 @@
         </div>
     </div>
 
-    <script>
-        const colorPicker = new iro.ColorPicker("#colorPicker", {
-            width: 200,
-            color: "{{ devices['001']['color'] }}"
+<script>
+    const colorPicker = new iro.ColorPicker("#colorPicker", {
+        width: 200,
+        color: "{{ devices['001']['color'] }}"
+    });
+    const chaosSlider = document.getElementById('chaos');
+    const currentChaos = document.getElementById('currentChaos');
+    const modeSelect = document.getElementById('mode');
+
+    colorPicker.on('color:change', function (color) {
+        const hexColor = color.hexString.toUpperCase();
+        document.getElementById('selectedColor').value = hexColor;
+        document.getElementById('currentColor').textContent = `Selected Hue: ${hexColor}`;
+        fetch('/update_color', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ device: '001', color: hexColor, mode: 1 })
         });
-        const chaosSlider = document.getElementById('chaos');
-        const currentChaos = document.getElementById('currentChaos');
-        const modeSelect = document.getElementById('mode');
-        const colorGroup = document.getElementById('colorPickerGroup');
-        const chaosGroup = document.getElementById('chaosGroup');
+    });
 
-        function updateVisibility() {
-            const mode = modeSelect.value;
-            colorGroup.style.display = mode === '1' ? 'block' : 'none';
-            chaosGroup.style.display = mode === '7' ? 'block' : 'none';
-        }
-
-        modeSelect.addEventListener('change', updateVisibility);
-        updateVisibility();
-
-        colorPicker.on('color:change', function (color) {
-            const hexColor = color.hexString.toUpperCase();
-            document.getElementById('selectedColor').value = hexColor;
-            document.getElementById('currentColor').textContent = `Selected Hue: ${hexColor}`;
-            // Update color and set mode to COLORPULSE
-            fetch('/update_color', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ device: '001', color: hexColor, mode: 1 }) // Add mode
-            });
-            modeSelect.value = '1'; // Sync dropdown
-            updateVisibility();
+    chaosSlider.addEventListener('input', function () {
+        const chaosValue = chaosSlider.value;
+        currentChaos.textContent = `Chaos Level: ${chaosValue}`;
+        fetch('/update_chaos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ device: '001', chaos: chaosValue })
         });
-
-        chaosSlider.addEventListener('input', function () {
-            const chaosValue = chaosSlider.value;
-            currentChaos.textContent = `Chaos Level: ${chaosValue}`;
-            fetch('/update_chaos', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ device: '001', chaos: chaosValue })
-            });
-        });
-    </script>
+    });
+</script>
 </body>
 
 </html>
