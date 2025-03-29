@@ -660,20 +660,20 @@ void zaphodCosmicWave()
 void trillianSpark()
 {
     static unsigned long lastUpdate = 0;
-    static float puckPos = 0.0;    // Starting at the left
-    static float puckSpeed = 10.0; // Initial speed (tuned for 300 LEDs)
-    static uint16_t baseHue = 0;   // Starting hue
-    static int direction = 1;      // 1 = right, -1 = left
-    static int bounceCount = 0;    // Track bounces for reset
-    const int puckSize = 30;       // Larger puck for visibility
-    const float friction = 0.995;  // Slower decay for sustained motion
-    const int trailLength = 20;    // Smooth trailing gradient
+    static float puckPos = 0.0;                         // Starting at the left
+    static float puckSpeed = 30.0;                      // Increased speed (3x original 10.0)
+    static uint32_t puckColor = strip.Color(255, 0, 0); // Start with red, changes on bounce
+    static int direction = 1;                           // 1 = right, -1 = left
+    static int bounceCount = 0;                         // Track bounces for reset
+    const int puckSize = 15;                            // Smaller mass (half of original 30)
+    const float friction = 0.995;                       // Same slight friction
+    const int trailLength = 20;                         // Keep trail length for smooth gradient
 
-    if (millis() - lastUpdate >= 10) // Update every 10ms for smoothness
+    if (millis() - lastUpdate >= 10) // Keep 10ms update for smoothness
     {
         strip.clear();
 
-        // Update position and apply slight friction
+        // Update position and apply friction
         puckPos += puckSpeed * direction;
         puckSpeed *= friction;
 
@@ -683,19 +683,19 @@ void trillianSpark()
             puckPos = NUM_LEDS - puckSize;
             direction = -1;
             bounceCount++;
-            puckSpeed = max(puckSpeed, 8.0);    // Ensure it keeps moving
-            baseHue = (baseHue + 8192) % 65535; // Shift hue by ~45 degrees per bounce
+            puckSpeed = max(puckSpeed, 24.0);                               // Minimum speed (3x original 8.0)
+            puckColor = strip.Color(random(256), random(256), random(256)); // New random color
         }
         else if (puckPos <= 0) // Hit left edge
         {
             puckPos = 0;
             direction = 1;
             bounceCount++;
-            puckSpeed = max(puckSpeed, 8.0);
-            baseHue = (baseHue + 8192) % 65535;
+            puckSpeed = max(puckSpeed, 24.0);
+            puckColor = strip.Color(random(256), random(256), random(256)); // New random color
         }
 
-        // Draw puck with gradient trail
+        // Draw puck with solid color and intensity-based trail
         int startPos = (int)puckPos;
         for (int i = max(0, startPos - trailLength); i < min(NUM_LEDS, startPos + puckSize + trailLength); i++)
         {
@@ -703,29 +703,32 @@ void trillianSpark()
             int brightness = 255 - (distFromCenter * 255 / (puckSize / 2 + trailLength));
             if (brightness > 0)
             {
-                uint16_t hue = (baseHue + (i * 100) + millis() / 20) % 65535; // Continuous color shift
-                strip.setPixelColor(i, strip.ColorHSV(hue, 255, brightness));
+                // Apply brightness to the solid puckColor
+                uint8_t r = ((puckColor >> 16) & 0xFF) * brightness / 255;
+                uint8_t g = ((puckColor >> 8) & 0xFF) * brightness / 255;
+                uint8_t b = (puckColor & 0xFF) * brightness / 255;
+                strip.setPixelColor(i, strip.Color(r, g, b));
             }
         }
 
-        // Add a chaotic spark for Trillian’s flair
+        // Add a chaotic spark with the same color
         if (random(100) < chaosFactor / 3)
         {
             int sparkPos = random(NUM_LEDS);
-            strip.setPixelColor(sparkPos, strip.ColorHSV(random(65535), 255, 255));
+            strip.setPixelColor(sparkPos, puckColor); // Use puckColor for consistency
         }
 
         strip.show();
         lastUpdate = millis();
 
-        // Reset only if it slows too much or after many bounces
-        if (puckSpeed < 2.0 || bounceCount > 15)
+        // Reset if it slows too much or after many bounces
+        if (puckSpeed < 6.0 || bounceCount > 15) // Adjusted min speed (3x original 2.0)
         {
             puckPos = NUM_LEDS / 2;         // Restart from center
-            puckSpeed = random(8, 12);      // Randomize speed
+            puckSpeed = random(24, 36);     // Randomize speed (3x original 8-12)
             direction = random(2) ? 1 : -1; // Random direction
             bounceCount = 0;
-            baseHue = random(65535); // Full color reset
+            puckColor = strip.Color(random(256), random(256), random(256)); // New random color
         }
     }
 
