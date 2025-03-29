@@ -999,3 +999,456 @@ void setStripColor(uint32_t color)
         strip.setPixelColor(i, color);
     strip.show();
 }
+
+Arduino: 1.8.19 (Linux), Board: "Generic ESP8266 Module, 80 MHz, Flash, Disabled (new aborts on oom), Disabled, All SSL ciphers (most compatible), 32KB cache + 32KB IRAM (balanced), Use pgm_read macros for IRAM/PROGMEM, dtr (aka nodemcu), 26 MHz, 40MHz, DOUT (compatible), 1MB (FS:64KB OTA:~470KB), 2, nonos-sdk 2.2.1+100 (190703), v2 Lower Memory, Disabled, None, Only Sketch, 115200"
+
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino: In function 'void zaphodCosmicWave()':
+sketch_feb02b:624:74: error: no matching function for call to 'max(int, double)'
+  624 |             float intensity1 = max(0, cos((dist1 / waveWidth) * PI) * 255); // Smooth cosine wave
+      |                                                                          ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:65,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3491:5: note: candidate: 'template<class _Tp, class _Compare> constexpr _Tp std::max(std::initializer_list<_Tp>, _Compare)'
+ 3491 |     max(initializer_list<_Tp> __l, _Compare __comp)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3491:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:624:74: note:   mismatched types 'std::initializer_list<_Tp>' and 'int'
+  624 |             float intensity1 = max(0, cos((dist1 / waveWidth) * PI) * 255); // Smooth cosine wave
+      |                                                                          ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:65,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3485:5: note: candidate: 'template<class _Tp> constexpr _Tp std::max(std::initializer_list<_Tp>)'
+ 3485 |     max(initializer_list<_Tp> __l)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3485:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:624:74: note:   mismatched types 'std::initializer_list<_Tp>' and 'int'
+  624 |             float intensity1 = max(0, cos((dist1 / waveWidth) * PI) * 255); // Smooth cosine wave
+      |                                                                          ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/array:40,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/tuple:39,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:54,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:300:5: note: candidate: 'template<class _Tp, class _Compare> constexpr const _Tp& std::max(const _Tp&, const _Tp&, _Compare)'
+  300 |     max(const _Tp& __a, const _Tp& __b, _Compare __comp)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:300:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:624:74: note:   deduced conflicting types for parameter 'const _Tp' ('int' and 'double')
+  624 |             float intensity1 = max(0, cos((dist1 / waveWidth) * PI) * 255); // Smooth cosine wave
+      |                                                                          ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/array:40,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/tuple:39,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:54,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:254:5: note: candidate: 'template<class _Tp> constexpr const _Tp& std::max(const _Tp&, const _Tp&)'
+  254 |     max(const _Tp& __a, const _Tp& __b)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:254:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:624:74: note:   deduced conflicting types for parameter 'const _Tp' ('int' and 'double')
+  624 |             float intensity1 = max(0, cos((dist1 / waveWidth) * PI) * 255); // Smooth cosine wave
+      |                                                                          ^
+sketch_feb02b:625:74: error: no matching function for call to 'max(int, double)'
+  625 |             float intensity2 = max(0, cos((dist2 / waveWidth) * PI) * 150); // Secondary, dimmer
+      |                                                                          ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:65,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3491:5: note: candidate: 'template<class _Tp, class _Compare> constexpr _Tp std::max(std::initializer_list<_Tp>, _Compare)'
+ 3491 |     max(initializer_list<_Tp> __l, _Compare __comp)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3491:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:625:74: note:   mismatched types 'std::initializer_list<_Tp>' and 'int'
+  625 |             float intensity2 = max(0, cos((dist2 / waveWidth) * PI) * 150); // Secondary, dimmer
+      |                                                                          ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:65,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3485:5: note: candidate: 'template<class _Tp> constexpr _Tp std::max(std::initializer_list<_Tp>)'
+ 3485 |     max(initializer_list<_Tp> __l)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3485:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:625:74: note:   mismatched types 'std::initializer_list<_Tp>' and 'int'
+  625 |             float intensity2 = max(0, cos((dist2 / waveWidth) * PI) * 150); // Secondary, dimmer
+      |                                                                          ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/array:40,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/tuple:39,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:54,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:300:5: note: candidate: 'template<class _Tp, class _Compare> constexpr const _Tp& std::max(const _Tp&, const _Tp&, _Compare)'
+  300 |     max(const _Tp& __a, const _Tp& __b, _Compare __comp)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:300:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:625:74: note:   deduced conflicting types for parameter 'const _Tp' ('int' and 'double')
+  625 |             float intensity2 = max(0, cos((dist2 / waveWidth) * PI) * 150); // Secondary, dimmer
+      |                                                                          ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/array:40,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/tuple:39,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:54,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:254:5: note: candidate: 'template<class _Tp> constexpr const _Tp& std::max(const _Tp&, const _Tp&)'
+  254 |     max(const _Tp& __a, const _Tp& __b)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:254:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:625:74: note:   deduced conflicting types for parameter 'const _Tp' ('int' and 'double')
+  625 |             float intensity2 = max(0, cos((dist2 / waveWidth) * PI) * 150); // Secondary, dimmer
+      |                                                                          ^
+sketch_feb02b:636:63: error: no matching function for call to 'max(int, float)'
+  636 |                 uint8_t glow = max(0, 50 - (dist1 + dist2) * 2);
+      |                                                               ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:65,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3491:5: note: candidate: 'template<class _Tp, class _Compare> constexpr _Tp std::max(std::initializer_list<_Tp>, _Compare)'
+ 3491 |     max(initializer_list<_Tp> __l, _Compare __comp)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3491:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:636:63: note:   mismatched types 'std::initializer_list<_Tp>' and 'int'
+  636 |                 uint8_t glow = max(0, 50 - (dist1 + dist2) * 2);
+      |                                                               ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:65,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3485:5: note: candidate: 'template<class _Tp> constexpr _Tp std::max(std::initializer_list<_Tp>)'
+ 3485 |     max(initializer_list<_Tp> __l)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3485:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:636:63: note:   mismatched types 'std::initializer_list<_Tp>' and 'int'
+  636 |                 uint8_t glow = max(0, 50 - (dist1 + dist2) * 2);
+      |                                                               ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/array:40,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/tuple:39,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:54,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:300:5: note: candidate: 'template<class _Tp, class _Compare> constexpr const _Tp& std::max(const _Tp&, const _Tp&, _Compare)'
+  300 |     max(const _Tp& __a, const _Tp& __b, _Compare __comp)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:300:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:636:63: note:   deduced conflicting types for parameter 'const _Tp' ('int' and 'float')
+  636 |                 uint8_t glow = max(0, 50 - (dist1 + dist2) * 2);
+      |                                                               ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/array:40,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/tuple:39,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:54,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:254:5: note: candidate: 'template<class _Tp> constexpr const _Tp& std::max(const _Tp&, const _Tp&)'
+  254 |     max(const _Tp& __a, const _Tp& __b)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:254:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:636:63: note:   deduced conflicting types for parameter 'const _Tp' ('int' and 'float')
+  636 |                 uint8_t glow = max(0, 50 - (dist1 + dist2) * 2);
+      |                                                               ^
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino: In function 'void heartOfGoldPulse()':
+sketch_feb02b:802:81: error: no matching function for call to 'max(int, long int)'
+  802 |                 particles[i].bright = max(0, particles[i].bright - random(5, 15)); // Fade
+      |                                                                                 ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:65,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3491:5: note: candidate: 'template<class _Tp, class _Compare> constexpr _Tp std::max(std::initializer_list<_Tp>, _Compare)'
+ 3491 |     max(initializer_list<_Tp> __l, _Compare __comp)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3491:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:802:81: note:   mismatched types 'std::initializer_list<_Tp>' and 'int'
+  802 |                 particles[i].bright = max(0, particles[i].bright - random(5, 15)); // Fade
+      |                                                                                 ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:65,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3485:5: note: candidate: 'template<class _Tp> constexpr _Tp std::max(std::initializer_list<_Tp>)'
+ 3485 |     max(initializer_list<_Tp> __l)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3485:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:802:81: note:   mismatched types 'std::initializer_list<_Tp>' and 'int'
+  802 |                 particles[i].bright = max(0, particles[i].bright - random(5, 15)); // Fade
+      |                                                                                 ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/array:40,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/tuple:39,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:54,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:300:5: note: candidate: 'template<class _Tp, class _Compare> constexpr const _Tp& std::max(const _Tp&, const _Tp&, _Compare)'
+  300 |     max(const _Tp& __a, const _Tp& __b, _Compare __comp)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:300:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:802:81: note:   deduced conflicting types for parameter 'const _Tp' ('int' and 'long int')
+  802 |                 particles[i].bright = max(0, particles[i].bright - random(5, 15)); // Fade
+      |                                                                                 ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/array:40,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/tuple:39,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:54,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:254:5: note: candidate: 'template<class _Tp> constexpr const _Tp& std::max(const _Tp&, const _Tp&)'
+  254 |     max(const _Tp& __a, const _Tp& __b)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:254:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:802:81: note:   deduced conflicting types for parameter 'const _Tp' ('int' and 'long int')
+  802 |                 particles[i].bright = max(0, particles[i].bright - random(5, 15)); // Fade
+      |                                                                                 ^
+sketch_feb02b:811:81: error: no matching function for call to 'max(int, long int)'
+  811 |                 particles[i].bright = max(0, particles[i].bright - random(3, 10)); // Slower fade
+      |                                                                                 ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:65,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3491:5: note: candidate: 'template<class _Tp, class _Compare> constexpr _Tp std::max(std::initializer_list<_Tp>, _Compare)'
+ 3491 |     max(initializer_list<_Tp> __l, _Compare __comp)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3491:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:811:81: note:   mismatched types 'std::initializer_list<_Tp>' and 'int'
+  811 |                 particles[i].bright = max(0, particles[i].bright - random(3, 10)); // Slower fade
+      |                                                                                 ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:65,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3485:5: note: candidate: 'template<class _Tp> constexpr _Tp std::max(std::initializer_list<_Tp>)'
+ 3485 |     max(initializer_list<_Tp> __l)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3485:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:811:81: note:   mismatched types 'std::initializer_list<_Tp>' and 'int'
+  811 |                 particles[i].bright = max(0, particles[i].bright - random(3, 10)); // Slower fade
+      |                                                                                 ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/array:40,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/tuple:39,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:54,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:300:5: note: candidate: 'template<class _Tp, class _Compare> constexpr const _Tp& std::max(const _Tp&, const _Tp&, _Compare)'
+  300 |     max(const _Tp& __a, const _Tp& __b, _Compare __comp)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:300:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:811:81: note:   deduced conflicting types for parameter 'const _Tp' ('int' and 'long int')
+  811 |                 particles[i].bright = max(0, particles[i].bright - random(3, 10)); // Slower fade
+      |                                                                                 ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/array:40,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/tuple:39,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:54,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:254:5: note: candidate: 'template<class _Tp> constexpr const _Tp& std::max(const _Tp&, const _Tp&)'
+  254 |     max(const _Tp& __a, const _Tp& __b)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:254:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:811:81: note:   deduced conflicting types for parameter 'const _Tp' ('int' and 'long int')
+  811 |                 particles[i].bright = max(0, particles[i].bright - random(3, 10)); // Slower fade
+      |                                                                                 ^
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino: In function 'void improbabilityDrive()':
+sketch_feb02b:940:71: error: no matching function for call to 'max(int, float)'
+  940 |                 entropyGrid[i] = max(0, entropyGrid[i] - random(5, 15)); // Slower decay
+      |                                                                       ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:65,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3491:5: note: candidate: 'template<class _Tp, class _Compare> constexpr _Tp std::max(std::initializer_list<_Tp>, _Compare)'
+ 3491 |     max(initializer_list<_Tp> __l, _Compare __comp)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3491:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:940:71: note:   mismatched types 'std::initializer_list<_Tp>' and 'int'
+  940 |                 entropyGrid[i] = max(0, entropyGrid[i] - random(5, 15)); // Slower decay
+      |                                                                       ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:65,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3485:5: note: candidate: 'template<class _Tp> constexpr _Tp std::max(std::initializer_list<_Tp>)'
+ 3485 |     max(initializer_list<_Tp> __l)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3485:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:940:71: note:   mismatched types 'std::initializer_list<_Tp>' and 'int'
+  940 |                 entropyGrid[i] = max(0, entropyGrid[i] - random(5, 15)); // Slower decay
+      |                                                                       ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/array:40,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/tuple:39,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:54,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:300:5: note: candidate: 'template<class _Tp, class _Compare> constexpr const _Tp& std::max(const _Tp&, const _Tp&, _Compare)'
+  300 |     max(const _Tp& __a, const _Tp& __b, _Compare __comp)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:300:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:940:71: note:   deduced conflicting types for parameter 'const _Tp' ('int' and 'float')
+  940 |                 entropyGrid[i] = max(0, entropyGrid[i] - random(5, 15)); // Slower decay
+      |                                                                       ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/array:40,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/tuple:39,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:54,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:254:5: note: candidate: 'template<class _Tp> constexpr const _Tp& std::max(const _Tp&, const _Tp&)'
+  254 |     max(const _Tp& __a, const _Tp& __b)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:254:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:940:71: note:   deduced conflicting types for parameter 'const _Tp' ('int' and 'float')
+  940 |                 entropyGrid[i] = max(0, entropyGrid[i] - random(5, 15)); // Slower decay
+      |                                                                       ^
+sketch_feb02b:942:75: error: no matching function for call to 'min(int, float)'
+  942 |                 entropyGrid[i] = min(255, entropyGrid[i] + random(50, 100)); // Gradual buildup
+      |                                                                           ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:65,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3479:5: note: candidate: 'template<class _Tp, class _Compare> constexpr _Tp std::min(std::initializer_list<_Tp>, _Compare)'
+ 3479 |     min(initializer_list<_Tp> __l, _Compare __comp)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3479:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:942:75: note:   mismatched types 'std::initializer_list<_Tp>' and 'int'
+  942 |                 entropyGrid[i] = min(255, entropyGrid[i] + random(50, 100)); // Gradual buildup
+      |                                                                           ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:65,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3473:5: note: candidate: 'template<class _Tp> constexpr _Tp std::min(std::initializer_list<_Tp>)'
+ 3473 |     min(initializer_list<_Tp> __l)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3473:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:942:75: note:   mismatched types 'std::initializer_list<_Tp>' and 'int'
+  942 |                 entropyGrid[i] = min(255, entropyGrid[i] + random(50, 100)); // Gradual buildup
+      |                                                                           ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/array:40,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/tuple:39,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:54,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:278:5: note: candidate: 'template<class _Tp, class _Compare> constexpr const _Tp& std::min(const _Tp&, const _Tp&, _Compare)'
+  278 |     min(const _Tp& __a, const _Tp& __b, _Compare __comp)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:278:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:942:75: note:   deduced conflicting types for parameter 'const _Tp' ('int' and 'float')
+  942 |                 entropyGrid[i] = min(255, entropyGrid[i] + random(50, 100)); // Gradual buildup
+      |                                                                           ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/array:40,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/tuple:39,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:54,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:230:5: note: candidate: 'template<class _Tp> constexpr const _Tp& std::min(const _Tp&, const _Tp&)'
+  230 |     min(const _Tp& __a, const _Tp& __b)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:230:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:942:75: note:   deduced conflicting types for parameter 'const _Tp' ('int' and 'float')
+  942 |                 entropyGrid[i] = min(255, entropyGrid[i] + random(50, 100)); // Gradual buildup
+      |                                                                           ^
+sketch_feb02b:957:76: error: no matching function for call to 'min(int, float)'
+  957 |                 entropyGrid[i] = min(255, entropyGrid[i] + random(100, 200)); // Ramp up smoothly
+      |                                                                            ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:65,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3479:5: note: candidate: 'template<class _Tp, class _Compare> constexpr _Tp std::min(std::initializer_list<_Tp>, _Compare)'
+ 3479 |     min(initializer_list<_Tp> __l, _Compare __comp)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3479:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:957:76: note:   mismatched types 'std::initializer_list<_Tp>' and 'int'
+  957 |                 entropyGrid[i] = min(255, entropyGrid[i] + random(100, 200)); // Ramp up smoothly
+      |                                                                            ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:65,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3473:5: note: candidate: 'template<class _Tp> constexpr _Tp std::min(std::initializer_list<_Tp>)'
+ 3473 |     min(initializer_list<_Tp> __l)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algo.h:3473:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:957:76: note:   mismatched types 'std::initializer_list<_Tp>' and 'int'
+  957 |                 entropyGrid[i] = min(255, entropyGrid[i] + random(100, 200)); // Ramp up smoothly
+      |                                                                            ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/array:40,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/tuple:39,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:54,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:278:5: note: candidate: 'template<class _Tp, class _Compare> constexpr const _Tp& std::min(const _Tp&, const _Tp&, _Compare)'
+  278 |     min(const _Tp& __a, const _Tp& __b, _Compare __comp)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:278:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:957:76: note:   deduced conflicting types for parameter 'const _Tp' ('int' and 'float')
+  957 |                 entropyGrid[i] = min(255, entropyGrid[i] + random(100, 200)); // Ramp up smoothly
+      |                                                                            ^
+In file included from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/array:40,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/tuple:39,
+                 from /home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/functional:54,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.h:31,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFiSTA.h:28,
+                 from /home/zitrone/.arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/ESP8266WiFi.h:34,
+                 from /home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:1:
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:230:5: note: candidate: 'template<class _Tp> constexpr const _Tp& std::min(const _Tp&, const _Tp&)'
+  230 |     min(const _Tp& __a, const _Tp& __b)
+      |     ^~~
+/home/zitrone/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/xtensa-lx106-elf/include/c++/10.3.0/bits/stl_algobase.h:230:5: note:   template argument deduction/substitution failed:
+/home/zitrone/Arduino/sketch_feb02b/sketch_feb02b.ino:957:76: note:   deduced conflicting types for parameter 'const _Tp' ('int' and 'float')
+  957 |                 entropyGrid[i] = min(255, entropyGrid[i] + random(100, 200)); // Ramp up smoothly
+      |                                                                            ^
+exit status 1
+no matching function for call to 'max(int, double)'
+
+
+This report would have more information with
+"Show verbose output during compilation"
+option enabled in File -> Preferences.
